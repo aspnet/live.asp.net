@@ -1,0 +1,14 @@
+﻿@using System.Security.Principal
+
+@if (User.Identity.IsAuthenticated)
+{
+    @User.Identity.Name 
+    <a asp-controller="Account" asp-action="SignOut">Sign Out</a>
+}
+
+<environment names="Development">
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <a asp-controller="Account" asp-action="SignIn">Sign In</a>
+    }
+</environment>
