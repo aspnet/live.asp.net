@@ -23,5 +23,11 @@ namespace live.asp.net.Controllers
         {
             return View(await _showsService.GetRecordedShowsAsync());
         }
+
+        [HttpGet("error")]
+        public IActionResult Error()
+        {
+            return View();
+        }
     }
 }

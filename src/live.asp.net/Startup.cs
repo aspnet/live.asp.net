@@ -80,7 +80,7 @@ namespace live.asp.net
             }
             else
             {
-                app.UseErrorHandler("/Home/Error");
+                app.UseErrorHandler("/error");
             }
 
             app.UseStaticFiles();
