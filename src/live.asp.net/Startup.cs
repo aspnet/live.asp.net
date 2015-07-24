@@ -15,23 +15,24 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
 using Microsoft.Framework.Runtime;
+using live.asp.net.Services;
 
 namespace live.asp.net
 {
     public class Startup
     {
+        private readonly IHostingEnvironment _env;
+
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
-            // Setup configuration sources.
+            _env = env;
 
             var builder = new ConfigurationBuilder(appEnv.ApplicationBasePath)
                 .AddJsonFile("config.json")
                 .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true);
 
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
-                // This reads the configuration keys from the secret store.
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets();
             }
             builder.AddEnvironmentVariables();
@@ -40,7 +41,6 @@ namespace live.asp.net
 
         public IConfiguration Configuration { get; set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookieAuthenticationOptions>(options =>
@@ -57,40 +57,36 @@ namespace live.asp.net
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
 
-            // Add MVC services to the services container.
             services.AddMvc();
-        }
 
-        // Configure is called after ConfigureServices is called.
+            if (_env.IsDevelopment())
+            {
+                services.AddSingleton<IShowsService, DevShowsService>();
+            }
+            else
+            {
+                //services.AddSingleton<IShowsService, YouTubeShowsService>();
+            }
+        }
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.MinimumLevel = LogLevel.Information;
+            loggerFactory.MinimumLevel = LogLevel.Warning;
             loggerFactory.AddConsole();
 
-            // Configure the HTTP request pipeline.
-
-            // Add the following to the request pipeline only in development environment.
             if (env.IsDevelopment())
             {
                 app.UseErrorPage(ErrorPageOptions.ShowAll);
             }
             else
             {
-                // Add Error handling middleware which catches all application specific errors and
-                // send the request to the following path or controller action.
                 app.UseErrorHandler("/Home/Error");
             }
 
-            // Add static files to the request pipeline.
             app.UseStaticFiles();
-
-            // Add cookie-based authentication to the request pipeline.
             app.UseCookieAuthentication();
-
-            // Add OpenIdConnect middleware so you can login using Azure AD.
             app.UseOpenIdConnectAuthentication();
-
-            // Add MVC to the request pipeline.
+            
             app.UseMvc();
         }
     }

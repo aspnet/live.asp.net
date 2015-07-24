@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using live.asp.net.Services;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 
@@ -9,10 +10,17 @@ namespace live.asp.net.Controllers
 {
     public class HomeController : Controller
     {
-        [HttpGet("/")]
-        public IActionResult Index()
+        private readonly IShowsService _showsService;
+
+        public HomeController(IShowsService showsService)
         {
-            return View();
+            _showsService = showsService;
+        }
+
+        [HttpGet("/")]
+        public async Task<IActionResult> Index()
+        {
+            return View(await _showsService.GetRecordedShowsAsync());
         }
     }
 }

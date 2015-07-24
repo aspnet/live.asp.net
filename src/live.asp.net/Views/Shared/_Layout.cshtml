@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - live.asp.net</title>
+    <title>@ViewData["Title"]</title>
     <link rel="shortcut icon" href="~/favicon.ico" />
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -30,7 +30,7 @@
         <footer>
             <p class="pull-left">&copy; 2015 Microsoft. All rights reserved.</p>
             <div class="pull-right">
-                @Html.Partial("_LoginPartial")
+                <partial name="_LoginPartial"></partial>
             </div>
         </footer>
     </div>
@@ -63,7 +63,7 @@
 
     @RenderSection("scripts", required: false)
 
-    @Html.Partial("_Analytics")
+    <partial name="_Analytics"></partial>
 </body>
 </html>
 <!-- Environment: @HostingEnvironment.EnvironmentName -->

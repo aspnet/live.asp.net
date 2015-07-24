@@ -1,0 +1,32 @@
+﻿@using live.asp.net.Models
+@model Show
+
+<div class="col-xs-12 col-sm-5 col-md-4">
+    <div class="thumbnail youtube-show">
+        <a href="@Model.Url">
+            <img class="img-responsive center-block" src="https://img.youtube.com/vi/@Model.ProviderId/hqdefault.jpg" alt="Thumbnail of show" />
+        </a>
+        <div class="caption">
+            <h3>
+                @Model.Title
+                @if (Model.IsNew)
+                {
+                    <span class="label label-default">New</span>
+                }
+            </h3>
+            <nav>
+                <ul class="nav nav-pills">
+                    <li roles="presentation">
+                        <a href="@Model.Url">watch now</a>
+                    </li>
+                    @if (!string.IsNullOrEmpty(Model.ShowNotesUrl))
+                    {
+                        <li>
+                            <a href="@Model.ShowNotesUrl">show notes</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
