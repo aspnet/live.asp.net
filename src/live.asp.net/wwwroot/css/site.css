@@ -31,12 +31,39 @@ textarea {
         line-height: 1.4;
     }
 
+.bottom-buffer {
+    margin-bottom: 30px;
+}
+
+
 footer {
     margin-top: 60px;
 }
 
+/* Extra-Small devices (phones, 768px and below) */
+@media (max-width: 768px) {
+    .youtube-show {
+        max-width: 480px;
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
     .carousel-caption {
         z-index: 10 !important;
     }
+
+    .youtube-show {
+        min-height: 430px;
+    }
 }
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .youtube-show {
+        min-height: 390px;
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: @screen-lg-min) { ... }

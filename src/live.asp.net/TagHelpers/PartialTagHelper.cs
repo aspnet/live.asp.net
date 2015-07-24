@@ -27,6 +27,8 @@ namespace live.asp.net.TagHelpers
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+            output.TagName = null;
+
             var partialResult = _viewEngine.FindPartialView(ViewContext, Name);
 
             if (partialResult != null && partialResult.Success)
