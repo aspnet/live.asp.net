@@ -1,4 +1,5 @@
-﻿@inject Microsoft.Framework.Runtime.IApplicationEnvironment Environment
+﻿@inject Microsoft.AspNet.Hosting.IHostingEnvironment HostingEnvironment
+@inject Microsoft.Framework.Runtime.IApplicationEnvironment ApplicationEnvironment
 <!DOCTYPE html>
 <html>
 <head>
@@ -65,4 +66,5 @@
     @Html.Partial("_Analytics")
 </body>
 </html>
-<!-- @Environment.Configuration -->
+<!-- Environment: @HostingEnvironment.EnvironmentName -->
+<!-- Framework: @ApplicationEnvironment.RuntimeFramework -->
