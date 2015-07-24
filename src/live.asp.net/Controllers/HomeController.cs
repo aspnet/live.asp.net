@@ -8,6 +8,7 @@ using Microsoft.AspNet.Mvc;
 
 namespace live.asp.net.Controllers
 {
+    [Route("/")]
     public class HomeController : Controller
     {
         private readonly IShowsService _showsService;
@@ -17,7 +18,7 @@ namespace live.asp.net.Controllers
             _showsService = showsService;
         }
 
-        [HttpGet("/")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _showsService.GetRecordedShowsAsync());
