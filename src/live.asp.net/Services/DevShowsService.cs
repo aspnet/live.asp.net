@@ -17,7 +17,7 @@ namespace live.asp.net.Services
             Description = "We'll talk about things"
         };
 
-        private static readonly List<Show> _shows = new List<Show>
+        private static readonly IEnumerable<Show> _shows = new List<Show>
         {
             new Show
             {
@@ -67,7 +67,7 @@ namespace live.asp.net.Services
             return Task.FromResult(_liveShow);
         }
 
-        public Task<List<Show>> GetRecordedShowsAsync()
+        public Task<IEnumerable<Show>> GetRecordedShowsAsync()
         {
             return Task.FromResult(_shows);
         }

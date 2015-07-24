@@ -10,6 +10,6 @@ namespace live.asp.net.Services
     {
         Task<Show> GetLiveShowAsync();
 
-        Task<List<Show>> GetRecordedShowsAsync();
+        Task<IEnumerable<Show>> GetRecordedShowsAsync();
     }
 }

@@ -65,7 +65,7 @@ namespace live.asp.net
             }
             else
             {
-                //services.AddSingleton<IShowsService, YouTubeShowsService>();
+                services.AddSingleton<IShowsService, YouTubeShowsService>();
             }
         }
         
