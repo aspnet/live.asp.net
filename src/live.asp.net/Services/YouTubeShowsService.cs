@@ -13,9 +13,9 @@ namespace live.asp.net.Services
             return Task.FromResult((Show)null);
         }
 
-        public Task<IEnumerable<Show>> GetRecordedShowsAsync()
+        public Task<IList<Show>> GetRecordedShowsAsync()
         {
-            return Task.FromResult(Enumerable.Empty<Show>());
+            return Task.FromResult((IList<Show>)Enumerable.Empty<Show>().ToList());
         }
     }
 }

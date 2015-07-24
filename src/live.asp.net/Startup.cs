@@ -62,6 +62,7 @@ namespace live.asp.net
             if (_env.IsDevelopment())
             {
                 services.AddSingleton<IShowsService, DevShowsService>();
+                //services.AddSingleton<IShowsService, YouTubeShowsService>();
             }
             else
             {
