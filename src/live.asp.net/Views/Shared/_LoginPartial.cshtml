@@ -6,7 +6,7 @@
     <a asp-controller="Account" asp-action="SignOut">Sign Out</a>
 }
 
-<environment names="Development">
+<environment names="Development,Staging">
     @if (!User.Identity.IsAuthenticated)
     {
         <a asp-controller="Account" asp-action="SignIn">Sign In</a>
