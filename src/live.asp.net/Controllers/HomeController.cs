@@ -24,6 +24,20 @@ namespace live.asp.net.Controllers
             return View(await _showsService.GetRecordedShowsAsync());
         }
 
+        [HttpGet("policy")]
+        [Authorize()]
+        public IActionResult Policy()
+        {
+            return View();
+        }
+
+        [HttpGet("admin")]
+        [Authorize("Admin")]
+        public IActionResult Admin()
+        {
+            return View();
+        }
+
         [HttpGet("error")]
         public IActionResult Error()
         {

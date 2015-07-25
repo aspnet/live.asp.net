@@ -1,1 +1,5 @@
-{}
+{
+  "AppSettings": {
+    "AdminUsers": "dedward@microsoft.com,scottha@microsoft.com,jogallow@microsoft.com"
+  }
+}

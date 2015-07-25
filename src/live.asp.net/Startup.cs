@@ -16,12 +16,14 @@ using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
 using Microsoft.Framework.Runtime;
 using live.asp.net.Services;
+using Microsoft.AspNet.Authorization;
 
 namespace live.asp.net
 {
     public class Startup
     {
         private readonly IHostingEnvironment _env;
+        private AppSettings _appSettings;
 
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
@@ -43,6 +45,8 @@ namespace live.asp.net
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetConfigurationSection("AppSettings"), null);
+
             services.Configure<CookieAuthenticationOptions>(options =>
             {
                 options.AutomaticAuthentication = true;
@@ -57,19 +61,22 @@ namespace live.asp.net
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
 
+            services.ConfigureAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policyBuilder =>
+                {
+                    policyBuilder.RequireClaim(
+                        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+                        _appSettings.AdminUsers
+                    );
+                });
+            });
+
             services.AddMvc();
 
-            if (_env.IsDevelopment())
-            {
-                services.AddSingleton<IShowsService, DevShowsService>();
-                //services.AddSingleton<IShowsService, YouTubeShowsService>();
-            }
-            else
-            {
-                services.AddSingleton<IShowsService, YouTubeShowsService>();
-            }
+            services.AddSingleton<IShowsService, YouTubeShowsService>();
         }
-        
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.MinimumLevel = LogLevel.Warning;
@@ -87,7 +94,7 @@ namespace live.asp.net
             app.UseStaticFiles();
             app.UseCookieAuthentication();
             app.UseOpenIdConnectAuthentication();
-            
+
             app.UseMvc();
         }
     }
