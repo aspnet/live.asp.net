@@ -87,16 +87,16 @@ namespace live.asp.net.Services
         {
             if (UseDevData())
             {
-                return Task.FromResult((IList<Show>)Enumerable.Empty<Show>().ToList());
+                return Task.FromResult(_shows);
             }
 
-            return Task.FromResult(_shows);
+            return Task.FromResult((IList<Show>)Enumerable.Empty<Show>().ToList());
         }
 
         private bool UseDevData()
         {
             return !_env.IsDevelopment() && _request.Query.ContainsKey("useTestData")
-                || _env.IsDevelopment() && _request.Query.ContainsKey("useTestData") && _request.Query["useTestData"] == "0";
+                || !(_env.IsDevelopment() && _request.Query.ContainsKey("useTestData") && _request.Query["useTestData"] == "0");
         }
     }
 }

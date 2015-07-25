@@ -71,7 +71,7 @@ namespace live.asp.net
 
             services.AddMvc();
 
-            services.AddSingleton<IShowsService, YouTubeShowsService>();
+            services.AddScoped<IShowsService, YouTubeShowsService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
