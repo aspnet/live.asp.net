@@ -1,102 +1,183 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.Services;
+using Google.Apis.YouTube.v3;
 using live.asp.net.Models;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
+using Microsoft.Framework.Caching.Memory;
+using Microsoft.Framework.OptionsModel;
+using Microsoft.Framework.WebEncoders;
 
 namespace live.asp.net.Services
 {
     public class YouTubeShowsService : IShowsService
     {
-        private static readonly TimeSpan _pdtOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
-
-        private static readonly Show _liveShow = new Show
-        {
-            ShowDate = DateTimeOffset.Now.AddHours(1),
-            Title = "Upcoming Show!",
-            Description = "We'll talk about things"
-        };
-
-        private static readonly IList<Show> _shows = new List<Show>
-        {
-            new Show
-            {
-                ShowDate = new DateTimeOffset(2015, 7, 21, 9, 30, 0, _pdtOffset),
-                Title = "ASP.NET Community Standup - July 21st 2015",
-                Provider = "YouTube",
-                ProviderId = "7O81CAjmOXk",
-                ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
-                Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
-                ShowNotesUrl = "http://blogs.msdn.com/b/webdev/archive/2015/07/23/asp-net-community-standup-july-21-2015.aspx"
-            },
-            new Show
-            {
-                ShowDate = new DateTimeOffset(2015, 7, 14, 15, 30, 0, _pdtOffset),
-                Title = "ASP.NET Community Standup - July 14th 2015",
-                Provider = "YouTube",
-                ProviderId = "bFXseBPGAyQ",
-                ThumbnailUrl = "http://img.youtube.com/vi/bFXseBPGAyQ/mqdefault.jpg",
-                Url = "https://www.youtube.com/watch?v=bFXseBPGAyQ&index=2&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
-                ShowNotesUrl = "http://blogs.msdn.com/b/webdev/archive/2015/07/14/asp-net-community-standup-july-14-2015.aspx"
-            },
-
-            new Show
-            {
-                ShowDate = new DateTimeOffset(2015, 7, 7, 15, 30, 0, _pdtOffset),
-                Title = "ASP.NET Community Standup - July 7th 2015",
-                Provider = "YouTube",
-                ProviderId = "APagQ1CIVGA",
-                ThumbnailUrl = "http://img.youtube.com/vi/APagQ1CIVGA/mqdefault.jpg",
-                Url = "https://www.youtube.com/watch?v=APagQ1CIVGA&index=3&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
-                ShowNotesUrl = "http://blogs.msdn.com/b/webdev/archive/2015/07/07/asp-net-community-standup-july-7-2015.aspx"
-            },
-            new Show
-            {
-                ShowDate = DateTimeOffset.Now.AddDays(-28),
-                Title = "ASP.NET Community Standup - July 21st 2015",
-                Provider = "YouTube",
-                ProviderId = "7O81CAjmOXk",
-                ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
-                Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
-                ShowNotesUrl = "http://blogs.msdn.com/b/webdev/archive/2015/07/23/asp-net-community-standup-july-21-2015.aspx"
-            },
-        };
-
         private readonly IHostingEnvironment _env;
         private readonly HttpRequest _request;
+        private readonly AppSettings _appSettings;
+        private readonly IMemoryCache _cache;
 
-        public YouTubeShowsService(IHostingEnvironment env, IHttpContextAccessor httpContextAccessor)
+        public YouTubeShowsService(
+            IHostingEnvironment env,
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<AppSettings> appSettings,
+            IMemoryCache memoryCache)
         {
             _env = env;
             _request = httpContextAccessor.HttpContext.Request;
+            _appSettings = appSettings.Options;
+            _cache = memoryCache;
         }
 
         public Task<Show> GetLiveShowAsync()
         {
-            if (UseDevData())
+            if (UseDesignData())
             {
-                return Task.FromResult(_liveShow);
+                return Task.FromResult(DesignData.LiveShow);
             }
 
             return Task.FromResult((Show)null);
         }
 
-        public Task<IList<Show>> GetRecordedShowsAsync()
+        public async Task<ShowList> GetRecordedShowsAsync()
         {
-            if (UseDevData())
+            if (UseDesignData())
             {
-                return Task.FromResult(_shows);
+                return new ShowList { Shows = DesignData.Shows };
             }
 
-            return Task.FromResult((IList<Show>)Enumerable.Empty<Show>().ToList());
+            if (_request.HttpContext.User.Identity.IsAuthenticated && _request.Query["disableCache"] == "1")
+            {
+                return await GetShowsList();
+            }
+
+            var result = _cache.Get<ShowList>(nameof(GetRecordedShowsAsync));
+
+            if (result == null)
+            {
+                result = await GetShowsList();
+
+                _cache.Set(nameof(GetRecordedShowsAsync), result, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                });
+            }
+
+            return result;
         }
 
-        private bool UseDevData()
+        private async Task<ShowList> GetShowsList()
         {
-            return !_env.IsDevelopment() && _request.Query.ContainsKey("useTestData")
-                || !(_env.IsDevelopment() && _request.Query.ContainsKey("useTestData") && _request.Query["useTestData"] == "0");
+            using (var client = new YouTubeService(new BaseClientService.Initializer
+            {
+                ApplicationName = _appSettings.YouTubeApplicationName,
+                ApiKey = _appSettings.YouTubeApiKey
+            }))
+            {
+                var listRequest = client.PlaylistItems.List("snippet");
+                listRequest.PlaylistId = _appSettings.YouTubePlaylistId;
+                listRequest.MaxResults = 3 * 8;
+
+                var playlistItems = await listRequest.ExecuteAsync();
+
+                var result = new ShowList();
+
+                result.Shows = playlistItems.Items.Select(item => new Show
+                {
+                    Provider = "YouTube",
+                    ProviderId = item.Snippet.ResourceId.VideoId,
+                    Title = item.Snippet.Title,
+                    Description = item.Snippet.Description,
+                    ShowDate = DateTimeOffset.Parse(item.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
+                    ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
+                    Url = GetVideoUrl(item.Snippet.ResourceId.VideoId, item.Snippet.PlaylistId, item.Snippet.Position ?? 0)
+                }).ToList();
+
+                if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
+                {
+                    result.MoreShowsUrl = GetPlaylistUrl(_appSettings.YouTubePlaylistId);
+                }
+
+                return result;
+            }
+        }
+
+        private static string GetVideoUrl(string id, string playlistId, long itemIndex)
+        {
+            var encodedId = UrlEncoder.Default.UrlEncode(id);
+            var encodedPlaylistId = UrlEncoder.Default.UrlEncode(playlistId);
+            var encodedItemIndex = UrlEncoder.Default.UrlEncode(itemIndex.ToString());
+
+            return $"https://www.youtube.com/watch?v={encodedId}&list={encodedPlaylistId}&index={encodedItemIndex}";
+        }
+
+        private static string GetPlaylistUrl(string playlistId)
+        {
+            var encodedPlaylistId = UrlEncoder.Default.UrlEncode(playlistId);
+
+            return $"https://www.youtube.com/playlist?list={encodedPlaylistId}";
+        }
+
+        private bool UseDesignData()
+        {
+            return _request.Query.ContainsKey("useDesignData");
+        }
+
+        private static class DesignData
+        {
+            private static readonly TimeSpan _pdtOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
+
+            public static readonly Show LiveShow = new Show
+            {
+                ShowDate = DateTimeOffset.Now.AddHours(1),
+                Title = "Upcoming Show!",
+                Description = "We'll talk about things"
+            };
+
+            public static readonly IList<Show> Shows = new List<Show>
+            {
+                new Show
+                {
+                    ShowDate = new DateTimeOffset(2015, 7, 21, 9, 30, 0, _pdtOffset),
+                    Title = "ASP.NET Community Standup - July 21st 2015",
+                    Provider = "YouTube",
+                    ProviderId = "7O81CAjmOXk",
+                    ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
+                    Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+                },
+                new Show
+                {
+                    ShowDate = new DateTimeOffset(2015, 7, 14, 15, 30, 0, _pdtOffset),
+                    Title = "ASP.NET Community Standup - July 14th 2015",
+                    Provider = "YouTube",
+                    ProviderId = "bFXseBPGAyQ",
+                    ThumbnailUrl = "http://img.youtube.com/vi/bFXseBPGAyQ/mqdefault.jpg",
+                    Url = "https://www.youtube.com/watch?v=bFXseBPGAyQ&index=2&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+                },
+
+                new Show
+                {
+                    ShowDate = new DateTimeOffset(2015, 7, 7, 15, 30, 0, _pdtOffset),
+                    Title = "ASP.NET Community Standup - July 7th 2015",
+                    Provider = "YouTube",
+                    ProviderId = "APagQ1CIVGA",
+                    ThumbnailUrl = "http://img.youtube.com/vi/APagQ1CIVGA/mqdefault.jpg",
+                    Url = "https://www.youtube.com/watch?v=APagQ1CIVGA&index=3&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+                },
+                new Show
+                {
+                    ShowDate = DateTimeOffset.Now.AddDays(-28),
+                    Title = "ASP.NET Community Standup - July 21st 2015",
+                    Provider = "YouTube",
+                    ProviderId = "7O81CAjmOXk",
+                    ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
+                    Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+                },
+            };
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using live.asp.net.Services;
+using live.asp.net.ViewModels;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 
@@ -21,7 +22,8 @@ namespace live.asp.net.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _showsService.GetRecordedShowsAsync());
+            var showList = await _showsService.GetRecordedShowsAsync();
+            return View(new HomeViewModel { PreviousShows = showList.Shows, MoreShowsUrl = showList.MoreShowsUrl });
         }
 
         [HttpGet("policy")]

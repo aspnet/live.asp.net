@@ -6,10 +6,10 @@ using live.asp.net.Models;
 
 namespace live.asp.net.Services
 {
-    public interface IShowsService
+    public class ShowList
     {
-        Task<Show> GetLiveShowAsync();
+        public IList<Show> Shows { get; set; }
 
-        Task<ShowList> GetRecordedShowsAsync();
+        public string MoreShowsUrl { get; set; }
     }
 }

@@ -3,30 +3,21 @@
 
 <div class="col-sm-6 col-md-4">
     <div class="thumbnail youtube-show bottom-buffer center-block">
-        <a href="@Model.Url">
-            <img class="img-responsive center-block" src="https://img.youtube.com/vi/@Model.ProviderId/hqdefault.jpg" alt="Thumbnail of show" />
+        <a href="@Model.Url" title="Watch this show">
+            <div>
+                @*<img class="img-responsive center-block" src="https://img.youtube.com/vi/@Model.ProviderId/hqdefault.jpg" alt="Thumbnail of show" />*@
+                <img class="img-responsive center-block" src="@Model.ThumbnailUrl" alt="Thumbnail of show" />
+            </div>
         </a>
         <div class="caption">
             <h3>
-                @Model.Title
+                @*@Model.Title*@
+                @Model.ShowDate.DateTime.ToString("MMM dd, yyyy")
                 @if (Model.IsNew)
                 {
                     <span class="label label-default">New</span>
                 }
             </h3>
-            <nav>
-                <ul class="nav nav-pills">
-                    <li roles="presentation">
-                        <a href="@Model.Url">watch now</a>
-                    </li>
-                    @if (!string.IsNullOrEmpty(Model.ShowNotesUrl))
-                    {
-                        <li>
-                            <a href="@Model.ShowNotesUrl">show notes</a>
-                        </li>
-                    }
-                </ul>
-            </nav>
         </div>
     </div>
 </div>

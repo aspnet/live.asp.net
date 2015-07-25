@@ -1,5 +1,6 @@
-﻿@using live.asp.net.Models
-@model IList<Show>
+﻿@using live.asp.net.ViewModels
+@using live.asp.net.Models
+@model HomeViewModel
 
 @{
     ViewData["Title"] = "ASP.NET Community Standup";
@@ -14,16 +15,29 @@
     </div>
 }
 
-@if (Model.Count > 0)
+@if (Model.PreviousShows.Count > 0)
 {
     <h2>Previous Shows</h2>
 
     <div class="row">
-        @foreach (var show in Model)
+        @foreach (var show in Model.PreviousShows)
         {
             <partial name="_YouTubeShow" model="show"></partial>
         }
     </div>
+
+    @if (!string.IsNullOrEmpty(Model.MoreShowsUrl))
+    {
+    <div class="row">
+        <nav>
+            <ul class="nav nav-pills">
+                <li roles="presentation">
+                    <a href="@Model.MoreShowsUrl">more shows</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    }
 }
 
 @*<div class="row">

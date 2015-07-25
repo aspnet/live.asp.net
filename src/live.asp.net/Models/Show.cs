@@ -26,6 +26,5 @@ namespace live.asp.net.Models
         public string Url { get; set; }
 
         public string ThumbnailUrl { get; set; }
-        public string ShowNotesUrl { get; internal set; }
     }
 }

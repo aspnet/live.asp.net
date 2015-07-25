@@ -44,6 +44,8 @@ namespace live.asp.net
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetConfigurationSection("AppSettings"), optionsName: null);
+
             services.Configure<CookieAuthenticationOptions>(options =>
             {
                 options.AutomaticAuthentication = true;

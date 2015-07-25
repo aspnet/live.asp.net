@@ -1,10 +1,9 @@
 ﻿body {
-    
     padding-bottom: 20px;
 }
 
 .jumbotron {
-    background: #9d9d9d
+    background: #9d9d9d;
 }
 
 /* Wrapping element */
@@ -40,6 +39,14 @@ footer {
     margin-top: 60px;
 }
 
+.youtube-show > a > div {
+    background: #000;
+}
+
+.youtube-show > a:hover img {
+    opacity: 0.6;
+}
+
 /* Extra-Small devices (phones, 768px and below) */
 @media (max-width: 768px) {
     .youtube-show {
@@ -54,16 +61,17 @@ footer {
     }
 
     .youtube-show {
-        min-height: 430px;
+        /*min-height: 360px;*/
     }
 }
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-    .youtube-show {
-        min-height: 390px;
-    }
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@media (min-width: @screen-lg-min) { ... }
+@media (min-width: 1200px) {
+    .youtube-show {
+        /*min-height: 465px;*/
+    }
+}
