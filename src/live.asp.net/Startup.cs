@@ -23,7 +23,6 @@ namespace live.asp.net
     public class Startup
     {
         private readonly IHostingEnvironment _env;
-        private AppSettings _appSettings;
 
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
@@ -45,8 +44,6 @@ namespace live.asp.net
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AppSettings>(Configuration.GetConfigurationSection("AppSettings"), null);
-
             services.Configure<CookieAuthenticationOptions>(options =>
             {
                 options.AutomaticAuthentication = true;
@@ -67,7 +64,7 @@ namespace live.asp.net
                 {
                     policyBuilder.RequireClaim(
                         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-                        _appSettings.AdminUsers
+                        Configuration["AppSettings:AdminUsers"].Split(',')
                     );
                 });
             });
