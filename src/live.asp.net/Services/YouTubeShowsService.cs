@@ -8,7 +8,6 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using live.asp.net.Models;
 using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
 using Microsoft.Framework.Caching.Memory;
 using Microsoft.Framework.OptionsModel;
 using Microsoft.Framework.WebEncoders;
@@ -17,10 +16,6 @@ namespace live.asp.net.Services
 {
     public class YouTubeShowsService : IShowsService
     {
-        private static string _liveShowEmbedUrl = null;
-        private static DateTimeOffset? _nextShowDateTime = null;
-        private static object _updateLock = new object();
-
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
@@ -33,57 +28,6 @@ namespace live.asp.net.Services
             _env = env;
             _appSettings = appSettings.Options;
             _cache = memoryCache;
-        }
-
-        public Task<string> GetLiveShowEmbedUrlAsync(bool useDesignData)
-        {
-            if (useDesignData)
-            {
-                return Task.FromResult(DesignData.LiveShow);
-            }
-
-            string result;
-            lock (_updateLock)
-            {
-                result = _liveShowEmbedUrl;
-            }
-
-            return Task.FromResult(result);
-        }
-
-        public Task SetLiveShowEmbedUrlAsync(string url)
-        {
-            lock (_updateLock)
-            {
-                if (!string.IsNullOrEmpty(url) && url.StartsWith("http://"))
-                {
-                    url = "https://" + url.Substring("http://".Length);
-                }
-                _liveShowEmbedUrl = url;
-            } 
-
-            return Task.FromResult(0);
-        }
-
-        public Task<DateTimeOffset?> GetNextShowDateTime()
-        {
-            DateTimeOffset? result;
-            lock (_updateLock)
-            {
-                result = _nextShowDateTime;
-            }
-
-            return Task.FromResult(result);
-        }
-
-        public Task SetNextShowDateTime(DateTimeOffset? dateTime)
-        {
-            lock (_updateLock)
-            {
-                _nextShowDateTime = dateTime;
-            }
-
-            return Task.FromResult(0);
         }
 
         public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache, bool useDesignData)

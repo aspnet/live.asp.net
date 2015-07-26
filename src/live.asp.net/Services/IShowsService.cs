@@ -9,14 +9,6 @@ namespace live.asp.net.Services
 {
     public interface IShowsService
     {
-        Task<string> GetLiveShowEmbedUrlAsync(bool useDesignData);
-
-        Task SetLiveShowEmbedUrlAsync(string url);
-
-        Task<DateTimeOffset?> GetNextShowDateTime();
-
-        Task SetNextShowDateTime(DateTimeOffset? dateTime);
-
         Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache, bool useDesignData);
     }
 }

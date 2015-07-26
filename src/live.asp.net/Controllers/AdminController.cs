@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using live.asp.net.Data;
+using live.asp.net.Models;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Data.Entity;
 
 namespace live.asp.net.Controllers
 {
@@ -13,11 +16,11 @@ namespace live.asp.net.Controllers
     public class AdminController : Controller
     {
         private static readonly TimeSpan _pstOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
-        private readonly IShowsService _showsService;
+        private readonly AppDbContext _db;
 
-        public AdminController(IShowsService showsService)
+        public AdminController(AppDbContext dbContext)
         {
-            _showsService = showsService;
+            _db = dbContext;
         }
 
         [HttpGet()]
@@ -29,9 +32,11 @@ namespace live.asp.net.Controllers
             var msg = Context.Request.Cookies["msg"];
             Context.Response.Cookies.Delete("msg");
             model.SuccessMessage = msg == "1" ? "Saved successfully!" : null ;
-            model.LiveShowEmbedUrl = await _showsService.GetLiveShowEmbedUrlAsync(useDesignData ?? false);
-            var nextShowDateTime = await _showsService.GetNextShowDateTime();
-            model.NextShowDate = nextShowDateTime?.DateTime;
+
+            var liveShowDetails = await _db.LiveShowDetails.FirstOrDefaultAsync();
+
+            model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
+            model.NextShowDate = liveShowDetails?.NextShowDate;
 
             return View(model);
         }
@@ -42,13 +47,23 @@ namespace live.asp.net.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _showsService.SetLiveShowEmbedUrlAsync(model.LiveShowEmbedUrl);
-                DateTimeOffset? nextShowDateTime = null;
-                if (model.NextShowDate.HasValue)
+                var liveShowDetails = await _db.LiveShowDetails.FirstOrDefaultAsync();
+
+                if (liveShowDetails == null)
                 {
-                    nextShowDateTime = new DateTimeOffset(model.NextShowDate.Value, _pstOffset);
+                    liveShowDetails = new LiveShowDetails();
+                    _db.LiveShowDetails.Add(liveShowDetails);
                 }
-                await _showsService.SetNextShowDateTime(nextShowDateTime);
+
+                if (!string.IsNullOrEmpty(model.LiveShowEmbedUrl) && model.LiveShowEmbedUrl.StartsWith("http://"))
+                {
+                    model.LiveShowEmbedUrl = "https://" + model.LiveShowEmbedUrl.Substring("http://".Length);
+                }
+
+                liveShowDetails.LiveShowEmbedUrl = model.LiveShowEmbedUrl;
+                liveShowDetails.NextShowDate = model.NextShowDate;
+
+                await _db.SaveChangesAsync();
 
                 Context.Response.Cookies.Append("msg", "1");
 

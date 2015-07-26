@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using live.asp.net.Data;
+using live.asp.net.Services;
+using Microsoft.AspNet.Authentication.Cookies;
+using Microsoft.AspNet.Authentication.OpenIdConnect;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Routing;
-using Microsoft.AspNet.Authentication;
-using Microsoft.AspNet.Authentication.Cookies;
-using Microsoft.AspNet.Authentication.OpenIdConnect;
+using Microsoft.Data.Entity;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
-using Microsoft.Framework.Logging.Console;
 using Microsoft.Framework.Runtime;
-using live.asp.net.Services;
-using Microsoft.AspNet.Authorization;
 
 namespace live.asp.net
 {
@@ -72,6 +65,13 @@ namespace live.asp.net
             });
 
             services.AddMvc();
+
+            services.AddEntityFramework()
+                .AddInMemoryStore()
+                .AddDbContext<AppDbContext>(options =>
+                {
+                    options.UseInMemoryStore();
+                });
 
             services.AddScoped<IShowsService, YouTubeShowsService>();
         }
