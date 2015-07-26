@@ -1,7 +1,9 @@
 {
+  "Authorization": {
+    "AdminUsers": "dedward@microsoft.com,scottha@microsoft.com,jogallow@microsoft.com"
+  },
   "AppSettings": {
-    "AdminUsers": "dedward@microsoft.com,scottha@microsoft.com,jogallow@microsoft.com",
-    "YouTubeApplicationName" : "live.asp.net",
+    "YouTubeApplicationName": "live.asp.net",
     "YouTubePlaylistId": "PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
   }
 }

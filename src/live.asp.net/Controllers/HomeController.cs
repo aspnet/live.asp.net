@@ -9,7 +9,6 @@ using Microsoft.AspNet.Mvc;
 
 namespace live.asp.net.Controllers
 {
-    [Route("/")]
     public class HomeController : Controller
     {
         private readonly IShowsService _showsService;
@@ -19,23 +18,22 @@ namespace live.asp.net.Controllers
             _showsService = showsService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        [Route("/")]
+        public async Task<IActionResult> Index(bool? disableCache, bool? useDesignData)
         {
-            var showList = await _showsService.GetRecordedShowsAsync();
-            return View(new HomeViewModel { PreviousShows = showList.Shows, MoreShowsUrl = showList.MoreShowsUrl });
+            var showList = await _showsService.GetRecordedShowsAsync(User, disableCache ?? false, useDesignData ?? false);
+
+            return View(new HomeViewModel
+            {
+                LiveShowEmbedUrl = await _showsService.GetLiveShowEmbedUrlAsync(useDesignData ?? false),
+                PreviousShows = showList.Shows,
+                MoreShowsUrl = showList.MoreShowsUrl
+            });
         }
 
         [HttpGet("policy")]
         [Authorize()]
         public IActionResult Policy()
-        {
-            return View();
-        }
-
-        [HttpGet("admin")]
-        [Authorize("Admin")]
-        public IActionResult Admin()
         {
             return View();
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
@@ -16,41 +17,60 @@ namespace live.asp.net.Services
 {
     public class YouTubeShowsService : IShowsService
     {
+        private static string _liveShowEmbedUrl = null;
+        private static object _updateLock = new object();
+
         private readonly IHostingEnvironment _env;
-        private readonly HttpRequest _request;
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
 
         public YouTubeShowsService(
             IHostingEnvironment env,
-            IHttpContextAccessor httpContextAccessor,
             IOptions<AppSettings> appSettings,
             IMemoryCache memoryCache)
         {
             _env = env;
-            _request = httpContextAccessor.HttpContext.Request;
             _appSettings = appSettings.Options;
             _cache = memoryCache;
         }
 
-        public Task<Show> GetLiveShowAsync()
+        public Task<string> GetLiveShowEmbedUrlAsync(bool useDesignData)
         {
-            if (UseDesignData())
+            if (useDesignData)
             {
                 return Task.FromResult(DesignData.LiveShow);
             }
 
-            return Task.FromResult((Show)null);
+            string result;
+            lock (_updateLock)
+            {
+                result = _liveShowEmbedUrl;
+            }
+            return Task.FromResult(result);
         }
 
-        public async Task<ShowList> GetRecordedShowsAsync()
+        public Task SetLiveShowEmbedUrlAsync(string url)
         {
-            if (UseDesignData())
+            lock (_updateLock)
+            {
+                if (url.StartsWith("http://"))
+                {
+                    url = "https://" + url.Substring("http://".Length);
+                }
+                _liveShowEmbedUrl = url;
+            } 
+
+            return Task.FromResult(0);
+        }
+
+        public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache, bool useDesignData)
+        {
+            if (useDesignData)
             {
                 return new ShowList { Shows = DesignData.Shows };
             }
 
-            if (_request.HttpContext.User.Identity.IsAuthenticated && _request.Query["disableCache"] == "1")
+            if (user.Identity.IsAuthenticated && disableCache)
             {
                 return await GetShowsList();
             }
@@ -122,21 +142,11 @@ namespace live.asp.net.Services
             return $"https://www.youtube.com/playlist?list={encodedPlaylistId}";
         }
 
-        private bool UseDesignData()
-        {
-            return _request.Query.ContainsKey("useDesignData");
-        }
-
         private static class DesignData
         {
             private static readonly TimeSpan _pdtOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
 
-            public static readonly Show LiveShow = new Show
-            {
-                ShowDate = DateTimeOffset.Now.AddHours(1),
-                Title = "Upcoming Show!",
-                Description = "We'll talk about things"
-            };
+            public static readonly string LiveShow = null;
 
             public static readonly IList<Show> Shows = new List<Show>
             {

@@ -10,12 +10,22 @@
     <div class="jumbotron">
         <div class="container">
             <img src="~/images/asplogo-new.png" />
-            <h1>Coming soon...</h1>
+            <h1>
+                <span class="hidden">ASP.NET </span>Community Standup
+                @if (Model.IsOnAir)
+                {
+                    <span class="label label-danger">ON AIR</span>
+                }
+            </h1>
+            @if (Model.IsOnAir)
+            {
+                <partial name="_HangoutEmbed" model="Model"></partial>
+            }
         </div>
     </div>
 }
 
-@if (Model.PreviousShows.Count > 0)
+@if (Model.ShowPreviousShows)
 {
     <h2>Previous Shows</h2>
 
@@ -26,54 +36,16 @@
         }
     </div>
 
-    @if (!string.IsNullOrEmpty(Model.MoreShowsUrl))
+    @if (Model.ShowMoreShowsUrl)
     {
     <div class="row">
         <nav>
             <ul class="nav nav-pills">
                 <li roles="presentation">
-                    <a href="@Model.MoreShowsUrl">more shows</a>
+                    <a href="@Model.MoreShowsUrl">More episodes</a>
                 </li>
             </ul>
         </nav>
     </div>
     }
 }
-
-@*<div class="row">
-    <div class="col-md-3">
-        <h2>Application uses</h2>
-        <ul>
-            <li>Sample pages using ASP.NET 5 (MVC 6)</li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518007">Gulp</a> and <a href="http://go.microsoft.com/fwlink/?LinkId=518004">Bower</a> for managing client-side resources</li>
-            <li>Theming using <a href="http://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>New concepts</h2>
-        <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518008">Conceptual overview of ASP.NET 5</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518008">Fundamentals in ASP.NET 5</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517849">Client-Side Development using npm, Bower and Gulp</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517850">Develop on different platforms</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Customize app</h2>
-        <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398600">Add Controllers and Views</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398602">Add Data using EntityFramework</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398603">Add Authentication using Identity</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517848">Manage client-side packages using Bower/ Gulp</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Deploy</h2>
-        <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517851">Run your app locally</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517852">Run your app on .NET Core</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517853">Run commands in your app</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
-        </ul>
-    </div>
-</div>*@

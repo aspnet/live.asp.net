@@ -20,6 +20,14 @@ textarea {
     max-width: 280px;
 }
 
+.hangout-embed {
+    margin-top: 30px;
+}
+
+.admin-screen input {
+    max-width: 400px;
+}
+
 /* Carousel */
 .carousel-caption {
     z-index: 10 !important;
@@ -34,10 +42,20 @@ textarea {
     margin-bottom: 30px;
 }
 
-
 footer {
     margin-top: 60px;
 }
+
+    footer nav ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+        footer nav ul > li {
+            float: left;
+            margin-right: 1em;
+        }
 
 .youtube-show > a > div {
     background: #000;

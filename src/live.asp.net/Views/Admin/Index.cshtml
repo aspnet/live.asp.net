@@ -1,0 +1,40 @@
+﻿@using live.asp.net.ViewModels
+@model AdminViewModel
+
+<ol class="breadcrumb">
+    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="active">Admin</li>
+</ol>
+
+<div class="admin-screen">
+    <h2>ASP.NET Community Standup Admin</h2>
+
+    <form asp-controller="Admin" asp-action="Save" method="post" class="form-horizontal" role="form">
+        <h4>Manage Live Show</h4>
+        <hr />
+        @if (Model.ShowSucessMessage)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                @Model.SuccessMessage
+            </div>
+        }
+        <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="LiveShowEmbedUrl" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="LiveShowEmbedUrl" class="form-control" />
+                <span asp-validation-for="LiveShowEmbedUrl" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-default">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScripts" />
+}

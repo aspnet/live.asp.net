@@ -66,7 +66,7 @@ namespace live.asp.net
                 {
                     policyBuilder.RequireClaim(
                         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-                        Configuration["AppSettings:AdminUsers"].Split(',')
+                        Configuration["Authorization:AdminUsers"].Split(',')
                     );
                 });
             });
