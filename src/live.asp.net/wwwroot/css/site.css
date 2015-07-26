@@ -1,9 +1,24 @@
 ﻿body {
     padding-bottom: 20px;
+    font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Segoe UI Light', 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
 }
 
 .jumbotron {
-    background: #9d9d9d;
+    background: #000 url(home-bg.png) top center repeat-x;
+    background-size: 100%;
+    color: #fff;
+    min-height: 350px;
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1440px) {
+    .jumbotron {
+        background-size: auto;
+    }
 }
 
 /* Wrapping element */
@@ -20,23 +35,40 @@ textarea {
     max-width: 280px;
 }
 
+a, a:hover {
+    color: rgb(38, 124, 178);
+}
+
+.btn, .thumbnail, input[type='text'], input[type='url'], input[type='datetime'] {
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+}
+
+    .btn.btn-primary {
+        background-color: #0054a3;
+    }
+
 .hangout-embed {
     margin-top: 30px;
+    -webkit-box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, .4);
+    -moz-box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, .4);
+    box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, .4);
+    background: #212121;
+}
+
+    .hangout-embed * {
+        background: #212121;
+    }
+
+.thumbnail .caption h3 {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .admin-screen input {
     max-width: 400px;
 }
-
-/* Carousel */
-.carousel-caption {
-    z-index: 10 !important;
-}
-
-    .carousel-caption p {
-        font-size: 20px;
-        line-height: 1.4;
-    }
 
 .bottom-buffer {
     margin-bottom: 30px;

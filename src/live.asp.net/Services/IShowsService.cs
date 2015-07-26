@@ -13,6 +13,10 @@ namespace live.asp.net.Services
 
         Task SetLiveShowEmbedUrlAsync(string url);
 
+        Task<DateTimeOffset?> GetNextShowDateTime();
+
+        Task SetNextShowDateTime(DateTimeOffset? dateTime);
+
         Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache, bool useDesignData);
     }
 }

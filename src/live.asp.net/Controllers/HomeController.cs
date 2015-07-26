@@ -25,6 +25,7 @@ namespace live.asp.net.Controllers
 
             return View(new HomeViewModel
             {
+                NextShowDate = await _showsService.GetNextShowDateTime(),
                 LiveShowEmbedUrl = await _showsService.GetLiveShowEmbedUrlAsync(useDesignData ?? false),
                 PreviousShows = showList.Shows,
                 MoreShowsUrl = showList.MoreShowsUrl

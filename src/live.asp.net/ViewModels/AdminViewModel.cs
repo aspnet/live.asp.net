@@ -12,6 +12,9 @@ namespace live.asp.net.ViewModels
         [DataType(DataType.Url)]
         public string LiveShowEmbedUrl { get; set; }
 
+        [Display(Name = "Next Show Date/time", Description = "Exact date and time of the next live show")]
+        public DateTime? NextShowDate { get; set; }
+
         public string SuccessMessage { get; set; }
 
         public bool ShowSucessMessage => !string.IsNullOrEmpty(SuccessMessage);

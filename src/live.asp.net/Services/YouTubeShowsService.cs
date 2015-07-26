@@ -18,6 +18,7 @@ namespace live.asp.net.Services
     public class YouTubeShowsService : IShowsService
     {
         private static string _liveShowEmbedUrl = null;
+        private static DateTimeOffset? _nextShowDateTime = null;
         private static object _updateLock = new object();
 
         private readonly IHostingEnvironment _env;
@@ -46,6 +47,7 @@ namespace live.asp.net.Services
             {
                 result = _liveShowEmbedUrl;
             }
+
             return Task.FromResult(result);
         }
 
@@ -53,12 +55,33 @@ namespace live.asp.net.Services
         {
             lock (_updateLock)
             {
-                if (url.StartsWith("http://"))
+                if (!string.IsNullOrEmpty(url) && url.StartsWith("http://"))
                 {
                     url = "https://" + url.Substring("http://".Length);
                 }
                 _liveShowEmbedUrl = url;
             } 
+
+            return Task.FromResult(0);
+        }
+
+        public Task<DateTimeOffset?> GetNextShowDateTime()
+        {
+            DateTimeOffset? result;
+            lock (_updateLock)
+            {
+                result = _nextShowDateTime;
+            }
+
+            return Task.FromResult(result);
+        }
+
+        public Task SetNextShowDateTime(DateTimeOffset? dateTime)
+        {
+            lock (_updateLock)
+            {
+                _nextShowDateTime = dateTime;
+            }
 
             return Task.FromResult(0);
         }

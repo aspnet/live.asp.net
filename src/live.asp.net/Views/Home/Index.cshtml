@@ -9,9 +9,11 @@
 @section PreContent {
     <div class="jumbotron">
         <div class="container">
-            <img src="~/images/asplogo-new.png" />
-            <h1>
-                <span class="hidden">ASP.NET </span>Community Standup
+            <a href="http://www.microsoft.com">
+                <img src="~/images/mslogo.png" />
+            </a>
+            <h1 class="text-center">
+                ASP.NET Community Standup
                 @if (Model.IsOnAir)
                 {
                     <span class="label label-danger">ON AIR</span>
@@ -21,13 +23,28 @@
             {
                 <partial name="_HangoutEmbed" model="Model"></partial>
             }
+            else
+            {
+                <div class="next-episode text-center">
+                    @if (Model.NextShowScheduled)
+                    {
+                        <h2>Next Episode Streaming Live on <strong>@Model.NextShowDate.Value.ToString("MMM dd, yyyy h:mm tt") Pacific Time</strong></h2>
+                    }
+                    else
+                    {
+                        <h2>Streaming Live Every Tuesday</h2>
+                        <p>Alternating between 9:30 AM and 3:45 PM Pacific Time, week to week.</p>
+                    }
+                    <p>Check back here to watch &amp; ask questions then!</p>
+                </div>
+            }
         </div>
     </div>
 }
 
 @if (Model.ShowPreviousShows)
 {
-    <h2>Previous Shows</h2>
+    <h2>Previous Episodes</h2>
 
     <div class="row">
         @foreach (var show in Model.PreviousShows)
@@ -39,13 +56,9 @@
     @if (Model.ShowMoreShowsUrl)
     {
     <div class="row">
-        <nav>
-            <ul class="nav nav-pills">
-                <li roles="presentation">
-                    <a href="@Model.MoreShowsUrl">More episodes</a>
-                </li>
-            </ul>
-        </nav>
+        <div class="col-md-12 text-center">
+            <a href="@Model.MoreShowsUrl" class="btn btn-primary">See More Episodes</a>
+        </div>
     </div>
     }
 }

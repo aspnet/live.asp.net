@@ -12,6 +12,7 @@ namespace live.asp.net.Controllers
     [Route("/admin")]
     public class AdminController : Controller
     {
+        private static readonly TimeSpan _pstOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
         private readonly IShowsService _showsService;
 
         public AdminController(IShowsService showsService)
@@ -29,6 +30,8 @@ namespace live.asp.net.Controllers
             Context.Response.Cookies.Delete("msg");
             model.SuccessMessage = msg == "1" ? "Saved successfully!" : null ;
             model.LiveShowEmbedUrl = await _showsService.GetLiveShowEmbedUrlAsync(useDesignData ?? false);
+            var nextShowDateTime = await _showsService.GetNextShowDateTime();
+            model.NextShowDate = nextShowDateTime?.DateTime;
 
             return View(model);
         }
@@ -40,13 +43,19 @@ namespace live.asp.net.Controllers
             if (ModelState.IsValid)
             {
                 await _showsService.SetLiveShowEmbedUrlAsync(model.LiveShowEmbedUrl);
+                DateTimeOffset? nextShowDateTime = null;
+                if (model.NextShowDate.HasValue)
+                {
+                    nextShowDateTime = new DateTimeOffset(model.NextShowDate.Value, _pstOffset);
+                }
+                await _showsService.SetNextShowDateTime(nextShowDateTime);
 
                 Context.Response.Cookies.Append("msg", "1");
 
                 return RedirectToAction("Index");
             }
 
-            return View("Index");
+            return View("Index", model);
         }
     }
 }
