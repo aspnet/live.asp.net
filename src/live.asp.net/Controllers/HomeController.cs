@@ -36,14 +36,7 @@ namespace live.asp.net.Controllers
                 MoreShowsUrl = showList.MoreShowsUrl
             });
         }
-
-        [HttpGet("policy")]
-        [Authorize()]
-        public IActionResult Policy()
-        {
-            return View();
-        }
-
+        
         [HttpGet("error")]
         public IActionResult Error()
         {

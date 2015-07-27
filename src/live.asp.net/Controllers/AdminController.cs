@@ -9,6 +9,7 @@ using live.asp.net.ViewModels;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity;
+using Microsoft.Framework.Caching.Memory;
 
 namespace live.asp.net.Controllers
 {
@@ -17,10 +18,12 @@ namespace live.asp.net.Controllers
     {
         private static readonly TimeSpan _pstOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
         private readonly AppDbContext _db;
+        private readonly IMemoryCache _memoryCache;
 
-        public AdminController(AppDbContext dbContext)
+        public AdminController(AppDbContext dbContext, IMemoryCache memoryCache)
         {
             _db = dbContext;
+            _memoryCache = memoryCache;
         }
 
         [HttpGet()]
@@ -31,7 +34,16 @@ namespace live.asp.net.Controllers
 
             var msg = Context.Request.Cookies["msg"];
             Context.Response.Cookies.Delete("msg");
-            model.SuccessMessage = msg == "1" ? "Saved successfully!" : null ;
+
+            switch (msg)
+            {
+                case "1":
+                    model.SuccessMessage = "Live show details saved successfully!";
+                    break;
+                case "2":
+                    model.SuccessMessage = "YouTube cache cleared successfully!";
+                    break;
+            }
 
             var liveShowDetails = await _db.LiveShowDetails.FirstOrDefaultAsync();
 
@@ -71,6 +83,16 @@ namespace live.asp.net.Controllers
             }
 
             return View("Index", model);
+        }
+
+        [HttpPost("clearcache")]
+        public IActionResult ClearCache()
+        {
+            _memoryCache.Remove(YouTubeShowsService.CacheKey);
+
+            Context.Response.Cookies.Append("msg", "2");
+
+            return RedirectToAction("Index");
         }
     }
 }

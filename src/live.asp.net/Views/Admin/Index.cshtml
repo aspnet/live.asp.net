@@ -40,6 +40,17 @@
             </div>
         </div>
     </form>
+
+    <form asp-controller="Admin" asp-action="ClearCache" method="post" class="form-horizontal" role="form">
+        <h4>Manage Other Stuff</h4>
+        <hr />
+        <div class="form-group">
+            <label class="col-md-2 control-label">Cache:</label>
+            <div class="col-md-10">
+                <button type="submit" class="btn btn-danger">Clear YouTube Cache</button>
+            </div>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

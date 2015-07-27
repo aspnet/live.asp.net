@@ -16,6 +16,8 @@ namespace live.asp.net.Services
 {
     public class YouTubeShowsService : IShowsService
     {
+        public const string CacheKey = "YouTubeShowsService";
+
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
@@ -42,7 +44,7 @@ namespace live.asp.net.Services
                 return await GetShowsList();
             }
 
-            var result = _cache.Get<ShowList>(nameof(GetRecordedShowsAsync));
+            var result = _cache.Get<ShowList>(CacheKey);
 
             if (result == null)
             {
@@ -50,7 +52,7 @@ namespace live.asp.net.Services
 
                 _cache.Set(nameof(GetRecordedShowsAsync), result, new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
                 });
             }
 

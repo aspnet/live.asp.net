@@ -14,10 +14,9 @@ h1, h2, h3, h4, h5, h6 {
     min-height: 350px;
 }
 
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1440px) {
+@media (min-width: 1000px) {
     .jumbotron {
-        background-size: auto;
+        background-size: 1000px;
     }
 }
 
