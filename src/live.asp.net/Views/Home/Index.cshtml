@@ -18,8 +18,18 @@
                 {
                     <span class="label label-danger">ON AIR</span>
                 }
+                else if (Model.HasAdminMessage)
+                {
+                    <span class="label label-warning">STAY TUNED</span>
+                }
             </h1>
-            @if (Model.IsOnAir)
+            @if (Model.HasAdminMessage)
+            {
+                <p class="text-center">
+                    @Model.AdminMessage
+                </p>   
+            }
+            else if (Model.IsOnAir)
             {
                 <partial name="_HangoutEmbed" model="Model"></partial>
             }

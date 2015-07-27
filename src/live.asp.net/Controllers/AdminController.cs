@@ -49,6 +49,7 @@ namespace live.asp.net.Controllers
 
             model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
             model.NextShowDate = liveShowDetails?.NextShowDate;
+            model.AdminMessage = liveShowDetails?.AdminMessage;
 
             return View(model);
         }
@@ -74,6 +75,7 @@ namespace live.asp.net.Controllers
 
                 liveShowDetails.LiveShowEmbedUrl = model.LiveShowEmbedUrl;
                 liveShowDetails.NextShowDate = model.NextShowDate;
+                liveShowDetails.AdminMessage = model.AdminMessage;
 
                 await _db.SaveChangesAsync();
 

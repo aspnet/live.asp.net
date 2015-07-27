@@ -8,13 +8,17 @@ namespace live.asp.net.ViewModels
 {
     public class HomeViewModel
     {
-        public bool IsOnAir => !string.IsNullOrEmpty(LiveShowEmbedUrl);
+        public bool IsOnAir => !HasAdminMessage && !string.IsNullOrEmpty(LiveShowEmbedUrl);
 
         public string LiveShowEmbedUrl { get; set; }
 
         public DateTimeOffset? NextShowDate { get; set; }
 
         public bool NextShowScheduled => NextShowDate.HasValue;
+
+        public string AdminMessage { get; set; }
+
+        public bool HasAdminMessage => !string.IsNullOrEmpty(AdminMessage);
 
         public IList<Show> PreviousShows { get; set; }
 

@@ -30,6 +30,7 @@ namespace live.asp.net.Controllers
 
             return View(new HomeViewModel
             {
+                AdminMessage = liveShowDetails?.AdminMessage,
                 NextShowDate = liveShowDetails?.NextShowDate,
                 LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl,
                 PreviousShows = showList.Shows,

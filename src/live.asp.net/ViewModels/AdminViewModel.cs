@@ -15,6 +15,9 @@ namespace live.asp.net.ViewModels
         [Display(Name = "Next Show Date/time", Description = "Exact date and time of the next live show")]
         public DateTime? NextShowDate { get; set; }
 
+        [Display(Name = "Admin Message", Description = "Message to show on home page in case of delay in starting live show, etc.")]
+        public string AdminMessage { get; set; }
+
         public string SuccessMessage { get; set; }
 
         public bool ShowSucessMessage => !string.IsNullOrEmpty(SuccessMessage);
