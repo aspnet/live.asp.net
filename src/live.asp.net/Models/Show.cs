@@ -15,6 +15,8 @@ namespace live.asp.net.Models
 
         public string Title { get; set; }
 
+        public bool HasTitle => !string.IsNullOrEmpty(Title);
+
         public string Description { get; set; }
 
         public DateTimeOffset ShowDate { get; set; }

@@ -77,7 +77,7 @@ namespace live.asp.net.Services
                 {
                     Provider = "YouTube",
                     ProviderId = item.Snippet.ResourceId.VideoId,
-                    Title = item.Snippet.Title,
+                    Title = GetUsefulBitsFromTitle(item.Snippet.Title),
                     Description = item.Snippet.Description,
                     ShowDate = DateTimeOffset.Parse(item.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
                     ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
@@ -91,6 +91,23 @@ namespace live.asp.net.Services
 
                 return result;
             }
+        }
+
+        private static string GetUsefulBitsFromTitle(string title)
+        {
+            if (title.Count(c => c == '-') < 2)
+            {
+                return string.Empty;
+            }
+
+            var lastHyphen = title.LastIndexOf('-');
+            if (lastHyphen >= 0)
+            {
+                var result = title.Substring(lastHyphen + 1);
+                return result;
+            }
+
+            return string.Empty;
         }
 
         private static string GetVideoUrl(string id, string playlistId, long itemIndex)

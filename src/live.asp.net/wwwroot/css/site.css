@@ -97,6 +97,10 @@ footer {
     opacity: 0.6;
 }
 
+    .youtube-show .show-date {
+        font-size: 0.8em;
+    }
+
 /* Extra-Small devices (phones, 768px and below) */
 @media (max-width: 768px) {
     .youtube-show {
@@ -111,17 +115,20 @@ footer {
     }
 
     .youtube-show {
-        /*min-height: 360px;*/
+        height: 360px;
     }
 }
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
+    .youtube-show {
+        height: 320px;
+    }
 }
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
     .youtube-show {
-        /*min-height: 465px;*/
+        height: 360px;
     }
 }

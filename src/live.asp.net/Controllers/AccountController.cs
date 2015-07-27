@@ -28,10 +28,7 @@ namespace live.asp.net.Controllers
         {
             var callbackUrl = Url.Action("SignOutCallback", "Account", values: null, protocol: Request.Scheme);
             Context.Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationScheme);
-            Context.Authentication.SignOut(
-                OpenIdConnectAuthenticationDefaults.AuthenticationScheme,
-                new AuthenticationProperties { RedirectUri = callbackUrl }
-            );
+            Context.Authentication.SignOut(OpenIdConnectAuthenticationDefaults.AuthenticationScheme);
 
             return new EmptyResult();
         }
