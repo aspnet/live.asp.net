@@ -19,6 +19,7 @@
               asp-fallback-test-value="hidden" />
         <link rel="stylesheet" href="~/css/site.css" asp-file-version="true" />
     </environment>
+    <partial name="_Analytics" />
 </head>
 <body>
     @RenderSection("PreContent", required: false)
@@ -50,8 +51,6 @@
     </div>
 
     @RenderSection("PostContent", required: false)
-
-    <partial name="_Analytics" />
 
     @RenderSection("scripts", required: false)
 </body>
