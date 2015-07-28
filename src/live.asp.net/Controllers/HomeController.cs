@@ -13,6 +13,8 @@ namespace live.asp.net.Controllers
 {
     public class HomeController : Controller
     {
+        private const string PST = "Pacific Standard Time";
+        private static readonly TimeZoneInfo _pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById(PST);
         private readonly AppDbContext _db;
         private readonly IShowsService _showsService;
 
@@ -31,7 +33,7 @@ namespace live.asp.net.Controllers
             DateTimeOffset? nextShowDateOffset = null;
             if (liveShowDetails != null)
             {
-                nextShowDateOffset= TimeZoneInfo.ConvertTimeBySystemTimeZoneId(liveShowDetails.NextShowDate.Value, "Pacific Standard Time");
+                nextShowDateOffset= TimeZoneInfo.ConvertTimeFromUtc(liveShowDetails.NextShowDateUtc.Value, _pstTimeZone);
             }
 
             return View(new HomeViewModel

@@ -16,7 +16,9 @@ namespace live.asp.net.Controllers
     [Route("/admin")]
     public class AdminController : Controller
     {
-        private static readonly TimeSpan _pstOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
+        private const string PST = "Pacific Standard Time";
+        private static readonly TimeZoneInfo _pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById(PST);
+        private static readonly TimeSpan _pstOffset = _pstTimeZone.BaseUtcOffset;
         private readonly AppDbContext _db;
         private readonly IMemoryCache _memoryCache;
 
@@ -48,7 +50,13 @@ namespace live.asp.net.Controllers
             var liveShowDetails = await _db.LiveShowDetails.FirstOrDefaultAsync();
 
             model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
-            model.NextShowDate = liveShowDetails?.NextShowDate;
+            if (liveShowDetails?.NextShowDateUtc != null)
+            {
+                var nextShowDatePst = TimeZoneInfo.ConvertTimeFromUtc(
+                    liveShowDetails.NextShowDateUtc.Value,
+                    _pstTimeZone);
+                model.NextShowDatePst = nextShowDatePst;
+            }
             model.AdminMessage = liveShowDetails?.AdminMessage;
 
             return View(model);
@@ -74,7 +82,9 @@ namespace live.asp.net.Controllers
                 }
 
                 liveShowDetails.LiveShowEmbedUrl = model.LiveShowEmbedUrl;
-                liveShowDetails.NextShowDate = model.NextShowDate;
+                liveShowDetails.NextShowDateUtc = model.NextShowDatePst.HasValue
+                    ? TimeZoneInfo.ConvertTimeToUtc(model.NextShowDatePst.Value, _pstTimeZone)
+                    : (DateTime?)null;
                 liveShowDetails.AdminMessage = model.AdminMessage;
 
                 await _db.SaveChangesAsync();
