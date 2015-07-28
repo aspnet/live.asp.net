@@ -12,9 +12,9 @@ namespace live.asp.net.ViewModels
 
         public string LiveShowEmbedUrl { get; set; }
 
-        public DateTimeOffset? NextShowDate { get; set; }
+        public DateTime? NextShowDateUtc { get; set; }
 
-        public bool NextShowScheduled => NextShowDate.HasValue;
+        public bool NextShowScheduled => NextShowDateUtc.HasValue;
 
         public string AdminMessage { get; set; }
 

@@ -40,20 +40,21 @@
                     {
                         <h2>
                             Next Episode Streaming Live on
-                            <br /><strong id="nextShowTime"></strong>
+                            <br /><strong id="nextShowTime" class="hidden">@Model.NextShowDateUtc.Value.ToString("u")</strong>
                         </h2>
                         <script>
                             (function () {
                                 var nextShowDateUtc = new Date(Date.UTC(
-                                    @Model.NextShowDate.Value.UtcDateTime.Year,
-                                    @(Model.NextShowDate.Value.UtcDateTime.Month-1),
-                                    @Model.NextShowDate.Value.UtcDateTime.Day,
-                                    @Model.NextShowDate.Value.UtcDateTime.Hour,
-                                    @Model.NextShowDate.Value.UtcDateTime.Minute));
+                                    @Model.NextShowDateUtc.Value.Year,
+                                    @(Model.NextShowDateUtc.Value.Month-1),
+                                    @Model.NextShowDateUtc.Value.Day,
+                                    @Model.NextShowDateUtc.Value.Hour,
+                                    @Model.NextShowDateUtc.Value.Minute));
 
                                 var timeZoneName = extractTimeZoneName(nextShowDateUtc.toString());
                                 var nextShowTimeEl = document.getElementById("nextShowTime");
                                 nextShowTimeEl.textContent = nextShowDateUtc.toLocaleString() + " (" + timeZoneName + ")";
+                                nextShowTimeEl.className = "";
 
                                 function extractTimeZoneName(dateString) {
                                     var name = dateString.substring(dateString.indexOf("(") + 1);
