@@ -38,7 +38,30 @@
                 <div class="next-episode text-center">
                     @if (Model.NextShowScheduled)
                     {
-                        <h2>Next Episode Streaming Live on <strong>@Model.NextShowDate.Value.ToString("MMM dd, yyyy h:mm tt") Pacific Time</strong></h2>
+                        <h2>
+                            Next Episode Streaming Live on
+                            <br /><strong id="nextShowTime"></strong>
+                        </h2>
+                        <script>
+                            (function () {
+                                var nextShowDateUtc = new Date(Date.UTC(
+                                    @Model.NextShowDate.Value.UtcDateTime.Year,
+                                    @(Model.NextShowDate.Value.UtcDateTime.Month-1),
+                                    @Model.NextShowDate.Value.UtcDateTime.Day,
+                                    @Model.NextShowDate.Value.UtcDateTime.Hour,
+                                    @Model.NextShowDate.Value.UtcDateTime.Minute));
+
+                                var timeZoneName = extractTimeZoneName(nextShowDateUtc.toString());
+                                var nextShowTimeEl = document.getElementById("nextShowTime");
+                                nextShowTimeEl.textContent = nextShowDateUtc.toLocaleString() + " (" + timeZoneName + ")";
+
+                                function extractTimeZoneName(dateString) {
+                                    var name = dateString.substring(dateString.indexOf("(") + 1);
+                                    name = name.substr(0, name.length - 1);
+                                    return name;
+                                }
+                            })();
+                        </script>
                     }
                     else
                     {

@@ -37,7 +37,7 @@ namespace live.asp.net.Controllers
                 MoreShowsUrl = showList.MoreShowsUrl
             });
         }
-        
+
         [HttpGet("error")]
         public IActionResult Error()
         {
