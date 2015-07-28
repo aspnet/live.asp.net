@@ -39,7 +39,8 @@
             <div class="col-md-10">
                 <div class="row">
                     <div class="col-md-3 co">
-                        <input asp-for="NextShowDatePst" class="form-control" placeholder="MM/dd/YYYY HH:mm" />
+                        <input asp-for="NextShowDatePst" asp-format="{0:MM/dd/yyyy HH:mm}"
+                               class="form-control" placeholder="MM/dd/yyyy HH:mm" maxlength="16" />
                     </div>
                     <div class="col-md-9">
                         <span class="help-block">Pacific Time</span>
@@ -72,5 +73,19 @@
 </div>
 
 @section Scripts {
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+    </environment>
     <partial name="_ValidationScripts" />
 }

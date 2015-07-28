@@ -48,25 +48,12 @@
             </div>
         </footer>
     </div>
-    @RenderSection("PostContent", required: false)
-    <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-        </script>
-    </environment>
 
-    @RenderSection("scripts", required: false)
+    @RenderSection("PostContent", required: false)
 
     <partial name="_Analytics" />
+
+    @RenderSection("scripts", required: false)
 </body>
 </html>
 <!-- Environment: @HostingEnvironment.EnvironmentName -->

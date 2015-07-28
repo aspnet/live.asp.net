@@ -65,6 +65,8 @@ namespace live.asp.net
                 });
             });
 
+            services.AddApplicationInsightsTelemetry(Configuration);
+
             services.AddMvc();
 
             services.AddEntityFramework()
@@ -82,13 +84,23 @@ namespace live.asp.net
             loggerFactory.MinimumLevel = LogLevel.Warning;
             loggerFactory.AddConsole();
 
+            if (env.IsProduction())
+            {
+                app.UseApplicationInsightsRequestTelemetry();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseErrorPage(ErrorPageOptions.ShowAll);
             }
             else
-            {
+            {   
                 app.UseErrorHandler("/error");
+            }
+
+            if (env.IsProduction())
+            {
+                app.UseApplicationInsightsExceptionTelemetry();
             }
 
             app.UseStaticFiles();
