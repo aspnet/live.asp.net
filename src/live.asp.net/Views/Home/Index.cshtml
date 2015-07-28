@@ -11,8 +11,8 @@
         <div class="container">
             <a href="https://www.microsoft.com">
                 <svg width="100" height="21">
-                  <image xlink:href="/images/Microsoft_logo.svg" src="/images/mslogo.png" width="100" height="21" />
-                </svg>            
+                    <image xlink:href="/images/Microsoft_logo.svg" src="/images/mslogo.png" width="100" height="21" />
+                </svg>
             </a>
             <h1 class="text-center">
                 ASP.NET Community Standup
@@ -101,9 +101,9 @@
     </div>
 }
 
-    @if (Model.ShowPreviousShows)
-    {
-        <h2>Previous Episodes</h2>
+@if (Model.ShowPreviousShows)
+{
+    <h2>Previous Episodes</h2>
 
         <div class="row">
             @foreach (var show in Model.PreviousShows)
@@ -120,4 +120,4 @@
                 </div>
             </div>
         }
-    }
+}
