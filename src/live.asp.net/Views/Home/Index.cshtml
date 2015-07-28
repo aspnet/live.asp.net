@@ -53,13 +53,36 @@
 
                                 var timeZoneName = extractTimeZoneName(nextShowDateUtc.toString());
                                 var nextShowTimeEl = document.getElementById("nextShowTime");
-                                nextShowTimeEl.textContent = nextShowDateUtc.toLocaleString() + " (" + timeZoneName + ")";
+                                nextShowTimeEl.textContent = formatDateTime(nextShowDateUtc) + " (" + timeZoneName + ")";
                                 nextShowTimeEl.className = "";
 
                                 function extractTimeZoneName(dateString) {
                                     var name = dateString.substring(dateString.indexOf("(") + 1);
                                     name = name.substr(0, name.length - 1);
                                     return name;
+                                }
+
+                                function formatDateTime(dateTime) {
+                                    return nextShowDateUtc.getDate() + " " +
+                                           monthName(nextShowDateUtc.getMonth()) + ", " +
+                                           nextShowDateUtc.getFullYear() + " at " +
+                                           formatTime(nextShowDateUtc.getHours(), nextShowDateUtc.getMinutes());
+                                }
+
+                                function monthName(month) {
+                                    var names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                    return names[month];
+                                }
+
+                                function formatTime(hours, minutes) {
+                                    var tt = hours < 12 ? " AM" : " PM",
+                                        hour = hours < 12
+                                            ? hours
+                                            : hours === 12
+                                                ? 12
+                                                : (hours - 12),
+                                        mins = minutes < 10 ? "0" + minutes : minutes;
+                                    return hour + ":" + mins + tt;
                                 }
                             })();
                         </script>
