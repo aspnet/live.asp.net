@@ -28,10 +28,16 @@ namespace live.asp.net.Controllers
             var liveShowDetails = await _db.LiveShowDetails.FirstOrDefaultAsync();
             var showList = await _showsService.GetRecordedShowsAsync(User, disableCache ?? false, useDesignData ?? false);
 
+            DateTimeOffset? nextShowDateOffset = null;
+            if (liveShowDetails != null)
+            {
+                nextShowDateOffset= TimeZoneInfo.ConvertTimeBySystemTimeZoneId(liveShowDetails.NextShowDate.Value, "Pacific Standard Time");
+            }
+
             return View(new HomeViewModel
             {
                 AdminMessage = liveShowDetails?.AdminMessage,
-                NextShowDate = liveShowDetails?.NextShowDate,
+                NextShowDate = nextShowDateOffset,
                 LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl,
                 PreviousShows = showList.Shows,
                 MoreShowsUrl = showList.MoreShowsUrl
