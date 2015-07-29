@@ -3,6 +3,10 @@
 
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+    Math.trunc = Math.trunc || function (x) {
+        return x < 0 ? Math.ceil(x) : Math.floor(x);
+    }
+
     function monthName(month) {
         return months[month];
     }
