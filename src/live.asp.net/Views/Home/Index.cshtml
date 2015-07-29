@@ -40,52 +40,33 @@
                 <div class="next-episode text-center">
                     @if (Model.NextShowScheduled)
                     {
-                        <h2>
-                            Next Episode Streaming Live on
-                            <br /><strong id="nextShowTime" class="hidden">@Model.NextShowDateUtc.Value.ToString("u")</strong>
-                        </h2>
+                        <div id="nextShowDetails"
+                             data-utc-year="@Model.NextShowDateUtc.Value.Year"
+                             data-utc-month="@(Model.NextShowDateUtc.Value.Month-1)"
+                             data-utc-day="@Model.NextShowDateUtc.Value.Day"
+                             data-utc-hour="@Model.NextShowDateUtc.Value.Hour"
+                             data-utc-min="@Model.NextShowDateUtc.Value.Minute">
+                            <h2>
+                                Next Episode Streaming Live on
+                            </h2>
+                            <h2>
+                                <strong data-part="showTime" class="hidden">
+                                    @Model.NextShowDateUtc.Value.ToString("u")
+                                </strong><br />
+                                <span data-part="countdown"></span>
+                            </h2>
+                        </div>
+                        <cache>
+                            <environment names="Development">
+                                <script src="~/js/site.js" inline="true"></script>
+                            </environment>
+                            <environment names="Staging,Production">
+                                <script src="~/js/site.min.js" inline="true"></script>
+                            </environment>
+                        </cache>
                         <script>
                             (function () {
-                                var nextShowDateUtc = new Date(Date.UTC(
-                                    @Model.NextShowDateUtc.Value.Year,
-                                    @(Model.NextShowDateUtc.Value.Month-1),
-                                    @Model.NextShowDateUtc.Value.Day,
-                                    @Model.NextShowDateUtc.Value.Hour,
-                                    @Model.NextShowDateUtc.Value.Minute));
-
-                                var timeZoneName = extractTimeZoneName(nextShowDateUtc.toString());
-                                var nextShowTimeEl = document.getElementById("nextShowTime");
-                                nextShowTimeEl.textContent = formatDateTime(nextShowDateUtc) + " (" + timeZoneName + ")";
-                                nextShowTimeEl.className = "";
-
-                                function extractTimeZoneName(dateString) {
-                                    var name = dateString.substring(dateString.indexOf("(") + 1);
-                                    name = name.substr(0, name.length - 1);
-                                    return name;
-                                }
-
-                                function formatDateTime(dateTime) {
-                                    return nextShowDateUtc.getDate() + " " +
-                                           monthName(nextShowDateUtc.getMonth()) + ", " +
-                                           nextShowDateUtc.getFullYear() + " at " +
-                                           formatTime(nextShowDateUtc.getHours(), nextShowDateUtc.getMinutes());
-                                }
-
-                                function monthName(month) {
-                                    var names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                                    return names[month];
-                                }
-
-                                function formatTime(hours, minutes) {
-                                    var tt = hours < 12 ? " AM" : " PM",
-                                        hour = hours < 12
-                                            ? hours
-                                            : hours === 12
-                                                ? 12
-                                                : (hours - 12),
-                                        mins = minutes < 10 ? "0" + minutes : minutes;
-                                    return hour + ":" + mins + tt;
-                                }
+                                window.siteJs.setNextShowDetails("nextShowDetails");
                             })();
                         </script>
                     }
