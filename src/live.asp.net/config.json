@@ -5,5 +5,10 @@
   "AppSettings": {
     "YouTubeApplicationName": "live.asp.net",
     "YouTubePlaylistId": "PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+  },
+  "Data": {
+    "ConnectionStrings": {
+      "AppDbContext": "Server=(localdb)\\mssqllocaldb;Database=live.asp.net;Trusted_Connection=True;"
+    }
   }
 }

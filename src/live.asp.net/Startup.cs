@@ -70,10 +70,12 @@ namespace live.asp.net
             services.AddMvc();
 
             services.AddEntityFramework()
-                .AddInMemoryStore()
+                //.AddInMemoryStore()
+                .AddSqlServer()
                 .AddDbContext<AppDbContext>(options =>
                 {
-                    options.UseInMemoryStore();
+                    //options.UseInMemoryStore();
+                    options.UseSqlServer(Configuration["Data:ConnectionStrings:AppDbContext"]);
                 });
 
             services.AddScoped<IShowsService, YouTubeShowsService>();

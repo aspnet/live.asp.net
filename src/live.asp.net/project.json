@@ -19,12 +19,14 @@
     "Microsoft.Framework.Logging": "1.0.0-beta5",
     "Microsoft.Framework.Logging.Console": "1.0.0-beta5",
     "Microsoft.ApplicationInsights.AspNet": "1.0.0-beta5",
+    "EntityFramework.Commands": "7.0.0-beta5",
     "EntityFramework.InMemory": "7.0.0-beta5",
     "EntityFramework.SqlServer": "7.0.0-beta5",
     "Google.Apis.YouTube.v3": "1.9.2.1420"
   },
   "commands": {
-    "web": "Microsoft.AspNet.Hosting --config hosting.ini"
+    "web": "Microsoft.AspNet.Hosting --config hosting.ini",
+    "ef": "EntityFramework.Commands"
   },
 
   "frameworks": {
