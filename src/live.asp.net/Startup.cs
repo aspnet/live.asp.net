@@ -70,10 +70,10 @@ namespace live.asp.net
             services.AddMvc();
 
             services.AddEntityFramework()
-                .AddInMemoryStore()
+                .AddInMemoryDatabase()
                 .AddDbContext<AppDbContext>(options =>
                 {
-                    options.UseInMemoryStore();
+                    options.UseInMemoryDatabase();
                 });
 
             services.AddScoped<IShowsService, YouTubeShowsService>();
@@ -91,7 +91,7 @@ namespace live.asp.net
 
             if (env.IsDevelopment())
             {
-                app.UseErrorPage(ErrorPageOptions.ShowAll);
+                app.UseErrorPage();
             }
             else
             {   
