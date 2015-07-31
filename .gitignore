@@ -40,3 +40,5 @@ src/*/wwwroot/lib/
 
 *.min.js
 *.min.css
+
+ShowDetails.json
