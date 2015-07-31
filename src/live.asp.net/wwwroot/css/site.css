@@ -38,7 +38,7 @@ a, a:hover {
     color: rgb(38, 124, 178);
 }
 
-.btn, .thumbnail, input[type='text'], input[type='url'], input[type='datetime'] {
+.btn, .thumbnail, input[type='text'], input[type='url'], input[type='datetime'], .label {
     -moz-border-radius: 0px;
     -webkit-border-radius: 0px;
     border-radius: 0px;
