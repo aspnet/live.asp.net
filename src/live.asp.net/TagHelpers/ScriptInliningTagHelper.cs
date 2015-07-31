@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNet.FileProviders;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Razor;
 using Microsoft.AspNet.Razor.Runtime.TagHelpers;
 
 namespace live.asp.net.TagHelpers
@@ -52,7 +48,7 @@ namespace live.asp.net.TagHelpers
             Uri uri;
             if (Uri.TryCreate(resolvedPath, UriKind.Absolute, out uri))
             {
-                // Don't inline if the path is absolute.
+                // Don't inline if the path is absolute
                 return;
             }
 
@@ -69,7 +65,7 @@ namespace live.asp.net.TagHelpers
 
                 if (!fileInfo.Exists)
                 {
-                    // Don't inline if the file is not in the current server
+                    // Don't inline if the file is not on the current server
                     return;
                 }
             }

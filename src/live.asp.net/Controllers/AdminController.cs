@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using live.asp.net.Models;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
 using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.Caching.Memory;
+using Microsoft.Framework.OptionsModel;
 
 namespace live.asp.net.Controllers
 {
@@ -19,11 +19,19 @@ namespace live.asp.net.Controllers
         private static readonly TimeSpan _pstOffset = _pstTimeZone.BaseUtcOffset;
         private readonly ILiveShowDetailsService _liveShowDetails;
         private readonly IMemoryCache _memoryCache;
+        private readonly AppSettings _appSettings;
+        private readonly IHostingEnvironment _env;
 
-        public AdminController(ILiveShowDetailsService liveShowDetails, IMemoryCache memoryCache)
+        public AdminController(
+            IHostingEnvironment env,
+            ILiveShowDetailsService liveShowDetails,
+            IMemoryCache memoryCache,
+            IOptions<AppSettings> appSettings)
         {
             _liveShowDetails = liveShowDetails;
             _memoryCache = memoryCache;
+            _appSettings = appSettings.Options;
+            _env = env;
         }
 
         [HttpGet()]
@@ -56,6 +64,8 @@ namespace live.asp.net.Controllers
                 model.NextShowDatePst = nextShowDatePst;
             }
             model.AdminMessage = liveShowDetails?.AdminMessage;
+            model.AppSettings = _appSettings;
+            model.EnvironmentName = _env.EnvironmentName;
 
             return View(model);
         }

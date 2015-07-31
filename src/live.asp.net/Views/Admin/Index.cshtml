@@ -7,10 +7,10 @@
 </ol>
 
 <div class="admin-screen">
-    <h2>ASP.NET Community Standup Admin</h2>
+    <h2>ASP.NET Community Standup Admin - @Model.EnvironmentName</h2>
 
     <form asp-controller="Admin" asp-action="Save" method="post" class="form-horizontal" role="form">
-        <h4>Manage Live Show</h4>
+        <h4>Live Show Details</h4>
         <hr />
         @if (Model.ShowSucessMessage)
         {
@@ -21,22 +21,22 @@
         }
         <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="AdminMessage" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="AdminMessage" class="col-md-3 control-label"></label>
+            <div class="col-md-9">
                 <input asp-for="AdminMessage" class="form-control" />
                 <span asp-validation-for="AdminMessage" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="LiveShowEmbedUrl" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="LiveShowEmbedUrl" class="col-md-3 control-label"></label>
+            <div class="col-md-9">
                 <input asp-for="LiveShowEmbedUrl" class="form-control" />
                 <span asp-validation-for="LiveShowEmbedUrl" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="NextShowDatePst" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="NextShowDatePst" class="col-md-3 control-label"></label>
+            <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-3 co">
                         <input asp-for="NextShowDatePst" asp-format="{0:MM/dd/yyyy HH:mm}"
@@ -54,22 +54,62 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-offset-3 col-md-9">
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </div>
     </form>
 
     <form asp-controller="Admin" asp-action="ClearCache" method="post" class="form-horizontal" role="form">
-        <h4>Manage Other Stuff</h4>
+        <h4>YouTube Settings</h4>
         <hr />
         <div class="form-group">
-            <label class="col-md-2 control-label">Cache</label>
-            <div class="col-md-10">
+            <label asp-for="AppSettings.YouTubePlaylistId" class="col-md-3 control-label"></label>
+            <div class="col-md-4">
+                <p class="form-control-static">@Model.AppSettings.YouTubePlaylistId</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="AppSettings.YouTubeApplicationName" class="col-md-3 control-label"></label>
+            <div class="col-md-3">
+                <p class="form-control-static click-to-show" data-hidden-value="@Model.AppSettings.YouTubeApplicationName">click to show</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="AppSettings.YouTubeApiKey" class="col-md-3 control-label"></label>
+            <div class="col-md-4">
+                <p class="form-control-static click-to-show" data-hidden-value="@Model.AppSettings.YouTubeApiKey">click to show</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-3 col-md-9">
                 <button type="submit" class="btn btn-danger">Clear YouTube Cache</button>
             </div>
         </div>
     </form>
+
+    <div class="form-horizontal">
+        <h4>Azure Storage Settings</h4>
+        <hr />
+        <div class="form-group">
+            <label asp-for="AppSettings.AzureStorageConnectionString" class="col-md-3 control-label"></label>
+            <div class="col-md-4">
+                <p class="form-control-static click-to-show" data-hidden-value="@(Model.AppSettings.AzureStorageConnectionString ?? "[none]")">click to show</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="AppSettings.AzureStorageContainerName" class="col-md-3 control-label"></label>
+            <div class="col-md-4">
+                <p class="form-control-static">@Model.AppSettings.AzureStorageContainerName</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="AppSettings.AzureStorageBlobName" class="col-md-3 control-label"></label>
+            <div class="col-md-4">
+                <p class="form-control-static">@Model.AppSettings.AzureStorageBlobName</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
@@ -88,4 +128,23 @@
         </script>
     </environment>
     <partial name="_ValidationScripts" />
+    <script>
+        $(function () {
+            $("p[data-hidden-value]")
+                .click(function () {
+                    var $self = $(this),
+                        state = $self.data("state") || "hidden";
+                    
+                    if (state === "hidden") {
+                        $self.text($self.data("hidden-value"));
+                        $self.data("state", "showing");
+                        $self.addClass("click-to-show-revealed");
+                    } else {
+                        $self.text("click to show");
+                        $self.data("state", "hidden");
+                        $self.removeClass("click-to-show-revealed");
+                    }
+                });
+        });
+    </script>
 }

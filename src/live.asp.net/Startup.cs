@@ -2,7 +2,6 @@
 using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Authentication.OpenIdConnect;
 using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
@@ -26,8 +25,11 @@ namespace live.asp.net
             if (_env.IsDevelopment())
             {
                 builder.AddUserSecrets();
+                builder.AddApplicationInsightsSettings(developerMode: true);
             }
+
             builder.AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
@@ -68,10 +70,8 @@ namespace live.asp.net
             services.AddMvc();
 
             services.AddScoped<IShowsService, YouTubeShowsService>();
-            if (_env.IsDevelopment())
+            if (string.IsNullOrEmpty(Configuration["AppSettings:AzureStorageConnectionString"]))
             {
-                // If you want to test against Azure Storage from localhost ensure you have the appropriate settings
-                // in your user secrets store then change the following line to register AzureStorageLiveShowDetailsService instead.
                 services.AddSingleton<ILiveShowDetailsService, FileSystemLiveShowDetailsService>();
             }
             else

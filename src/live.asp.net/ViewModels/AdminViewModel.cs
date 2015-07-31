@@ -23,5 +23,9 @@ namespace live.asp.net.ViewModels
         public string SuccessMessage { get; set; }
 
         public bool ShowSucessMessage => !string.IsNullOrEmpty(SuccessMessage);
+
+        public AppSettings AppSettings { get; set; }
+
+        public string EnvironmentName { get; set; }
     }
 }
