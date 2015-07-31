@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using live.asp.net.Models;
+using Microsoft.ApplicationInsights;
 using Microsoft.Framework.Caching.Memory;
 using Microsoft.Framework.OptionsModel;
 using Microsoft.WindowsAzure.Storage;
@@ -18,11 +16,16 @@ namespace live.asp.net.Services
 
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
+        private readonly TelemetryClient _telemtry;
 
-        public AzureStorageLiveShowDetailsService(IOptions<AppSettings> appSettings, IMemoryCache cache)
+        public AzureStorageLiveShowDetailsService(
+            IOptions<AppSettings> appSettings,
+            IMemoryCache cache,
+            TelemetryClient telemetry)
         {
             _appSettings = appSettings.Options;
             _cache = cache;
+            _telemtry = telemetry;
         }
 
         public async Task<LiveShowDetails> LoadAsync()
@@ -73,7 +76,9 @@ namespace live.asp.net.Services
                 return null;
             }
 
+            var downloadStarted = DateTimeOffset.UtcNow;
             var fileContents = await blockBlob.DownloadTextAsync();
+            _telemtry.TrackDependency("Azure.BlobStorage", "DownloadTextAsync", downloadStarted, DateTimeOffset.UtcNow - downloadStarted, true);
 
             return JsonConvert.DeserializeObject<LiveShowDetails>(fileContents);
         }
@@ -87,10 +92,12 @@ namespace live.asp.net.Services
             var blockBlob = container.GetBlockBlobReference(_appSettings.AzureStorageBlobName);
 
             var fileContents = JsonConvert.SerializeObject(liveShowDetails);
+
+            var uploadStarted = DateTimeOffset.UtcNow;
             await blockBlob.UploadTextAsync(fileContents);
+            _telemtry.TrackDependency("Azure.BlobStorage", "UploadTextAsync", uploadStarted, DateTimeOffset.UtcNow - uploadStarted, true);
         }
-
-
+        
         private CloudBlobContainer GetStorageContainer()
         {
             var account = CloudStorageAccount.Parse(_appSettings.AzureStorageConnectionString);

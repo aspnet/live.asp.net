@@ -71,7 +71,7 @@ namespace live.asp.net
             if (_env.IsDevelopment())
             {
                 // If you want to test against Azure Storage from localhost ensure you have the appropriate settings
-                // in your user secrtes store then change the following line to register AzureStorageLiveShowDetailsService instead.
+                // in your user secrets store then change the following line to register AzureStorageLiveShowDetailsService instead.
                 services.AddSingleton<ILiveShowDetailsService, FileSystemLiveShowDetailsService>();
             }
             else

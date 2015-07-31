@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using live.asp.net.Models;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Framework.Caching.Memory;
 using Microsoft.Framework.OptionsModel;
@@ -21,15 +22,18 @@ namespace live.asp.net.Services
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
+        private readonly TelemetryClient _telemetry;
 
         public YouTubeShowsService(
             IHostingEnvironment env,
             IOptions<AppSettings> appSettings,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            TelemetryClient telemetry)
         {
             _env = env;
             _appSettings = appSettings.Options;
             _cache = memoryCache;
+            _telemetry = telemetry;
         }
 
         public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache, bool useDesignData)
@@ -71,7 +75,9 @@ namespace live.asp.net.Services
                 listRequest.PlaylistId = _appSettings.YouTubePlaylistId;
                 listRequest.MaxResults = 3 * 8;
 
+                var requestStart = DateTimeOffset.UtcNow;
                 var playlistItems = await listRequest.ExecuteAsync();
+                _telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
 
                 var result = new ShowList();
 
