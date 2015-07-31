@@ -9,7 +9,8 @@ Production - http://live.asp.net/
 You'll need the following keys with suitable values configured in your user secrets store to develop locally:
 ``` JSON
 "AppSettings": {
-  "YouTubeApiKey": "<app-server-key>"
+  "YouTubeApiKey": "<app-server-key>",
+  "AzureStorageConnectionString": "<azure-storage-connection-string>"
 },
 "Authentication": {
   "AzureAd": {

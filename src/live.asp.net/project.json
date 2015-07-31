@@ -19,9 +19,9 @@
     "Microsoft.Framework.Logging": "1.0.0-beta6",
     "Microsoft.Framework.Logging.Console": "1.0.0-beta6",
     "Microsoft.ApplicationInsights.AspNet": "1.0.0-beta6",
-    "EntityFramework.InMemory": "7.0.0-beta6",
-    "EntityFramework.SqlServer": "7.0.0-beta6",
-    "Google.Apis.YouTube.v3": "1.9.2.1420"
+    "WindowsAzure.Storage": "4.3.0",
+    "Google.Apis.YouTube.v3": "1.9.2.1420",
+    "Newtonsoft.Json": "7.0.1"
   },
   "commands": {
     "web": "Microsoft.AspNet.Hosting --config hosting.ini"

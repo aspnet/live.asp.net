@@ -2,30 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using live.asp.net.Data;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
-using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 
 namespace live.asp.net.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly AppDbContext _db;
+        private readonly ILiveShowDetailsService _liveShowDetails;
         private readonly IShowsService _showsService;
 
-        public HomeController(IShowsService showsService, AppDbContext dbContext)
+        public HomeController(IShowsService showsService, ILiveShowDetailsService liveShowDetails)
         {
             _showsService = showsService;
-            _db = dbContext;
+            _liveShowDetails = liveShowDetails;
         }
 
         [Route("/")]
         public async Task<IActionResult> Index(bool? disableCache, bool? useDesignData)
         {
-            var liveShowDetails = await _db.LiveShowDetails.FirstOrDefaultAsync();
+            var liveShowDetails = await _liveShowDetails.LoadAsync();
             var showList = await _showsService.GetRecordedShowsAsync(User, disableCache ?? false, useDesignData ?? false);
 
             return View(new HomeViewModel

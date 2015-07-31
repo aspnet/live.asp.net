@@ -4,6 +4,8 @@
   },
   "AppSettings": {
     "YouTubeApplicationName": "live.asp.net",
-    "YouTubePlaylistId": "PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+    "YouTubePlaylistId": "PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
+    "AzureStorageContainerName": "live-asp-net",
+    "AzureStorageBlobName": "ShowDetails.localhost.json"
   }
 }

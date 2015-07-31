@@ -16,7 +16,7 @@ namespace live.asp.net.Services
 {
     public class YouTubeShowsService : IShowsService
     {
-        public const string CacheKey = "YouTubeShowsService";
+        public const string CacheKey = nameof(YouTubeShowsService);
 
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
@@ -50,7 +50,7 @@ namespace live.asp.net.Services
             {
                 result = await GetShowsList();
 
-                _cache.Set(nameof(GetRecordedShowsAsync), result, new MemoryCacheEntryOptions
+                _cache.Set(CacheKey, result, new MemoryCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
                 });

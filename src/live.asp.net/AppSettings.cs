@@ -12,5 +12,11 @@ namespace live.asp.net
         public string YouTubeApiKey { get; set; }
 
         public string YouTubePlaylistId { get; set; }
+
+        public string AzureStorageConnectionString { get; set; }
+
+        public string AzureStorageBlobName { get; set; }
+
+        public string AzureStorageContainerName { get; set; }
     }
 }

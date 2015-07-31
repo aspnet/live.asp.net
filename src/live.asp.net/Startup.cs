@@ -1,11 +1,9 @@
-﻿using live.asp.net.Data;
-using live.asp.net.Services;
+﻿using live.asp.net.Services;
 using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Authentication.OpenIdConnect;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Hosting;
-using Microsoft.Data.Entity;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
@@ -69,14 +67,17 @@ namespace live.asp.net
 
             services.AddMvc();
 
-            services.AddEntityFramework()
-                .AddInMemoryDatabase()
-                .AddDbContext<AppDbContext>(options =>
-                {
-                    options.UseInMemoryDatabase();
-                });
-
             services.AddScoped<IShowsService, YouTubeShowsService>();
+            if (_env.IsDevelopment())
+            {
+                // If you want to test against Azure Storage from localhost ensure you have the appropriate settings
+                // in your user secrtes store then change the following line to register AzureStorageLiveShowDetailsService instead.
+                services.AddSingleton<ILiveShowDetailsService, FileSystemLiveShowDetailsService>();
+            }
+            else
+            {
+                services.AddSingleton<ILiveShowDetailsService, AzureStorageLiveShowDetailsService>();
+            }
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

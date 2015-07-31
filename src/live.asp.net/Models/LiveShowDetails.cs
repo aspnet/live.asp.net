@@ -7,8 +7,6 @@ namespace live.asp.net.Models
 {
     public class LiveShowDetails
     {
-        public int Id { get; set; }
-
         public string LiveShowEmbedUrl { get; set; }
 
         public DateTime? NextShowDateUtc { get; set; }

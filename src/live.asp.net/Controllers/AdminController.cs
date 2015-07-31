@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using live.asp.net.Data;
 using live.asp.net.Models;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 using Microsoft.Framework.Caching.Memory;
 
 namespace live.asp.net.Controllers
@@ -19,12 +17,12 @@ namespace live.asp.net.Controllers
         private const string PST = "Pacific Standard Time";
         private static readonly TimeZoneInfo _pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById(PST);
         private static readonly TimeSpan _pstOffset = _pstTimeZone.BaseUtcOffset;
-        private readonly AppDbContext _db;
+        private readonly ILiveShowDetailsService _liveShowDetails;
         private readonly IMemoryCache _memoryCache;
 
-        public AdminController(AppDbContext dbContext, IMemoryCache memoryCache)
+        public AdminController(ILiveShowDetailsService liveShowDetails, IMemoryCache memoryCache)
         {
-            _db = dbContext;
+            _liveShowDetails = liveShowDetails;
             _memoryCache = memoryCache;
         }
 
@@ -47,7 +45,7 @@ namespace live.asp.net.Controllers
                     break;
             }
 
-            var liveShowDetails = await _db.LiveShowDetails.FirstOrDefaultAsync();
+            var liveShowDetails = await _liveShowDetails.LoadAsync();
 
             model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
             if (liveShowDetails?.NextShowDateUtc != null)
@@ -68,13 +66,7 @@ namespace live.asp.net.Controllers
         {
             if (ModelState.IsValid)
             {
-                var liveShowDetails = await _db.LiveShowDetails.FirstOrDefaultAsync();
-
-                if (liveShowDetails == null)
-                {
-                    liveShowDetails = new LiveShowDetails();
-                    _db.LiveShowDetails.Add(liveShowDetails);
-                }
+                var liveShowDetails = new LiveShowDetails();
 
                 if (!string.IsNullOrEmpty(model.LiveShowEmbedUrl) && model.LiveShowEmbedUrl.StartsWith("http://"))
                 {
@@ -87,7 +79,7 @@ namespace live.asp.net.Controllers
                     : (DateTime?)null;
                 liveShowDetails.AdminMessage = model.AdminMessage;
 
-                await _db.SaveChangesAsync();
+                await _liveShowDetails.SaveAsync(liveShowDetails);
 
                 Context.Response.Cookies.Append("msg", "1");
 
