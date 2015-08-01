@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
 using Microsoft.AspNet.Mvc;
@@ -20,10 +17,10 @@ namespace live.asp.net.Controllers
         }
 
         [Route("/")]
-        public async Task<IActionResult> Index(bool? disableCache, bool? useDesignData)
+        public async Task<IActionResult> Index(bool? disableCache)
         {
             var liveShowDetails = await _liveShowDetails.LoadAsync();
-            var showList = await _showsService.GetRecordedShowsAsync(User, disableCache ?? false, useDesignData ?? false);
+            var showList = await _showsService.GetRecordedShowsAsync(User, disableCache ?? false);
 
             return View(new HomeViewModel
             {

@@ -5,6 +5,6 @@ namespace live.asp.net.Services
 {
     public interface IShowsService
     {
-        Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache, bool useDesignData);
+        Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache);
     }
 }

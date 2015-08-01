@@ -36,9 +36,9 @@ namespace live.asp.net.Services
             _telemetry = telemetry;
         }
 
-        public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache, bool useDesignData)
+        public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache)
         {
-            if (useDesignData)
+            if (string.IsNullOrEmpty(_appSettings.YouTubeApiKey))
             {
                 return new ShowList { Shows = DesignData.Shows };
             }
