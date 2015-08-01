@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using live.asp.net.Formatters;
 using live.asp.net.Services;
 using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Authentication.OpenIdConnect;
@@ -70,6 +71,10 @@ namespace live.asp.net
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
+            services.ConfigureMvc(mvc =>
+            {
+                mvc.OutputFormatters.Add(new iCalendarOutputFormatter());
+            });
             services.AddMvc();
 
             services.AddScoped<IShowsService, YouTubeShowsService>();

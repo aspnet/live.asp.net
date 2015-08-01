@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Threading.Tasks;
+using live.asp.net.Models;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
 using Microsoft.AspNet.Mvc;
@@ -33,6 +34,15 @@ namespace live.asp.net.Controllers
                 PreviousShows = showList.Shows,
                 MoreShowsUrl = showList.MoreShowsUrl
             });
+        }
+
+        [HttpGet("/ical")]
+        [Produces("text/calendar")]
+        public async Task<LiveShowDetails> GetiCal()
+        {
+            var liveShowDetails = await _liveShowDetails.LoadAsync();
+
+            return liveShowDetails;
         }
 
         [HttpGet("error")]
