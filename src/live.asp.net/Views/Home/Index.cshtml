@@ -48,7 +48,12 @@
                             <h2>
                                 <strong data-part="showTime" class="hidden">
                                     @Model.NextShowDateUtc.Value.ToString("u")
-                                </strong><br />
+                                </strong>
+                                <a asp-action="GetiCal" class="btn btn-default" title="Download iCalendar file">
+                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                                </a>
+                            
+                            <h2>
                                 <span data-part="countdown"></span>
                             </h2>
                         </div>
