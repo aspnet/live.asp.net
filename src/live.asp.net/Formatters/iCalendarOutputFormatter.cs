@@ -24,14 +24,14 @@ namespace live.asp.net.Formatters
 
         protected override bool CanWriteType(Type declaredType, Type runtimeType)
         {
-            return runtimeType == typeof(LiveShowDetails);
+            return declaredType == typeof(LiveShowDetails) || runtimeType == typeof(LiveShowDetails);
         }
 
         public override void WriteResponseHeaders(OutputFormatterContext context)
         {
             var liveShowDetails = context.Object as LiveShowDetails;
 
-            Debug.Assert(liveShowDetails != null, $"Object to be formatted should be of type {nameof(LiveShowDetails)}");
+            Debug.Assert(context.Object == null || liveShowDetails != null, $"Object to be formatted should be of type {nameof(LiveShowDetails)}");
 
             if (liveShowDetails == null || liveShowDetails.NextShowDateUtc == null)
             {
@@ -48,7 +48,7 @@ namespace live.asp.net.Formatters
         {
             var liveShowDetails = context.Object as LiveShowDetails;
 
-            Debug.Assert(liveShowDetails != null, $"Object to be formatted should be of type {nameof(LiveShowDetails)}");
+            Debug.Assert(context.Object == null || liveShowDetails != null, $"Object to be formatted should be of type {nameof(LiveShowDetails)}");
 
             if (_noNextShow)
             {
