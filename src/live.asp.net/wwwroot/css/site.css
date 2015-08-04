@@ -20,7 +20,7 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-h2 a, h2 a:hover, h2 a:active, h2 a:visited {
+h2 a, h2 a:hover, h2 a:focus, h2 a:active, h2 a:visited {
     color: #fff;
 }
 
