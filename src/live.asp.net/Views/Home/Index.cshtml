@@ -46,7 +46,7 @@
                                 Next Episode Streaming Live on
                             </h2>
                             <h2>
-                                <a asp-action="GetiCal" title="Download iCalendar file">
+                                <a asp-action="GetiCal" asp-protocol="webcals" title="Add to calendar">
                                     <strong data-part="showTime" class="hidden">
                                         @Model.NextShowDateUtc.Value.ToString("u")
                                     </strong>
