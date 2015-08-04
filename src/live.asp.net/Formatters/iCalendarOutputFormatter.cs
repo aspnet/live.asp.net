@@ -3,10 +3,9 @@
 
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using live.asp.net.Models;
+using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -14,6 +13,10 @@ namespace live.asp.net.Formatters
 {
     public class iCalendarOutputFormatter : OutputFormatter
     {
+        private static Task _done = Task.FromResult(0);
+
+        private bool _noNextShow = false;
+
         public iCalendarOutputFormatter()
         {
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/calendar"));
@@ -24,46 +27,42 @@ namespace live.asp.net.Formatters
             return runtimeType == typeof(LiveShowDetails);
         }
 
+        public override void WriteResponseHeaders(OutputFormatterContext context)
+        {
+            var liveShowDetails = context.Object as LiveShowDetails;
+
+            Debug.Assert(liveShowDetails != null, $"Object to be formatted should be of type {nameof(LiveShowDetails)}");
+
+            if (liveShowDetails == null || liveShowDetails.NextShowDateUtc == null)
+            {
+                _noNextShow = true;
+                context.HttpContext.Response.StatusCode = StatusCodes.Status204NoContent;
+            }
+            else
+            {
+                base.WriteResponseHeaders(context);
+            }
+        }
+
         public override Task WriteResponseBodyAsync(OutputFormatterContext context)
         {
             var liveShowDetails = context.Object as LiveShowDetails;
 
             Debug.Assert(liveShowDetails != null, $"Object to be formatted should be of type {nameof(LiveShowDetails)}");
 
-            return WriteLiveShowDetailsToResponseBody(liveShowDetails, context.HttpContext.Response.Body);
+            if (_noNextShow)
+            {
+                return _done;
+            }
+
+            return WriteLiveShowDetailsToResponseBody(liveShowDetails.NextShowDateUtc, context.HttpContext.Response);
         }
-
-        private static string _iCalHeader =
-            "BEGIN:VCALENDAR" + Environment.NewLine +
-            "VERSION:2.0" + Environment.NewLine +
-            "BEGIN:VEVENT" + Environment.NewLine +
-            "UID:aspnet@microsoft.com" + Environment.NewLine +
-            "DTSTART:";
-
-        private static string _iCalMiddle = Environment.NewLine + "DTEND:";
-
-        private static string _iCalFooter =
-            Environment.NewLine +
-            "SUMMARY:ASP.NET Community Standup" + Environment.NewLine +
-            "DESCRIPTION:" + Environment.NewLine +
-            "LOCATION:https://live.asp.net/" + Environment.NewLine +
-            "END:VEVENT" + Environment.NewLine +
-            "END:VCALENDAR";
-
-        private static byte[] _iCalHeaderBytes = Encoding.UTF8.GetBytes(_iCalHeader);
-        private static byte[] _iCalMiddleBytes = Encoding.UTF8.GetBytes(_iCalMiddle);
-        private static byte[] _iCalFooterBytes = Encoding.UTF8.GetBytes(_iCalFooter);
-
+        
         private static string _dateTimeFormat = "yyyyMMddTHHmmssZ";
 
-        private static int _footerOffset =
-            _iCalHeaderBytes.Length +
-            Encoding.UTF8.GetByteCount(_dateTimeFormat + _iCalMiddle + _dateTimeFormat);
-
-        private static int _payloadLength = _footerOffset + _iCalFooterBytes.Length;
-
-        private static Task WriteLiveShowDetailsToResponseBody(LiveShowDetails liveShowDetails, Stream body)
+        private static Task WriteLiveShowDetailsToResponseBody(DateTime? nextShowDateUtc, HttpResponse response)
         {
+            // Internet Calendaring and Scheduling Core Object Specification (iCalendar): https://tools.ietf.org/html/rfc5545
             /* BEGIN:VCALENDAR
                VERSION:2.0
                BEGIN:VEVENT
@@ -76,18 +75,18 @@ namespace live.asp.net.Formatters
                END:VEVENT
                END:VCALENDAR */
 
-            var start = Encoding.UTF8.GetBytes(liveShowDetails.NextShowDateUtc.Value.ToString(_dateTimeFormat));
-            var end = Encoding.UTF8.GetBytes(liveShowDetails.NextShowDateUtc.Value.AddMinutes(30).ToString(_dateTimeFormat));
-
-            var responseBuffer = new byte[_payloadLength];
-
-            Buffer.BlockCopy(_iCalHeaderBytes, 0, responseBuffer, 0, _iCalHeaderBytes.Length);
-            Buffer.BlockCopy(start, 0, responseBuffer, _iCalHeaderBytes.Length, start.Length);
-            Buffer.BlockCopy(_iCalMiddleBytes, 0, responseBuffer, _iCalHeaderBytes.Length + start.Length, _iCalMiddleBytes.Length);
-            Buffer.BlockCopy(end, 0, responseBuffer, _iCalHeaderBytes.Length + start.Length + _iCalMiddleBytes.Length + end.Length, end.Length);
-            Buffer.BlockCopy(_iCalFooterBytes, 0, responseBuffer, _footerOffset, _iCalFooterBytes.Length);
-
-            return body.WriteAsync(responseBuffer, 0, responseBuffer.Length);
+            return response.WriteAsync(
+                "BEGIN:VCALENDAR\r\n" +
+                "VERSION:2.0\r\n" +
+                "BEGIN:VEVENT\r\n" +
+                "UID:aspnet@microsoft.com\r\n" +
+                "DTSTART:" + nextShowDateUtc?.ToString(_dateTimeFormat) + "\r\n" +
+                "DTEND:" + nextShowDateUtc?.AddMinutes(30).ToString(_dateTimeFormat) + "\r\n" +
+                "SUMMARY:ASP.NET Community Standup\r\n" +
+                "DESCRIPTION:\r\n" +
+                "LOCATION:https://live.asp.net/\r\n" +
+                "END:VEVENT\r\n" +
+                "END:VCALENDAR\r\n");
         }
     }
 }
