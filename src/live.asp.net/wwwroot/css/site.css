@@ -9,14 +9,20 @@ h1, h2, h3, h4, h5, h6 {
 
 .jumbotron {
     background: #000 url(home-bg.jpg) top center repeat-x;
-    background-size: 100%;
+    background-size: 920px;
     color: #fff;
     min-height: 350px;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 920px) {
     .jumbotron {
-        background-size: 1000px;
+        background-size: 100%;
+    }
+}
+
+@media (min-width: 1440px) {
+    .jumbotron {
+        background-size: 1440px;
     }
 }
 
