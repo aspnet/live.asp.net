@@ -46,13 +46,12 @@
                                 Next Episode Streaming Live on
                             </h2>
                             <h2>
-                                <strong data-part="showTime" class="hidden">
-                                    @Model.NextShowDateUtc.Value.ToString("u")
-                                </strong>
-                                <a asp-action="GetiCal" class="btn btn-default" title="Download iCalendar file">
-                                    <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                                <a asp-action="GetiCal" title="Download iCalendar file">
+                                    <strong data-part="showTime" class="hidden">
+                                        @Model.NextShowDateUtc.Value.ToString("u")
+                                    </strong>
                                 </a>
-                            
+                            </h2>
                             <h2>
                                 <span data-part="countdown"></span>
                             </h2>

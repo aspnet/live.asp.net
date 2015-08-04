@@ -20,6 +20,10 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+h2 a, h2 a:hover, h2 a:active, h2 a:visited {
+    color: #fff;
+}
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
@@ -73,6 +77,14 @@ p.click-to-show-revealed {
     .hangout-embed * {
         background: #212121;
     }
+
+.icon-outlook {
+    background: transparent url(outlook.png) no-repeat top center;
+    background-size: contain;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
 
 .thumbnail .caption h3 {
     margin-top: 0;
