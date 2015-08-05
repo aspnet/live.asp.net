@@ -20,11 +20,15 @@
                 {
                     <span class="label label-danger">ON AIR</span>
                 }
+                else if (Model.HasAdminMessage)
+                {
+                    <span class="label label-warning">STANDBY</span>
+                }
             </h1>
             @if (Model.HasAdminMessage)
             {
                 <h2 class="text-center">
-                    <span class="label label-warning">Stay Tuned: @Model.AdminMessage</span>
+                    @Model.AdminMessage
                 </h2>
             }
             else if (Model.IsOnAir)

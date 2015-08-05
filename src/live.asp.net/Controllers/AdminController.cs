@@ -39,7 +39,7 @@ namespace live.asp.net.Controllers
 
         [HttpGet()]
         [Authorize("Admin")]
-        public async Task<IActionResult> Index(bool? useDesignData)
+        public async Task<IActionResult> Index()
         {
             var model = new AdminViewModel();
 
@@ -58,6 +58,47 @@ namespace live.asp.net.Controllers
 
             var liveShowDetails = await _liveShowDetails.LoadAsync();
 
+            UpdateAdminViewModel(model, liveShowDetails);
+
+            return View(model);
+        }
+
+        [HttpPost()]
+        [Authorize("Admin")]
+        public async Task<IActionResult> Save(AdminViewModel model)
+        {
+            LiveShowDetails liveShowDetails;
+
+            if (!ModelState.IsValid)
+            {
+                // Model validation error, just return and let the error render
+                liveShowDetails = await _liveShowDetails.LoadAsync();
+                UpdateAdminViewModel(model, liveShowDetails);
+
+                return View("Index", model);
+            }
+
+            if (!string.IsNullOrEmpty(model.LiveShowEmbedUrl) && model.LiveShowEmbedUrl.StartsWith("http://"))
+            {
+                model.LiveShowEmbedUrl = "https://" + model.LiveShowEmbedUrl.Substring("http://".Length);
+            }
+
+            liveShowDetails = new LiveShowDetails();
+            liveShowDetails.LiveShowEmbedUrl = model.LiveShowEmbedUrl;
+            liveShowDetails.NextShowDateUtc = model.NextShowDatePst.HasValue
+                ? TimeZoneInfo.ConvertTimeToUtc(model.NextShowDatePst.Value, _pstTimeZone)
+                : (DateTime?)null;
+            liveShowDetails.AdminMessage = model.AdminMessage;
+
+            await _liveShowDetails.SaveAsync(liveShowDetails);
+
+            Context.Response.Cookies.Append("msg", "1");
+
+            return RedirectToAction("Index");
+        }
+
+        private void UpdateAdminViewModel(AdminViewModel model, LiveShowDetails liveShowDetails)
+        {
             model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
             if (liveShowDetails?.NextShowDateUtc != null)
             {
@@ -69,37 +110,6 @@ namespace live.asp.net.Controllers
             model.AdminMessage = liveShowDetails?.AdminMessage;
             model.AppSettings = _appSettings;
             model.EnvironmentName = _env.EnvironmentName;
-
-            return View(model);
-        }
-
-        [HttpPost()]
-        [Authorize("Admin")]
-        public async Task<IActionResult> Save(AdminViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var liveShowDetails = new LiveShowDetails();
-
-                if (!string.IsNullOrEmpty(model.LiveShowEmbedUrl) && model.LiveShowEmbedUrl.StartsWith("http://"))
-                {
-                    model.LiveShowEmbedUrl = "https://" + model.LiveShowEmbedUrl.Substring("http://".Length);
-                }
-
-                liveShowDetails.LiveShowEmbedUrl = model.LiveShowEmbedUrl;
-                liveShowDetails.NextShowDateUtc = model.NextShowDatePst.HasValue
-                    ? TimeZoneInfo.ConvertTimeToUtc(model.NextShowDatePst.Value, _pstTimeZone)
-                    : (DateTime?)null;
-                liveShowDetails.AdminMessage = model.AdminMessage;
-
-                await _liveShowDetails.SaveAsync(liveShowDetails);
-
-                Context.Response.Cookies.Append("msg", "1");
-
-                return RedirectToAction("Index");
-            }
-
-            return View("Index", model);
         }
 
         [HttpPost("clearcache")]
