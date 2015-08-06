@@ -45,7 +45,7 @@ namespace live.asp.net.Controllers
             return liveShowDetails;
         }
 
-        [HttpGet("error")]
+        [Route("/error")]
         public IActionResult Error()
         {
             return View();
