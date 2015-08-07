@@ -46,20 +46,27 @@
                              data-utc-day="@Model.NextShowDateUtc.Value.Day"
                              data-utc-hour="@Model.NextShowDateUtc.Value.Hour"
                              data-utc-min="@Model.NextShowDateUtc.Value.Minute">
+                            <h2>Next Episode Streaming Live on</h2>
                             <h2>
-                                Next Episode Streaming Live on
-                            </h2>
-                            <h2>
-                                <a asp-action="GetiCal" asp-protocol="webcals" title="Add to calendar">
-                                    <strong data-part="showTime" class="hidden">
-                                        @Model.NextShowDateUtc.Value.ToString("u")
-                                    </strong>
-                                </a>
+                                <strong data-part="showTime" class="hidden">
+                                    @Model.NextShowDateUtc.Value.ToString("u")
+                                </strong>
                             </h2>
                             <h2>
                                 <span data-part="countdown"></span>
                             </h2>
                         </div>
+                        <p>
+                            <div class="btn-group">
+                                <button id="addToCalendar" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Add to calendar <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="addToCalendar">
+                                    <li><a asp-action="GetiCal" asp-protocol="https">Download iCalendar (ICS) file</a></li>
+                                    <li><a asp-action="GetiCal" asp-protocol="webcals">Add using webcal</a></li>
+                                </ul>
+                            </div>
+                        </p>
                         <cache>
                             <environment names="Development">
                                 <script src="~/js/site.js" inline="true"></script>
@@ -105,4 +112,21 @@
                 </div>
             </div>
         }
+}
+
+@section Scripts {
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+    </environment>
 }
