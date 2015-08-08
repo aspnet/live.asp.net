@@ -137,6 +137,10 @@ footer {
         font-size: 0.8em;
     }
 
+.label-new-show {
+    font-size: 0.6em;
+}
+
 /* Extra-Small devices (phones, 768px and below) */
 @media (max-width: 768px) {
     .youtube-show {
