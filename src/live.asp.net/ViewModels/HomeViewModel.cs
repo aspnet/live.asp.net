@@ -28,5 +28,21 @@ namespace live.asp.net.ViewModels
         public string MoreShowsUrl { get; set; }
 
         public bool ShowMoreShowsUrl => !string.IsNullOrEmpty(MoreShowsUrl);
+
+        public string AddToGoogleUrl
+        {
+            get
+            {
+                // reference: http://stackoverflow.com/a/21653600/22941
+
+                const string eventTitle = "ASP.NET Community Standup";
+                const string dateTimeFormat = "yyyyMMddTHHmmssZ";
+                const string url = "https://live.asp.net/";
+
+                var dates = $"{NextShowDateUtc?.ToString(dateTimeFormat)}/{NextShowDateUtc?.AddMinutes(30).ToString(dateTimeFormat)}";
+
+                return $"https://www.google.com/calendar/render?action=TEMPLATE&text={eventTitle}&dates={dates}&details={url}&location=&sf=true&output=xml";
+            }
+        }
     }
 }
