@@ -18,11 +18,11 @@
                 ASP.NET Community Standup
                 @if (Model.IsOnAir)
                 {
-                    <span class="label label-danger">ON AIR</span>
+                    <span class="label label-danger"><strong>ON AIR</strong></span>
                 }
                 else if (Model.HasAdminMessage)
                 {
-                    <span class="label label-warning">STANDBY</span>
+                    <span class="label label-warning"><strong>STANDBY</strong></span>
                 }
             </h1>
             @if (Model.HasAdminMessage)
