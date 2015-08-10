@@ -9,6 +9,8 @@ namespace live.asp.net.ViewModels
 {
     public class HomeViewModel
     {
+        private static string _dateTimeFormat = "yyyyMMddTHHmmssZ";
+
         public bool IsOnAir => !HasAdminMessage && !string.IsNullOrEmpty(LiveShowEmbedUrl);
 
         public string LiveShowEmbedUrl { get; set; }
@@ -34,14 +36,10 @@ namespace live.asp.net.ViewModels
             get
             {
                 // reference: http://stackoverflow.com/a/21653600/22941
+                var from = NextShowDateUtc?.ToString(_dateTimeFormat);
+                var to = NextShowDateUtc?.AddMinutes(30).ToString(_dateTimeFormat);
 
-                const string eventTitle = "ASP.NET Community Standup";
-                const string dateTimeFormat = "yyyyMMddTHHmmssZ";
-                const string url = "https://live.asp.net/";
-
-                var dates = $"{NextShowDateUtc?.ToString(dateTimeFormat)}/{NextShowDateUtc?.AddMinutes(30).ToString(dateTimeFormat)}";
-
-                return $"https://www.google.com/calendar/render?action=TEMPLATE&text={eventTitle}&dates={dates}&details={url}&location=&sf=true&output=xml";
+                return $"https://www.google.com/calendar/render?action=TEMPLATE&text=ASP.NET Community Standup&dates={from}/{to}&details=https://live.asp.net/&location=&sf=true&output=xml";
             }
         }
     }
