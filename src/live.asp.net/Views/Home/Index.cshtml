@@ -56,18 +56,16 @@
                                 <span data-part="countdown"></span>
                             </h2>
                         </div>
-                        <p>
-                            <div class="btn-group">
-                                <button id="addToCalendar" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Add to calendar <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="addToCalendar">
-                                    <li><a asp-action="GetiCal" asp-protocol="https">Download iCalendar (ICS) file</a></li>
-                                    <li><a asp-action="GetiCal" asp-protocol="webcals">Add using webcal</a></li>
-                                    <li><a href="@Model.AddToGoogleUrl" target="_blank">Add to Google Calendar</a></li>
-                                </ul>
-                            </div>
-                        </p>
+                        <div class="btn-group">
+                            <button id="addToCalendar" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Add to calendar <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="addToCalendar">
+                                <li><a asp-action="GetiCal" asp-protocol="https">Download iCalendar (ICS) file</a></li>
+                                <li><a asp-action="GetiCal" asp-protocol="webcals">Add using webcal</a></li>
+                                <li><a href="@Model.AddToGoogleUrl" target="_blank">Add to Google Calendar</a></li>
+                            </ul>
+                        </div>
                         <cache>
                             <environment names="Development">
                                 <script src="~/js/site.js" inline="true"></script>
