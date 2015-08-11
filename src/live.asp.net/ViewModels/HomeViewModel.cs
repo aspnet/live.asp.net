@@ -9,7 +9,7 @@ namespace live.asp.net.ViewModels
 {
     public class HomeViewModel
     {
-        private static string _dateTimeFormat = "yyyyMMddTHHmmssZ";
+        private static readonly string _dateTimeFormat = "yyyyMMddTHHmmssZ";
 
         public bool IsOnAir => !HasAdminMessage && !string.IsNullOrEmpty(LiveShowEmbedUrl);
 
