@@ -80,10 +80,21 @@
         }
     }
 
-    function countdownTo(futureDate, tickCallback, endCallback) {
+    function countdownTo(futureDate, isOnAirPolling, tickCallback, endCallback) {
         var interval = window.setInterval(function () {
             var now = new Date(),
                 diff = dateDiff(now, futureDate);
+
+			if (!isOnAirPolling && diff.totalSecs < 3 * 60) {
+				isOnAirPolling = window.setInterval(function() {
+
+					$.get("/IsOnAir", function(isOnAir) {
+						if (isOnAir)
+							window.document.location.reload();
+					});
+
+				}, 15 * 1000);
+			}
 
             if (diff.totalSecs < 0) {
                 //window.console.log("Clearing interval");
@@ -114,6 +125,7 @@
         setNextShowDetails: function (elementId) {
             // Get the show details
             var countdownEl,
+				isOnAirPolling = false,
                 showDetailsEl = window.document.getElementById(elementId),
                 showTimeUtc = getNextShowTime(showDetailsEl),
 
@@ -126,7 +138,7 @@
 
             // Start the countdown
             countdownEl = showDetailsEl.querySelector("[data-part='countdown']");
-            countdownTo(showTimeUtc, function (diff) {
+            countdownTo(showTimeUtc, isOnAirPolling, function (diff) {
                 countdownEl.textContent = diff.toShortString();
             }, function () {
                 countdownEl.textContent = "";
