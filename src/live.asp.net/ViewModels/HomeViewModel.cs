@@ -4,12 +4,15 @@
 using System;
 using System.Collections.Generic;
 using live.asp.net.Models;
+using Microsoft.Framework.WebEncoders;
 
 namespace live.asp.net.ViewModels
 {
     public class HomeViewModel
     {
         private static readonly string _dateTimeFormat = "yyyyMMddTHHmmssZ";
+        private static readonly string _googleCalendarText = UrlEncoder.Default.UrlEncode("ASP.NET Community Standup");
+        private static readonly string _googleCalendarLocation = UrlEncoder.Default.UrlEncode("https://live.asp.net/");
 
         public bool IsOnAir => !HasAdminMessage && !string.IsNullOrEmpty(LiveShowEmbedUrl);
 
@@ -36,10 +39,10 @@ namespace live.asp.net.ViewModels
             get
             {
                 // reference: http://stackoverflow.com/a/21653600/22941
-                var from = NextShowDateUtc?.ToString(_dateTimeFormat);
-                var to = NextShowDateUtc?.AddMinutes(30).ToString(_dateTimeFormat);
+                var from = UrlEncoder.Default.UrlEncode(NextShowDateUtc?.ToString(_dateTimeFormat));
+                var to = UrlEncoder.Default.UrlEncode(NextShowDateUtc?.AddMinutes(30).ToString(_dateTimeFormat));
 
-                return $"https://www.google.com/calendar/render?action=TEMPLATE&text=ASP.NET Community Standup&dates={from}/{to}&details=https://live.asp.net/&location=&sf=true&output=xml";
+                return $"https://www.google.com/calendar/render?action=TEMPLATE&text={_googleCalendarText}&dates={from}/{to}&details={_googleCalendarLocation}&location={_googleCalendarLocation}&sf=true&output=xml";
             }
         }
     }
