@@ -146,10 +146,6 @@ footer {
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
-    .carousel-caption {
-        z-index: 10 !important;
-    }
-
     .youtube-show {
         height: 360px;
     }
