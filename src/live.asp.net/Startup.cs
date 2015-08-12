@@ -7,6 +7,7 @@ using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Authentication.OpenIdConnect;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Http;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
@@ -116,6 +117,15 @@ namespace live.asp.net
             app.UseStaticFiles();
             app.UseCookieAuthentication();
             app.UseOpenIdConnectAuthentication();
+
+            app.Use((context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/ping"))
+                {
+                    return context.Response.WriteAsync("pong");
+                }
+                return next();
+            });
 
             app.UseMvc();
         }
