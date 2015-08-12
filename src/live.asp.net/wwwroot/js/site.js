@@ -7,8 +7,11 @@
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 	var countdownPollInterval = 500;
-	var startPollingForLiveShow = 3 * 60;
-    var liveShowPollInterval = 15 * 1000;
+
+	var liveShowPollInterval = 15 * 1000;
+
+	var SHOW_STATUS = { "OffAir": 1, "OnAir": 2, "Standby": 3 };
+	Object.freeze(SHOW_STATUS);
 
     Math.trunc = Math.trunc || function (x) {
         return x < 0 ? Math.ceil(x) : Math.floor(x);
@@ -84,20 +87,10 @@
         }
     }
 
-    function countdownTo(futureDate, isOnAirPolling, tickCallback, endCallback) {
+    function countdownTo(futureDate, tickCallback, endCallback) {
         var interval = window.setInterval(function () {
             var now = new Date(),
                 diff = dateDiff(now, futureDate);
-
-            if (!isOnAirPolling && diff.totalSecs < startPollingForLiveShow) {
-                isOnAirPolling = window.setInterval(function() {
-                    $.get("/IsOnAir", function(isOnAir) {
-                        if (isOnAir) {
-                            window.document.location.reload();
-                        }
-                    });
-                }, liveShowPollInterval);
-			}
 
             if (diff.totalSecs < 0) {
                 //window.console.log("Clearing interval");
@@ -124,11 +117,30 @@
             data(el, "utc-sec")));
     }
 
-    window.siteJs = {
+	function checkShowStatus(showStatus) {
+		$.get("/showStatus", function(showNewStatus) {
+            if (
+                (showStatus === SHOW_STATUS.OffAir && showNewStatus === SHOW_STATUS.Standby)
+                ||
+                (showStatus === SHOW_STATUS.Standby && showNewStatus === SHOW_STATUS.OnAir)
+                ||
+                (showStatus === SHOW_STATUS.Standby && showNewStatus === SHOW_STATUS.OffAir)
+                ||
+                (showStatus === SHOW_STATUS.OnAir && showNewStatus === SHOW_STATUS.Standby)
+                ) {
+                window.document.location.reload();
+            }
+		});
+	}
+
+	window.siteJs = {
+        checkForShowStatusChange: function(showStatus) {
+
+            var showStateChangePolling = window.setInterval(checkShowStatus, liveShowPollInterval,showStatus);
+        },
         setNextShowDetails: function (elementId) {
             // Get the show details
             var countdownEl,
-				isOnAirPolling = false,
                 showDetailsEl = window.document.getElementById(elementId),
                 showTimeUtc = getNextShowTime(showDetailsEl),
 
@@ -141,7 +153,7 @@
 
             // Start the countdown
             countdownEl = showDetailsEl.querySelector("[data-part='countdown']");
-            countdownTo(showTimeUtc, isOnAirPolling, function (diff) {
+            countdownTo(showTimeUtc, function (diff) {
                 countdownEl.textContent = diff.toShortString();
             }, function () {
                 countdownEl.textContent = "";

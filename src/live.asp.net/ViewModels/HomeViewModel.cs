@@ -45,5 +45,19 @@ namespace live.asp.net.ViewModels
                 return $"https://www.google.com/calendar/render?action=TEMPLATE&text={_googleCalendarText}&dates={from}/{to}&details={_googleCalendarLocation}&location={_googleCalendarLocation}&sf=true&output=xml";
             }
         }
+
+        public ShowStatus ShowStatus
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(AdminMessage))
+                    return ShowStatus.Standby;
+
+                if (!string.IsNullOrEmpty(LiveShowEmbedUrl))
+                    return ShowStatus.OnAir;
+
+                return ShowStatus.OffAir;
+            }
+        }
     }
 }

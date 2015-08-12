@@ -122,10 +122,19 @@
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">
+        
         </script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+
+        
         </script>
     </environment>
+    @if (Model.NextShowScheduled)
+    {
+        <script>
+            window.siteJs.checkForShowStatusChange(@((int) Model.ShowStatus));
+        </script>
+    }
 }
