@@ -6,6 +6,10 @@
 
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+	var countdownPollInterval = 500;
+	var startPollingForLiveShow = 3 * 60;
+    var liveShowPollInterval = 15 * 1000;
+
     Math.trunc = Math.trunc || function (x) {
         return x < 0 ? Math.ceil(x) : Math.floor(x);
     }
@@ -85,15 +89,14 @@
             var now = new Date(),
                 diff = dateDiff(now, futureDate);
 
-			if (!isOnAirPolling && diff.totalSecs < 3 * 60) {
-				isOnAirPolling = window.setInterval(function() {
-
-					$.get("/IsOnAir", function(isOnAir) {
-						if (isOnAir)
-							window.document.location.reload();
-					});
-
-				}, 15 * 1000);
+            if (!isOnAirPolling && diff.totalSecs < startPollingForLiveShow) {
+                isOnAirPolling = window.setInterval(function() {
+                    $.get("/IsOnAir", function(isOnAir) {
+                        if (isOnAir) {
+                            window.document.location.reload();
+                        }
+                    });
+                }, liveShowPollInterval);
 			}
 
             if (diff.totalSecs < 0) {
@@ -104,7 +107,7 @@
             }
 
             tickCallback(diff);
-        }, 500);
+        }, countdownPollInterval);
     }
 
     function data(el, name) {
