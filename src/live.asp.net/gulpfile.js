@@ -5,6 +5,8 @@ var gulp = require("gulp"),
     concat = require("gulp-concat"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify"),
+    jshint = require('gulp-jshint'),
+    csslint = require('gulp-csslint'),
     project = require("./project.json");
 
 var paths = {
@@ -43,3 +45,15 @@ gulp.task("min:css", function () {
 });
 
 gulp.task("min", ["min:js", "min:css"]);
+
+gulp.task('hint', function() {
+    gulp.src(paths.js)
+        .pipe(jshint())
+        .pipe(jshint.reporter())
+});
+
+gulp.task('lint', function() {
+  gulp.src(paths.css)
+    .pipe(csslint())
+    .pipe(csslint.reporter());
+});
