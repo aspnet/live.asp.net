@@ -72,13 +72,13 @@
         <div class="form-group">
             <label asp-for="AppSettings.YouTubeApplicationName" class="col-md-3 control-label"></label>
             <div class="col-md-3">
-                <clicktoshow value="@Model.AppSettings.YouTubeApplicationName" class="form-control-static"></clicktoshow>
+                <click-to-show value="@Model.AppSettings.YouTubeApplicationName" class="form-control-static"></click-to-show>
             </div>
         </div>
         <div class="form-group">
             <label asp-for="AppSettings.YouTubeApiKey" class="col-md-3 control-label"></label>
             <div class="col-md-4">
-                <clicktoshow value="@Model.AppSettings.YouTubeApiKey" class="form-control-static"></clicktoshow>
+                <click-to-show value="@Model.AppSettings.YouTubeApiKey" class="form-control-static"></click-to-show>
             </div>
         </div>
         <div class="form-group">
@@ -94,7 +94,7 @@
         <div class="form-group">
             <label asp-for="AppSettings.AzureStorageConnectionString" class="col-md-3 control-label"></label>
             <div class="col-md-4">
-                <clicktoshow value="@(Model.AppSettings.AzureStorageConnectionString ?? "[none]")" class="form-control-static"></clicktoshow>
+                <click-to-show value="@(Model.AppSettings.AzureStorageConnectionString ?? "[none]")" class="form-control-static"></click-to-show>
             </div>
         </div>
         <div class="form-group">

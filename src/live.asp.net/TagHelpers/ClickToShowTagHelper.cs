@@ -4,7 +4,7 @@ using Microsoft.AspNet.Razor.Runtime.TagHelpers;
 
 namespace live.asp.net.TagHelpers
 {
-    [TargetElement("clicktoshow", Attributes = "value")]
+    [TargetElement("click-to-show", Attributes = "value")]
     public class ClickToShowTagHelper : TagHelper
     {
         public string Value { get; set; }
