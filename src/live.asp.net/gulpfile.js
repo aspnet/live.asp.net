@@ -53,7 +53,7 @@ gulp.task('hint', function() {
 });
 
 gulp.task('lint', function() {
-  gulp.src(paths.css)
-    .pipe(csslint())
-    .pipe(csslint.reporter());
+    gulp.src(paths.css)
+        .pipe(csslint())
+        .pipe(csslint.reporter());
 });
