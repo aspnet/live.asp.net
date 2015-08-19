@@ -11,6 +11,7 @@
     "Microsoft.AspNet.Authentication.OpenIdConnect": "1.0.0-beta6",
     "Microsoft.AspNet.Diagnostics": "1.0.0-beta6",
     "Microsoft.AspNet.Server.IIS": "1.0.0-beta6",
+    "Microsoft.AspNet.Server.Kestrel": "1.0.0-beta7-15067",
     "Microsoft.AspNet.Server.WebListener": "1.0.0-beta6",
     "Microsoft.AspNet.StaticFiles": "1.0.0-beta6",
     "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta6",
@@ -24,7 +25,8 @@
     "Newtonsoft.Json": "7.0.1"
   },
   "commands": {
-    "web": "Microsoft.AspNet.Hosting --config hosting.ini"
+    "web": "Microsoft.AspNet.Hosting --config hosting.ini",
+    "kestrel": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel"
   },
 
   "frameworks": {
