@@ -46,13 +46,13 @@ gulp.task("min:css", function () {
 
 gulp.task("min", ["min:js", "min:css"]);
 
-gulp.task('hint', function() {
+gulp.task("jshint", function() {
     gulp.src(paths.js)
         .pipe(jshint())
         .pipe(jshint.reporter())
 });
 
-gulp.task('lint', function() {
+gulp.task("csslint", function() {
     gulp.src(paths.css)
         .pipe(csslint())
         .pipe(csslint.reporter());
