@@ -51,10 +51,14 @@ namespace live.asp.net.ViewModels
             get
             {
                 if (!string.IsNullOrEmpty(AdminMessage))
+                {
                     return ShowStatus.Standby;
+                }
 
                 if (!string.IsNullOrEmpty(LiveShowEmbedUrl))
+                {
                     return ShowStatus.OnAir;
+                }
 
                 return ShowStatus.OffAir;
             }
