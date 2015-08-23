@@ -11,7 +11,6 @@
 	var liveShowPollInterval = 15 * 1000;
 
 	var SHOW_STATUS = { "OffAir": 1, "OnAir": 2, "Standby": 3 };
-	Object.freeze(SHOW_STATUS);
 
     Math.trunc = Math.trunc || function (x) {
         return x < 0 ? Math.ceil(x) : Math.floor(x);
