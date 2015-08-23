@@ -128,23 +128,4 @@
         </script>
     </environment>
     <partial name="_ValidationScripts" />
-    <script>
-        $(function () {
-            $("p[data-hidden-value]")
-                .click(function () {
-                    var $self = $(this),
-                        state = $self.data("state") || "hidden";
-                    
-                    if (state === "hidden") {
-                        $self.text($self.data("hidden-value"));
-                        $self.data("state", "showing");
-                        $self.addClass("click-to-show-revealed");
-                    } else {
-                        $self.text("click to show");
-                        $self.data("state", "hidden");
-                        $self.removeClass("click-to-show-revealed");
-                    }
-                });
-        });
-    </script>
 }

@@ -1,49 +1,49 @@
 {
-  "webroot": "wwwroot",
-  "userSecretsId": "aspnet5-live.asp.net-20150723035013",
-  "version": "1.0.0-*",
+    "webroot": "wwwroot",
+    "userSecretsId": "aspnet5-live.asp.net-20150723035013",
+    "version": "1.0.0-*",
 
-  "dependencies": {
-    "Microsoft.Framework.Runtime": "1.0.0-beta6",
-    "Microsoft.AspNet.Mvc": "6.0.0-beta6",
-    "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta6",
-    "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta6",
-    "Microsoft.AspNet.Authentication.OpenIdConnect": "1.0.0-beta6",
-    "Microsoft.AspNet.Diagnostics": "1.0.0-beta6",
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta6",
-    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta6",
-    "Microsoft.AspNet.StaticFiles": "1.0.0-beta6",
-    "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta6",
-    "Microsoft.Framework.Configuration.Json": "1.0.0-beta6",
-    "Microsoft.Framework.Configuration.UserSecrets": "1.0.0-beta6",
-    "Microsoft.Framework.Logging": "1.0.0-beta6",
-    "Microsoft.Framework.Logging.Console": "1.0.0-beta6",
-    "Microsoft.ApplicationInsights.AspNet": "1.0.0-beta6",
-    "WindowsAzure.Storage": "4.3.0",
-    "Google.Apis.YouTube.v3": "1.9.2.1420",
-    "Newtonsoft.Json": "7.0.1"
-  },
-  "commands": {
-    "web": "Microsoft.AspNet.Hosting --config hosting.ini"
-  },
+    "dependencies": {
+        "Microsoft.Framework.Runtime": "1.0.0-beta6",
+        "Microsoft.AspNet.Mvc": "6.0.0-beta6",
+        "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta6",
+        "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta6",
+        "Microsoft.AspNet.Authentication.OpenIdConnect": "1.0.0-beta6",
+        "Microsoft.AspNet.Diagnostics": "1.0.0-beta6",
+        "Microsoft.AspNet.Server.IIS": "1.0.0-beta6",
+        "Microsoft.AspNet.Server.WebListener": "1.0.0-beta6",
+        "Microsoft.AspNet.StaticFiles": "1.0.0-beta6",
+        "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta6",
+        "Microsoft.Framework.Configuration.Json": "1.0.0-beta6",
+        "Microsoft.Framework.Configuration.UserSecrets": "1.0.0-beta6",
+        "Microsoft.Framework.Logging": "1.0.0-beta6",
+        "Microsoft.Framework.Logging.Console": "1.0.0-beta6",
+        "Microsoft.ApplicationInsights.AspNet": "1.0.0-beta6",
+        "WindowsAzure.Storage": "4.3.0",
+        "Google.Apis.YouTube.v3": "1.9.2.1420",
+        "Newtonsoft.Json": "7.0.1"
+    },
+    "commands": {
+        "web": "Microsoft.AspNet.Hosting --config hosting.ini"
+    },
 
-  "frameworks": {
-    "dnx451": { }
-  },
+    "frameworks": {
+        "dnx451": { }
+    },
 
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
-  "bundleExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ],
-  "scripts": {
-    "prepublish": [ "npm install", "bower install", "gulp clean", "gulp min" ]
-  }
+    "exclude": [
+        "wwwroot",
+        "node_modules",
+        "bower_components"
+    ],
+    "bundleExclude": [
+        "node_modules",
+        "bower_components",
+        "**.xproj",
+        "**.user",
+        "**.vspscc"
+    ],
+    "scripts": {
+        "prepublish": [ "npm install", "bower install", "gulp clean", "gulp min" ]
+    }
 }

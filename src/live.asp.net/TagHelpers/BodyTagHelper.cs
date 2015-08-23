@@ -1,39 +1,39 @@
-﻿using Microsoft.AspNet.Razor.Runtime.TagHelpers;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Razor.Runtime.TagHelpers;
 
 namespace live.asp.net.TagHelpers
 {
     public class BodyTagHelper : TagHelper
     {
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        private static readonly Assembly Assembly = typeof (BodyTagHelper).Assembly;
+
+        private readonly string ClickToShowJavaScriptResourceName = "live.asp.net.Compiler.Resources.ClickToShowTagHelper.js";
+
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            base.Process(context, output);
+            var bodyContent = await context.GetChildContentAsync();
 
-            if (!output.Content.GetContent().Contains("$(\"p[data-hidden-value]\"))")
-                && output.Content.GetContent().Contains("click-to-show"))
+            if (bodyContent.Contains("data-hidden-value"))
             {
-                const string script = @"<script>
-        $(function () {
-            $(""p[data - hidden - value]"")
-                    .click(function() {
-                    var $self = $(this),
-                        state = $self.data(""state"") || ""hidden"";
+                var clickToShowJavaScript = string.Empty;
+                using (var resourceStream = Assembly.GetManifestResourceStream(ClickToShowJavaScriptResourceName))
+                {
+                    if (resourceStream != null)
+                        using (var streamReader = new StreamReader(resourceStream))
+                        {
+                            clickToShowJavaScript = streamReader.ReadToEnd();
+                        }
+                }
 
-                    if (state === ""hidden"")
-                    {
-                        $self.text($self.data(""hidden-value""));
-                        $self.data(""state"", ""showing"");
-                        $self.addClass(""click-to-show-revealed"");
-                    }
-                    else
-                    {
-                        $self.text(""click to show"");
-                        $self.data(""state"", ""hidden"");
-                        $self.removeClass(""click-to-show-revealed"");
-                    }
-                });
-            });
-    </script>";
-                output.PostContent.Append(script);
+                output.PostContent.Append("<script>")
+                        .Append(clickToShowJavaScript)
+                        .Append("</script>");
             }
         }
     }

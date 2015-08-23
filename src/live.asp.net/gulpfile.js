@@ -1,4 +1,4 @@
-﻿/// <binding Clean='clean' />
+﻿/// <binding BeforeBuild='compilerResources' Clean='clean' />
 
 var gulp = require("gulp"),
     rimraf = require("rimraf"),
@@ -17,6 +17,8 @@ paths.css = paths.webroot + "css/**/*.css";
 paths.minCss = paths.webroot + "css/**/*.min.css";
 paths.concatJsDest = paths.webroot + "js/site.min.js";
 paths.concatCssDest = paths.webroot + "css/site.min.css";
+paths.tagHelper = "./TagHelpers/";
+paths.compilerResources = "./Compiler/Resources/";
 
 gulp.task("clean:js", function (cb) {
     rimraf(paths.concatJsDest, cb);
@@ -43,3 +45,9 @@ gulp.task("min:css", function () {
 });
 
 gulp.task("min", ["min:js", "min:css"]);
+
+gulp.task("compilerResources", function() {
+	gulp.src("js/*.js", { cwd: paths.tagHelper })
+		.pipe(uglify())
+		.pipe(gulp.dest(paths.compilerResources));
+});
