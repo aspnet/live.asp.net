@@ -25,10 +25,12 @@ namespace live.asp.net.TagHelpers
                 using (var resourceStream = Assembly.GetManifestResourceStream(ClickToShowJavaScriptResourceName))
                 {
                     if (resourceStream != null)
+                    {
                         using (var streamReader = new StreamReader(resourceStream))
                         {
                             clickToShowJavaScript = streamReader.ReadToEnd();
                         }
+                    } 
                 }
 
                 output.PostContent.Append("<script>")
