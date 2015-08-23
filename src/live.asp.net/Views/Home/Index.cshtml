@@ -27,9 +27,22 @@
             </h1>
             @if (Model.HasAdminMessage)
             {
-                <h2 class="text-center">
+                <h2 id="adminMessage" class="text-center" data-status="@((int) Model.ShowStatus)">
                     @Model.AdminMessage
                 </h2>
+                <cache>
+                    <environment names="Development">
+                        <script src="~/js/site.js" inline="true"></script>
+                    </environment>
+                    <environment names="Staging,Production">
+                        <script src="~/js/site.min.js" inline="true"></script>
+                    </environment>
+                </cache>
+                <script>
+                    (function () {
+                        window.siteJs.checkForShowStatusChange("adminMessage");
+                    })();
+                </script>
             }
             else if (Model.IsOnAir)
             {
@@ -48,7 +61,7 @@
                              data-utc-min="@Model.NextShowDateUtc.Value.Minute">
                             <h2>Next Episode Streaming Live on</h2>
                             <h2>
-                                <strong data-part="showTime" class="hidden">
+                                <strong data-part="showTime" data-status="@((int) Model.ShowStatus)" class="hidden">
                                     @Model.NextShowDateUtc.Value.ToString("u")
                                 </strong>
                             </h2>
@@ -121,14 +134,11 @@
     <environment names="Staging,Production">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery">
-        
+                asp-fallback-test="window.jQuery">     
         </script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-
-        
         </script>
     </environment>
     @if (Model.NextShowScheduled)

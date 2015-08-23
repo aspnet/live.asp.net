@@ -7,7 +7,7 @@
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 	var countdownPollInterval = 500;
-
+	var finalCountdown = 10 * 60;
 	var liveShowPollInterval = 15 * 1000;
 
 	var SHOW_STATUS = { "OffAir": 1, "OnAir": 2, "Standby": 3 };
@@ -87,10 +87,26 @@
         }
     }
 
+    function checkShowStatus(showStatus) {
+        $.get("/showStatus", function(showNewStatus) {
+            if ((showStatus === SHOW_STATUS.OffAir && showNewStatus === SHOW_STATUS.Standby)
+                || (showStatus === SHOW_STATUS.Standby && showNewStatus === SHOW_STATUS.OnAir)
+                || (showStatus === SHOW_STATUS.Standby && showNewStatus === SHOW_STATUS.OffAir)
+                || (showStatus === SHOW_STATUS.OnAir && showNewStatus === SHOW_STATUS.Standby)) {
+                window.document.location.reload();
+            }
+	    });
+	}
+
     function countdownTo(futureDate, tickCallback, endCallback) {
+	    var isOnAirPolling;
         var interval = window.setInterval(function () {
             var now = new Date(),
                 diff = dateDiff(now, futureDate);
+
+            if (!isOnAirPolling && diff.totalSecs < finalCountdown) {
+			    isOnAirPolling = window.setInterval(checkShowStatus, liveShowPollInterval, SHOW_STATUS.OffAir);
+			}
 
             if (diff.totalSecs < 0) {
                 //window.console.log("Clearing interval");
@@ -117,26 +133,17 @@
             data(el, "utc-sec")));
     }
 
-	function checkShowStatus(showStatus) {
-		$.get("/showStatus", function(showNewStatus) {
-            if (
-                (showStatus === SHOW_STATUS.OffAir && showNewStatus === SHOW_STATUS.Standby)
-                ||
-                (showStatus === SHOW_STATUS.Standby && showNewStatus === SHOW_STATUS.OnAir)
-                ||
-                (showStatus === SHOW_STATUS.Standby && showNewStatus === SHOW_STATUS.OffAir)
-                ||
-                (showStatus === SHOW_STATUS.OnAir && showNewStatus === SHOW_STATUS.Standby)
-                ) {
-                window.document.location.reload();
-            }
-		});
-	}
-
 	window.siteJs = {
-        checkForShowStatusChange: function(showStatus) {
+        checkForShowStatusChange: function(elementId) {
+	        var statusElement = window.document.getElementById(elementId),
+		        showStatus,
+		        showStateChangePolling;
+                
+            showStatus = parseInt(statusElement.getAttribute("data-status"));     
 
-            var showStateChangePolling = window.setInterval(checkShowStatus, liveShowPollInterval,showStatus);
+            if (showStatus === SHOW_STATUS.Standby) {
+	            showStateChangePolling = window.setInterval(checkShowStatus, liveShowPollInterval, SHOW_STATUS.Standby);
+            }
         },
         setNextShowDetails: function (elementId) {
             // Get the show details
