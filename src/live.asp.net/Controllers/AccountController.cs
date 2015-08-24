@@ -23,7 +23,7 @@ namespace live.asp.net.Controllers
         [HttpGet("signout")]
         public async Task<IActionResult> SignOut()
         {
-            var callbackUrl = Url.Action("SignOutCallback", "Account", values: null, protocol: Request.Scheme);
+            var callbackUrl = Url.Action(nameof(SignOutCallback), "Account", values: null, protocol: Request.Scheme);
             await Context.Authentication.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             await Context.Authentication.SignOutAsync(OpenIdConnectAuthenticationDefaults.AuthenticationScheme);
 

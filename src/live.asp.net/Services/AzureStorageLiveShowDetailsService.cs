@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved. 
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -100,7 +100,7 @@ namespace live.asp.net.Services
             await blockBlob.UploadTextAsync(fileContents);
             _telemtry.TrackDependency("Azure.BlobStorage", "UploadTextAsync", uploadStarted, DateTimeOffset.UtcNow - uploadStarted, true);
         }
-        
+
         private CloudBlobContainer GetStorageContainer()
         {
             var account = CloudStorageAccount.Parse(_appSettings.AzureStorageConnectionString);

@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved. 
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using live.asp.net.Formatters;
@@ -105,7 +105,7 @@ namespace live.asp.net
                 app.UseErrorPage();
             }
             else
-            {   
+            {
                 app.UseErrorHandler("/error");
             }
 

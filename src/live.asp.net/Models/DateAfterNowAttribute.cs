@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved. 
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -35,7 +35,7 @@ namespace live.asp.net.Models
                 var timeZone = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
                 now = TimeZoneInfo.ConvertTimeFromUtc(now, timeZone);
             }
-            
+
             return (DateTime)value > now;
         }
     }
