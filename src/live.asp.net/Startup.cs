@@ -8,10 +8,10 @@ using Microsoft.AspNet.Authentication.OpenIdConnect;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
+using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
-using Microsoft.Framework.Runtime;
 
 namespace live.asp.net
 {
@@ -42,7 +42,7 @@ namespace live.asp.net
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AppSettings>(Configuration.GetConfigurationSection("AppSettings"), optionsName: null);
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"), optionsName: null);
 
             services.Configure<CookieAuthenticationOptions>(options =>
             {
@@ -72,11 +72,10 @@ namespace live.asp.net
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.ConfigureMvc(mvc =>
+            services.AddMvc(options =>
             {
-                mvc.OutputFormatters.Add(new iCalendarOutputFormatter());
+                options.OutputFormatters.Add(new iCalendarOutputFormatter());
             });
-            services.AddMvc();
 
             services.AddScoped<IShowsService, YouTubeShowsService>();
 
