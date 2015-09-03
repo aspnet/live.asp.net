@@ -84,7 +84,7 @@ set DNVM_CMD_PATH_FILE="%USERPROFILE%\.dnx\temp-set-envvars.cmd"
 set DNX_RUNTIME="%USERPROFILE%\.dnx\runtimes\dnx-CLR-win-x86.1.0.0-beta7"
 
 :: 2. Install DNX
-call :ExecuteCmd PowerShell -NoProfile -NoLogo -ExecutionPolicy unrestricted -Command "[System.Threading.Thread]::CurrentThread.CurrentCulture = ''; [System.Threading.Thread]::CurrentThread.CurrentUICulture = '';$CmdPathFile='%DNVM_CMD_PATH_FILE%';& '%SCM_DNVM_PS_PATH%' " install 1.0.0-beta6 -arch x86 -r CLR %SCM_DNVM_INSTALL_OPTIONS%
+call :ExecuteCmd PowerShell -NoProfile -NoLogo -ExecutionPolicy unrestricted -Command "[System.Threading.Thread]::CurrentThread.CurrentCulture = ''; [System.Threading.Thread]::CurrentThread.CurrentUICulture = '';$CmdPathFile='%DNVM_CMD_PATH_FILE%';& '%SCM_DNVM_PS_PATH%' " install 1.0.0-beta7 -arch x86 -r CLR %SCM_DNVM_INSTALL_OPTIONS%
 IF !ERRORLEVEL! NEQ 0 goto error
 
 
