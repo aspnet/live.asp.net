@@ -17,7 +17,7 @@ namespace live.asp.net.ViewModels
         [DateAfterNow(TimeZoneId = "Pacific Standard Time")]
         public DateTime? NextShowDatePst { get; set; }
 
-        [Display(Name = "Admin Message", Description = "Message to show on home page in case of delay in starting live show, etc.")]
+        [Display(Name = "Standby Message", Description = "Message to show on home page during show standby")]
         public string AdminMessage { get; set; }
 
         public string SuccessMessage { get; set; }

@@ -1,4 +1,6 @@
-﻿body {
+﻿/*csslint qualified-headings:false, unique-headings:false, known-properties:false, universal-selector:false*/
+
+body {
     padding-bottom: 20px;
     font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
 }
@@ -49,12 +51,12 @@ a, a:hover {
 }
 
 .btn, .thumbnail, input[type='text'], input[type='url'], input[type='datetime'], .label, .dropdown-menu {
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
-    border-radius: 0px;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
 }
 
-    .btn.btn-primary {
+    .btn-primary {
         background-color: #0054a3;
     }
 
@@ -67,21 +69,22 @@ a, a:hover {
     margin-left: -20px;
 }
 
-p.click-to-show {
+.click-to-show {
     cursor: pointer;
     font-style: italic;
     color: rgb(38, 124, 178);
 }
-p.click-to-show-revealed {
+
+.click-to-show-revealed {
     font-style: normal;
     color: initial;
 }
 
 .hangout-embed {
     margin-top: 30px;
-    -webkit-box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, .4);
-    -moz-box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, .4);
-    box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, .4);
+    -webkit-box-shadow: 0 0 5px 5px rgba(255, 255, 255, .4);
+    -moz-box-shadow: 0 0 5px 5px rgba(255, 255, 255, .4);
+    box-shadow: 0 0 5px 5px rgba(255, 255, 255, .4);
     background: #212121;
 }
 
