@@ -8,7 +8,7 @@
 
     Math.trunc = Math.trunc || function (x) {
         return x < 0 ? Math.ceil(x) : Math.floor(x);
-    }
+    };
 
     function monthName(month) {
         return months[month];
@@ -16,10 +16,8 @@
 
     function formatTime(hours, minutes) {
         var tt = hours < 12 ? " AM" : " PM",
-            hour = hours < 12
-                ? hours
-                : hours === 12
-                    ? 12
+            hour = hours < 12 ? hours
+                : hours === 12 ? 12
                     : (hours - 12),
             mins = minutes < 10 ? "0" + minutes : minutes;
 
@@ -77,7 +75,7 @@
                        (mins > 0 ? mins + "m " : "") +
                        secs + "s";
             }
-        }
+        };
     }
 
     function countdownTo(futureDate, tickCallback, endCallback) {
