@@ -2,7 +2,9 @@
   "webroot": "wwwroot",
   "userSecretsId": "aspnet5-live.asp.net-20150723035013",
   "version": "1.0.0-*",
-
+  "compilationOptions": {
+    "warningsAsErrors": true
+  },
   "dependencies": {
     "Microsoft.Dnx.Runtime.Abstractions": "1.0.0-beta7",
     "Microsoft.AspNet.Mvc": "6.0.0-beta7",
