@@ -38,7 +38,7 @@ namespace live.asp.net.Controllers
             _env = env;
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var model = new AdminViewModel();
@@ -63,7 +63,7 @@ namespace live.asp.net.Controllers
             return View(model);
         }
 
-        [HttpPost()]
+        [HttpPost]
         public async Task<IActionResult> Save(AdminViewModel model)
         {
             LiveShowDetails liveShowDetails;
@@ -96,6 +96,16 @@ namespace live.asp.net.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost("clearcache")]
+        public IActionResult ClearCache()
+        {
+            _memoryCache.Remove(YouTubeShowsService.CacheKey);
+
+            Context.Response.Cookies.Append("msg", "2");
+
+            return RedirectToAction("Index");
+        }
+
         private void UpdateAdminViewModel(AdminViewModel model, LiveShowDetails liveShowDetails)
         {
             model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
@@ -109,16 +119,6 @@ namespace live.asp.net.Controllers
             model.AdminMessage = liveShowDetails?.AdminMessage;
             model.AppSettings = _appSettings;
             model.EnvironmentName = _env.EnvironmentName;
-        }
-
-        [HttpPost("clearcache")]
-        public IActionResult ClearCache()
-        {
-            _memoryCache.Remove(YouTubeShowsService.CacheKey);
-
-            Context.Response.Cookies.Append("msg", "2");
-
-            return RedirectToAction("Index");
         }
     }
 }
