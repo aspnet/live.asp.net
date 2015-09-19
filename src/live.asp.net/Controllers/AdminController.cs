@@ -15,6 +15,7 @@ using Microsoft.Framework.OptionsModel;
 namespace live.asp.net.Controllers
 {
     [Route("/admin")]
+    [Authorize("Admin")]
     public class AdminController : Controller
     {
         private const string PST = "Pacific Standard Time";
@@ -38,7 +39,6 @@ namespace live.asp.net.Controllers
         }
 
         [HttpGet()]
-        [Authorize("Admin")]
         public async Task<IActionResult> Index()
         {
             var model = new AdminViewModel();
@@ -64,7 +64,6 @@ namespace live.asp.net.Controllers
         }
 
         [HttpPost()]
-        [Authorize("Admin")]
         public async Task<IActionResult> Save(AdminViewModel model)
         {
             LiveShowDetails liveShowDetails;
