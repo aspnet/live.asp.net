@@ -12,6 +12,7 @@ using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
+using System.Security.Claims;
 
 namespace live.asp.net
 {
@@ -64,7 +65,7 @@ namespace live.asp.net
                 options.AddPolicy("Admin", policyBuilder =>
                 {
                     policyBuilder.RequireClaim(
-                        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+                        ClaimTypes.Name,
                         Configuration["Authorization:AdminUsers"].Split(',')
                     );
                 });
