@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Security.Claims;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
 using Microsoft.AspNet.Authentication.Cookies;
@@ -12,7 +13,6 @@ using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
-using System.Security.Claims;
 
 namespace live.asp.net
 {
