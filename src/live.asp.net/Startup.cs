@@ -23,7 +23,8 @@ namespace live.asp.net
         {
             _env = env;
 
-            var builder = new ConfigurationBuilder(appEnv.ApplicationBasePath)
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(appEnv.ApplicationBasePath)
                 .AddJsonFile("config.json")
                 .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true);
 
@@ -42,24 +43,9 @@ namespace live.asp.net
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"), optionsName: null);
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            services.Configure<CookieAuthenticationOptions>(options =>
-            {
-                options.AutomaticAuthentication = true;
-            });
-
-            services.Configure<OpenIdConnectAuthenticationOptions>(options =>
-            {
-                options.DefaultToCurrentUriOnRedirect = true;
-                options.AutomaticAuthentication = true;
-                options.ClientId = Configuration["Authentication:AzureAd:ClientId"];
-                options.Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"];
-                options.PostLogoutRedirectUri = Configuration["Authentication:AzureAd:PostLogoutRedirectUri"];
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            });
-
-            services.ConfigureAuthorization(options =>
+            services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policyBuilder =>
                 {
@@ -93,6 +79,7 @@ namespace live.asp.net
         {
             loggerFactory.MinimumLevel = LogLevel.Warning;
             loggerFactory.AddConsole();
+            loggerFactory.AddDebug();
 
             if (env.IsProduction())
             {
@@ -101,11 +88,11 @@ namespace live.asp.net
 
             if (env.IsDevelopment())
             {
-                app.UseErrorPage();
+                app.UseDeveloperExceptionPage();
             }
             else
             {   
-                app.UseErrorHandler("/error");
+                app.UseExceptionHandler("/error");
             }
 
             if (env.IsProduction())
@@ -113,9 +100,24 @@ namespace live.asp.net
                 app.UseApplicationInsightsExceptionTelemetry();
             }
 
+            app.UseIISPlatformHandler();
+
             app.UseStaticFiles();
-            app.UseCookieAuthentication();
-            app.UseOpenIdConnectAuthentication();
+
+            app.UseCookieAuthentication(options =>
+            {
+                options.AutomaticAuthentication = true;
+            });
+
+            app.UseOpenIdConnectAuthentication(options =>
+            {
+                options.DefaultToCurrentUriOnRedirect = true;
+                options.AutomaticAuthentication = true;
+                options.ClientId = Configuration["Authentication:AzureAd:ClientId"];
+                options.Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"];
+                options.PostLogoutRedirectUri = Configuration["Authentication:AzureAd:PostLogoutRedirectUri"];
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            });
 
             app.Use((context, next) =>
             {

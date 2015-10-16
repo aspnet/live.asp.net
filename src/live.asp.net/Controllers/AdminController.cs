@@ -15,7 +15,7 @@ using Microsoft.Framework.OptionsModel;
 namespace live.asp.net.Controllers
 {
     [Route("/admin")]
-    [Authorize("Admin")]
+    [Authorize]
     public class AdminController : Controller
     {
         private const string PST = "Pacific Standard Time";
@@ -34,7 +34,7 @@ namespace live.asp.net.Controllers
         {
             _liveShowDetails = liveShowDetails;
             _memoryCache = memoryCache;
-            _appSettings = appSettings.Options;
+            _appSettings = appSettings.Value;
             _env = env;
         }
 
@@ -43,8 +43,8 @@ namespace live.asp.net.Controllers
         {
             var model = new AdminViewModel();
 
-            var msg = Context.Request.Cookies["msg"];
-            Context.Response.Cookies.Delete("msg");
+            var msg = HttpContext.Request.Cookies["msg"];
+            HttpContext.Response.Cookies.Delete("msg");
 
             switch (msg)
             {
@@ -91,7 +91,7 @@ namespace live.asp.net.Controllers
 
             await _liveShowDetails.SaveAsync(liveShowDetails);
 
-            Context.Response.Cookies.Append("msg", "1");
+            HttpContext.Response.Cookies.Append("msg", "1");
 
             return RedirectToAction("Index");
         }
@@ -101,7 +101,7 @@ namespace live.asp.net.Controllers
         {
             _memoryCache.Remove(YouTubeShowsService.CacheKey);
 
-            Context.Response.Cookies.Append("msg", "2");
+            HttpContext.Response.Cookies.Append("msg", "2");
 
             return RedirectToAction("Index");
         }

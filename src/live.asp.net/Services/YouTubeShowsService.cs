@@ -34,7 +34,7 @@ namespace live.asp.net.Services
             TelemetryClient telemetry)
         {
             _env = env;
-            _appSettings = appSettings.Options;
+            _appSettings = appSettings.Value;
             _cache = memoryCache;
             _telemetry = telemetry;
         }

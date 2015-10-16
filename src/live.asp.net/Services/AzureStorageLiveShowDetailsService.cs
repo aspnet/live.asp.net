@@ -26,7 +26,7 @@ namespace live.asp.net.Services
             IMemoryCache cache,
             TelemetryClient telemetry)
         {
-            _appSettings = appSettings.Options;
+            _appSettings = appSettings.Value;
             _cache = cache;
             _telemtry = telemetry;
         }

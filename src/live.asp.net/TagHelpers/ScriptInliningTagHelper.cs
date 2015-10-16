@@ -6,12 +6,13 @@ using System.IO;
 using System.Text;
 using Microsoft.AspNet.FileProviders;
 using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.AspNet.Mvc.ViewFeatures;
 using Microsoft.AspNet.Razor.Runtime.TagHelpers;
 
 namespace live.asp.net.TagHelpers
 {
-    [TargetElement("script", Attributes = "inline")]
+    [HtmlTargetElement("script", Attributes = "inline")]
     public class ScriptInliningTagHelper : TagHelper
     {
         private readonly IFileProvider _wwwroot;

@@ -6,27 +6,28 @@
     "warningsAsErrors": true
   },
   "dependencies": {
-    "Microsoft.Dnx.Runtime.Abstractions": "1.0.0-beta7",
-    "Microsoft.AspNet.Mvc": "6.0.0-beta7",
-    "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta7",
-    "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta7",
-    "Microsoft.AspNet.Authentication.OpenIdConnect": "1.0.0-beta7",
-    "Microsoft.AspNet.Diagnostics": "1.0.0-beta7",
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta7",
-    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta7",
-    "Microsoft.AspNet.StaticFiles": "1.0.0-beta7",
-    "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta7",
-    "Microsoft.Framework.Configuration.Json": "1.0.0-beta7",
-    "Microsoft.Framework.Configuration.UserSecrets": "1.0.0-beta7",
-    "Microsoft.Framework.Logging": "1.0.0-beta7",
-    "Microsoft.Framework.Logging.Console": "1.0.0-beta7",
-    "Microsoft.ApplicationInsights.AspNet": "1.0.0-beta7",
-    "WindowsAzure.Storage": "4.3.0",
-    "Google.Apis.YouTube.v3": "1.9.2.1420",
+    "Microsoft.Dnx.Runtime.Abstractions": "1.0.0-beta8",
+    "Microsoft.AspNet.Mvc": "6.0.0-beta8",
+    "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta8",
+    "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta8",
+    "Microsoft.AspNet.Authentication.OpenIdConnect": "1.0.0-beta8",
+    "Microsoft.AspNet.Diagnostics": "1.0.0-beta8",
+    "Microsoft.AspNet.Server.Kestrel": "1.0.0-beta8",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-beta8",
+    "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta8",
+    "Microsoft.AspNet.IISPlatformHandler": "1.0.0-beta8",
+    "Microsoft.Framework.Configuration.Json": "1.0.0-beta8",
+    "Microsoft.Framework.Configuration.UserSecrets": "1.0.0-beta8",
+    "Microsoft.Framework.Logging": "1.0.0-beta8",
+    "Microsoft.Framework.Logging.Console": "1.0.0-beta8",
+    "Microsoft.Framework.Logging.Debug": "1.0.0-beta8",
+    "Microsoft.ApplicationInsights.AspNet": "1.0.0-beta8",
+    "WindowsAzure.Storage": "6.0.1-preview",
+    "Google.Apis.YouTube.v3": "1.9.2.1490",
     "Newtonsoft.Json": "7.0.1"
   },
   "commands": {
-    "web": "Microsoft.AspNet.Hosting --config hosting.ini"
+    "web": "Microsoft.AspNet.Server.Kestrel"
   },
 
   "frameworks": {
@@ -35,13 +36,9 @@
 
   "exclude": [
     "wwwroot",
-    "node_modules",
-    "bower_components"
+    "node_modules"
   ],
-  "bundleExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
+  "publishExclude": [
     "**.user",
     "**.vspscc"
   ],
