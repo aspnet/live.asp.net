@@ -87,36 +87,36 @@ namespace live.asp.net.Services
                 var playlistItems = await playlistRequest.ExecuteAsync();
                 _telemetry.TrackDependency("YouTube.PlaylistItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
                 
-                var videosRequest = client.Videos.List("contentDetails,snippet"); //contentDetails for Duration
+                var videosRequest = client.Videos.List("contentDetails");
                 var ids = string.Join(",", playlistItems.Items.Select(item => item.Snippet.ResourceId.VideoId));
                 videosRequest.Id = ids;
 
                 requestStart = DateTimeOffset.UtcNow;
                 var videos = await videosRequest.ExecuteAsync();
                 _telemetry.TrackDependency("YouTube.VideosApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
-
-                var videosPlaylistInfoDictionary = new Dictionary<string, PlaylistItem>(playlistItems.Items.Count);
-                foreach (var item in playlistItems.Items)
-                    videosPlaylistInfoDictionary.Add(item.Snippet.ResourceId.VideoId, item);
-
-                // A solution that doesn't require the videosPlaylistInfoDictionary could be achieved by retrieving the video url like this:
-                // Url = GetVideoUrl(item.Id, _appSettings.YouTubePlaylistId, counter++)
-                // since the YouTubePlaylistId doesn't change and the videos are ordered as the requested ids
-                var s = ParseDuration(videos.Items[0].ContentDetails.Duration);
+                
+                var videosContentDetailsDictionary = new Dictionary<string, Video>(videos.Items.Count);
+                foreach (var item in videos.Items)
+                    videosContentDetailsDictionary.Add(item.Id, item);
+                
                 var result = new ShowList();
 
-                result.Shows = videos.Items.Select(item => new Show
+                result.Shows = playlistItems.Items.Select(playlistItem =>
                 {
-                    Provider = "YouTube",
-                    ProviderId = item.Id,
-                    Title = GetUsefulBitsFromTitle(item.Snippet.Title),
-                    Description = item.Snippet.Description,
-                    ShowDate = DateTimeOffset.Parse(item.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
-                    ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
-                    Url = GetVideoUrl(item.Id,
-                                      videosPlaylistInfoDictionary[item.Id].Snippet.PlaylistId,
-                                      videosPlaylistInfoDictionary[item.Id].Snippet.Position ?? 0),
-                    DurationLabel = ParseDuration(item.ContentDetails.Duration)
+                    var videoContentDetails = videosContentDetailsDictionary[playlistItem.Snippet.ResourceId.VideoId];
+                    return new Show
+                    {
+                        Provider = "YouTube",
+                        ProviderId = videoContentDetails.Id,
+                        Title = GetUsefulBitsFromTitle(playlistItem.Snippet.Title),
+                        Description = playlistItem.Snippet.Description,
+                        ShowDate = DateTimeOffset.Parse(playlistItem.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
+                        ThumbnailUrl = playlistItem.Snippet.Thumbnails.High.Url,
+                        Url = GetVideoUrl(videoContentDetails.Id,
+                                          playlistItem.Snippet.PlaylistId,
+                                          playlistItem.Snippet.Position ?? 0),
+                        DurationLabel = ParseDuration(videoContentDetails.ContentDetails.Duration)
+                    };
                 }).ToList();
                 
                 if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
