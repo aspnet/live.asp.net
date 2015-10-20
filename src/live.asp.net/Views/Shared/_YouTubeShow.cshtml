@@ -4,25 +4,28 @@
 <div class="col-sm-6 col-md-4">
     <div class="thumbnail youtube-show bottom-buffer center-block">
         <a href="@Model.Url" title="Watch this episode">
-            <div>
+            <div class="thumbnail-container">
                 <img class="img-responsive center-block" src="@Model.ThumbnailUrl" alt="Thumbnail of episode" />
+                @if (Model.HasDuration)
+                {
+                    <span class="video-duration">@Model.DurationLabel</span>
+                }
             </div>
         </a>
         <div class="caption text-center">
-            
-                <h3>
-                    <a href="@Model.Url" title="Watch this episode">
-                        @if (Model.HasTitle)
-                        {
-                            @Model.Title<br />
-                        }
-                    </a>
-                    <span class="show-date">@Model.ShowDate.DateTime.ToString("MMM dd, yyyy")</span>
-                    @if (Model.IsNew)
+            <h3>
+                <a href="@Model.Url" title="Watch this episode">
+                    @if (Model.HasTitle)
                     {
-                        <span class="label label-success label-new-show">New</span>
+                        @Model.Title<br />
                     }
-                </h3>
+                </a>
+                <span class="show-date">@Model.ShowDate.DateTime.ToString("MMM dd, yyyy")</span>
+                @if (Model.IsNew)
+                {
+                    <span class="label label-success label-new-show">New</span>
+                }
+            </h3>
         </div>
     </div>
 </div>

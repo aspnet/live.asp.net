@@ -15,12 +15,17 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Framework.Caching.Memory;
 using Microsoft.Framework.OptionsModel;
 using Microsoft.Framework.WebEncoders;
+using Google.Apis.YouTube.v3.Data;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace live.asp.net.Services
 {
     public class YouTubeShowsService : IShowsService
     {
         public const string CacheKey = nameof(YouTubeShowsService);
+
+        public int ResultsCount { get; } = 3 * 8;
 
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
@@ -74,28 +79,47 @@ namespace live.asp.net.Services
                 ApiKey = _appSettings.YouTubeApiKey
             }))
             {
-                var listRequest = client.PlaylistItems.List("snippet");
-                listRequest.PlaylistId = _appSettings.YouTubePlaylistId;
-                listRequest.MaxResults = 3 * 8;
+                var playlistRequest = client.PlaylistItems.List("snippet");
+                playlistRequest.PlaylistId = _appSettings.YouTubePlaylistId;
+                playlistRequest.MaxResults = ResultsCount;
 
                 var requestStart = DateTimeOffset.UtcNow;
-                var playlistItems = await listRequest.ExecuteAsync();
-                _telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
+                var playlistItems = await playlistRequest.ExecuteAsync();
+                _telemetry.TrackDependency("YouTube.PlaylistItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
+                
+                var videosRequest = client.Videos.List("contentDetails,snippet"); //contentDetails for Duration
+                var ids = string.Join(",", playlistItems.Items.Select(item => item.Snippet.ResourceId.VideoId));
+                videosRequest.Id = ids;
 
+                requestStart = DateTimeOffset.UtcNow;
+                var videos = await videosRequest.ExecuteAsync();
+                _telemetry.TrackDependency("YouTube.VideosApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
+
+                var videosPlaylistInfoDictionary = new Dictionary<string, PlaylistItem>(playlistItems.Items.Count);
+                foreach (var item in playlistItems.Items)
+                    videosPlaylistInfoDictionary.Add(item.Snippet.ResourceId.VideoId, item);
+
+                // A solution that doesn't require the videosPlaylistInfoDictionary could be achieved by retrieving the video url like this:
+                // Url = GetVideoUrl(item.Id, _appSettings.YouTubePlaylistId, counter++)
+                // since the YouTubePlaylistId doesn't change and the videos are ordered as the requested ids
+                var s = ParseDuration(videos.Items[0].ContentDetails.Duration);
                 var result = new ShowList();
 
-                result.Shows = playlistItems.Items.Select(item => new Show
+                result.Shows = videos.Items.Select(item => new Show
                 {
                     Provider = "YouTube",
-                    ProviderId = item.Snippet.ResourceId.VideoId,
+                    ProviderId = item.Id,
                     Title = GetUsefulBitsFromTitle(item.Snippet.Title),
                     Description = item.Snippet.Description,
                     ShowDate = DateTimeOffset.Parse(item.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
                     ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
-                    Url = GetVideoUrl(item.Snippet.ResourceId.VideoId, item.Snippet.PlaylistId, item.Snippet.Position ?? 0)
+                    Url = GetVideoUrl(item.Id,
+                                      videosPlaylistInfoDictionary[item.Id].Snippet.PlaylistId,
+                                      videosPlaylistInfoDictionary[item.Id].Snippet.Position ?? 0),
+                    DurationLabel = ParseDuration(item.ContentDetails.Duration)
                 }).ToList();
-
-                if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
+                
+                if (!string.IsNullOrEmpty(videos.NextPageToken))
                 {
                     result.MoreShowsUrl = GetPlaylistUrl(_appSettings.YouTubePlaylistId);
                 }
@@ -137,6 +161,32 @@ namespace live.asp.net.Services
             return $"https://www.youtube.com/playlist?list={encodedPlaylistId}";
         }
 
+        private static string ParseDuration(string duration)
+        {
+            duration = duration.ToUpper();
+
+			// youtube api format: ISO 8601 duration
+			// https://developers.google.com/youtube/v3/docs/videos#contentDetails.duration
+            // we're interested in the sequence T(#H)#M#S (e.g. PT15M33S) but a more complicate format can be returned (e.g. P3W3DT20H31M21S)
+            var time = Regex.Match(duration, @"T(\d+H)?\d+M\d+S");
+            if (time.Success)
+            {
+                var digitValues = Regex.Matches(time.Value, @"(\d+)");
+                StringBuilder sb = new StringBuilder();
+
+                int x;
+                foreach (var value in digitValues)
+                    if (int.TryParse(value.ToString(), out x))
+                        sb.Append($":{x.ToString("00")}"); // two-digits format
+
+                var s = sb.ToString();
+                if (s.Length > 0)
+                    return s.Substring(1); // removes first ':'
+            }
+
+            return null;
+        }
+
         private static class DesignData
         {
             private static readonly TimeSpan _pdtOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
@@ -152,7 +202,8 @@ namespace live.asp.net.Services
                     Provider = "YouTube",
                     ProviderId = "7O81CAjmOXk",
                     ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
-                    Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+                    Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
+                    DurationLabel = "26:51"
                 },
                 new Show
                 {
@@ -161,7 +212,8 @@ namespace live.asp.net.Services
                     Provider = "YouTube",
                     ProviderId = "bFXseBPGAyQ",
                     ThumbnailUrl = "http://img.youtube.com/vi/bFXseBPGAyQ/mqdefault.jpg",
-                    Url = "https://www.youtube.com/watch?v=bFXseBPGAyQ&index=2&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+                    Url = "https://www.youtube.com/watch?v=bFXseBPGAyQ&index=2&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
+                    DurationLabel = "28:24"
                 },
 
                 new Show
@@ -180,7 +232,8 @@ namespace live.asp.net.Services
                     Provider = "YouTube",
                     ProviderId = "7O81CAjmOXk",
                     ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
-                    Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
+                    Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
+                    DurationLabel = "01:26:51"
                 },
             };
         }
