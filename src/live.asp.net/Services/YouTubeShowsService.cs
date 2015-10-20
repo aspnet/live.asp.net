@@ -119,7 +119,7 @@ namespace live.asp.net.Services
                     DurationLabel = ParseDuration(item.ContentDetails.Duration)
                 }).ToList();
                 
-                if (!string.IsNullOrEmpty(videos.NextPageToken))
+                if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
                 {
                     result.MoreShowsUrl = GetPlaylistUrl(_appSettings.YouTubePlaylistId);
                 }
