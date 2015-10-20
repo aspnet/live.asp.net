@@ -31,14 +31,14 @@ gulp.task("clean:css", function (cb) {
 gulp.task("clean", ["clean:js", "clean:css"]);
 
 gulp.task("min:js", function () {
-    gulp.src([paths.js, "!" + paths.minJs], { base: "." })
+    return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
         .pipe(concat(paths.concatJsDest))
         .pipe(uglify())
         .pipe(gulp.dest("."));
 });
 
 gulp.task("min:css", function () {
-    gulp.src([paths.css, "!" + paths.minCss])
+    return gulp.src([paths.css, "!" + paths.minCss])
         .pipe(concat(paths.concatCssDest))
         .pipe(cssmin())
         .pipe(gulp.dest("."));
@@ -47,13 +47,13 @@ gulp.task("min:css", function () {
 gulp.task("min", ["min:js", "min:css"]);
 
 gulp.task("jshint", function() {
-    gulp.src(paths.js)
+    return gulp.src(paths.js)
         .pipe(jshint())
         .pipe(jshint.reporter())
 });
 
 gulp.task("csslint", function() {
-    gulp.src(paths.css)
+    return gulp.src(paths.css)
         .pipe(csslint())
         .pipe(csslint.reporter());
 });
