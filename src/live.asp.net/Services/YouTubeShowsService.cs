@@ -16,8 +16,7 @@ using Microsoft.Framework.Caching.Memory;
 using Microsoft.Framework.OptionsModel;
 using Microsoft.Framework.WebEncoders;
 using Google.Apis.YouTube.v3.Data;
-using System.Text.RegularExpressions;
-using System.Text;
+using static System.Xml.XmlConvert;
 
 namespace live.asp.net.Services
 {
@@ -25,7 +24,9 @@ namespace live.asp.net.Services
     {
         public const string CacheKey = nameof(YouTubeShowsService);
 
-        public int ResultsCount { get; } = 3 * 8;
+        private const string _providerName = "YouTube";
+
+        private const int _resultsCount = 3 * 8;
 
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
@@ -81,7 +82,7 @@ namespace live.asp.net.Services
             {
                 var playlistRequest = client.PlaylistItems.List("snippet");
                 playlistRequest.PlaylistId = _appSettings.YouTubePlaylistId;
-                playlistRequest.MaxResults = ResultsCount;
+                playlistRequest.MaxResults = _resultsCount;
 
                 var requestStart = DateTimeOffset.UtcNow;
                 var playlistItems = await playlistRequest.ExecuteAsync();
@@ -106,7 +107,7 @@ namespace live.asp.net.Services
                     var videoContentDetails = videosContentDetailsDictionary[playlistItem.Snippet.ResourceId.VideoId];
                     return new Show
                     {
-                        Provider = "YouTube",
+                        Provider = _providerName,
                         ProviderId = videoContentDetails.Id,
                         Title = GetUsefulBitsFromTitle(playlistItem.Snippet.Title),
                         Description = playlistItem.Snippet.Description,
@@ -118,7 +119,7 @@ namespace live.asp.net.Services
                         DurationLabel = ParseDuration(videoContentDetails.ContentDetails.Duration)
                     };
                 }).ToList();
-                
+
                 if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
                 {
                     result.MoreShowsUrl = GetPlaylistUrl(_appSettings.YouTubePlaylistId);
@@ -163,28 +164,21 @@ namespace live.asp.net.Services
 
         private static string ParseDuration(string duration)
         {
-            duration = duration.ToUpper();
-
-			// youtube api format: ISO 8601 duration
-			// https://developers.google.com/youtube/v3/docs/videos#contentDetails.duration
-            // we're interested in the sequence T(#H)#M#S (e.g. PT15M33S) but a more complicate format can be returned (e.g. P3W3DT20H31M21S)
-            var time = Regex.Match(duration, @"T(\d+H)?\d+M\d+S");
-            if (time.Success)
+            // youtube api format: ISO 8601 duration
+            // https://developers.google.com/youtube/v3/docs/videos#contentDetails.duration
+            // NB: youtube api returns the notation which includes "weeks"
+            try
             {
-                var digitValues = Regex.Matches(time.Value, @"(\d+)");
-                StringBuilder sb = new StringBuilder();
+                // conversion based on the W3C XML Schema Part 2: Datatypes recommendation for duration
+                // http://www.w3.org/TR/xmlschema-2/#duration
+                var timeSpan = ToTimeSpan(duration);
+                var hours = timeSpan.Hours > 0 ? $"{timeSpan.Hours.ToString("00")}:" : string.Empty;
+                return $"{hours}{timeSpan.Minutes.ToString("00")}:{timeSpan.Seconds.ToString("00")}";
 
-                int x;
-                foreach (var value in digitValues)
-                    if (int.TryParse(value.ToString(), out x))
-                        sb.Append($":{x.ToString("00")}"); // two-digits format
-
-                var s = sb.ToString();
-                if (s.Length > 0)
-                    return s.Substring(1); // removes first ':'
+            } catch (FormatException) // duration doesn't match the format P#Y#M#DT#H#M#S (possibly includes weeks)
+            {
+                return null;
             }
-
-            return null;
         }
 
         private static class DesignData
