@@ -150,12 +150,12 @@ footer {
 }
 
 .video-duration {
-	position: absolute;
+    position: absolute;
     right: 2px;
     padding: 0 4px;
     margin-right: 10px;
     margin-top: -32px;
-    font-weight: 500;
+    font-weight: 600;
     background-color: #000;
     color: #fff;
     font-size: 15px;

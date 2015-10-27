@@ -98,7 +98,9 @@ namespace live.asp.net.Services
                 
                 var videosContentDetailsDictionary = new Dictionary<string, Video>(videos.Items.Count);
                 foreach (var item in videos.Items)
+                {
                     videosContentDetailsDictionary.Add(item.Id, item);
+                }
                 
                 var result = new ShowList();
 
@@ -108,15 +110,15 @@ namespace live.asp.net.Services
                     return new Show
                     {
                         Provider = _providerName,
-                        ProviderId = videoContentDetails.Id,
+                        ProviderId = playlistItem.Snippet.ResourceId.VideoId,
                         Title = GetUsefulBitsFromTitle(playlistItem.Snippet.Title),
                         Description = playlistItem.Snippet.Description,
                         ShowDate = DateTimeOffset.Parse(playlistItem.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
                         ThumbnailUrl = playlistItem.Snippet.Thumbnails.High.Url,
-                        Url = GetVideoUrl(videoContentDetails.Id,
+                        Url = GetVideoUrl(playlistItem.Snippet.ResourceId.VideoId,
                                           playlistItem.Snippet.PlaylistId,
                                           playlistItem.Snippet.Position ?? 0),
-                        DurationLabel = ParseDuration(videoContentDetails.ContentDetails.Duration)
+                        Duration = ParseDuration(videoContentDetails.ContentDetails.Duration)
                     };
                 }).ToList();
 
@@ -164,19 +166,19 @@ namespace live.asp.net.Services
 
         private static string ParseDuration(string duration)
         {
-            // youtube api format: ISO 8601 duration
+            // Youtube api format: ISO 8601 duration
             // https://developers.google.com/youtube/v3/docs/videos#contentDetails.duration
-            // NB: youtube api returns the notation which includes "weeks"
+            // Youtube api returns the notation which includes "weeks"
             try
             {
-                // conversion based on the W3C XML Schema Part 2: Datatypes recommendation for duration
+                // Conversion based on the W3C XML Schema Part 2: Datatypes recommendation for duration
                 // http://www.w3.org/TR/xmlschema-2/#duration
                 var timeSpan = ToTimeSpan(duration);
                 var hours = timeSpan.Hours > 0 ? $"{timeSpan.Hours.ToString("00")}:" : string.Empty;
                 return $"{hours}{timeSpan.Minutes.ToString("00")}:{timeSpan.Seconds.ToString("00")}";
-
-            } catch (FormatException) // duration doesn't match the format P#Y#M#DT#H#M#S (possibly includes weeks)
+            } catch (FormatException)
             {
+                // Duration doesn't match the format P#Y#M#DT#H#M#S (possibly includes weeks)
                 return null;
             }
         }
@@ -197,7 +199,7 @@ namespace live.asp.net.Services
                     ProviderId = "7O81CAjmOXk",
                     ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
                     Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
-                    DurationLabel = "26:51"
+                    Duration = "26:51"
                 },
                 new Show
                 {
@@ -207,7 +209,7 @@ namespace live.asp.net.Services
                     ProviderId = "bFXseBPGAyQ",
                     ThumbnailUrl = "http://img.youtube.com/vi/bFXseBPGAyQ/mqdefault.jpg",
                     Url = "https://www.youtube.com/watch?v=bFXseBPGAyQ&index=2&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
-                    DurationLabel = "28:24"
+                    Duration = "28:24"
                 },
 
                 new Show
@@ -227,7 +229,7 @@ namespace live.asp.net.Services
                     ProviderId = "7O81CAjmOXk",
                     ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
                     Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF",
-                    DurationLabel = "01:26:51"
+                    Duration = "01:26:51"
                 },
             };
         }

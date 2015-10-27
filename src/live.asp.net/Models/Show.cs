@@ -29,8 +29,8 @@ namespace live.asp.net.Models
 
         public string ThumbnailUrl { get; set; }
 
-        public string DurationLabel { get; set; }
+        public string Duration { get; set; }
 
-        public bool HasDuration => !string.IsNullOrEmpty(DurationLabel);
+        public bool HasDuration => !string.IsNullOrEmpty(Duration);
     }
 }
