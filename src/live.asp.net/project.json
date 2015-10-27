@@ -5,6 +5,7 @@
   "compilationOptions": {
     "warningsAsErrors": true
   },
+
   "dependencies": {
     "Microsoft.ApplicationInsights.AspNet": "1.0.0-beta8",
     "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta8",
@@ -26,20 +27,25 @@
     "Newtonsoft.Json": "7.0.1",
     "WindowsAzure.Storage": "6.0.1-preview"
   },
+
   "commands": {
     "web": "Microsoft.AspNet.Server.Kestrel"
   },
+
   "frameworks": {
     "dnx451": { }
   },
+
   "exclude": [
     "wwwroot",
     "node_modules"
   ],
+
   "publishExclude": [
     "**.user",
     "**.vspscc"
   ],
+
   "scripts": {
     "prepublish": [ "npm install", "bower install", "gulp clean", "gulp csslint", "gulp jshint", "gulp min" ]
   }
