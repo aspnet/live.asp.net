@@ -1,6 +1,4 @@
-﻿@inject Microsoft.AspNet.Hosting.IHostingEnvironment HostingEnvironment
-@inject Microsoft.Dnx.Runtime.IApplicationEnvironment ApplicationEnvironment
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -28,7 +26,7 @@
     @RenderSection("PreContent", required: false)
     <div class="container body-content">
         @RenderBody()
-        
+
         <footer>
             <div class="row">
                 <div class="col-md-6">
@@ -60,5 +58,5 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
-<!-- Environment: @HostingEnvironment.EnvironmentName -->
-<!-- Framework: @ApplicationEnvironment.RuntimeFramework -->
+<html-comment><environment-info /></html-comment>
+<html-comment><framework-info /></html-comment>
