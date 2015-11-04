@@ -2,7 +2,6 @@
 
 namespace live.asp.net.TagHelpers
 {
-    [HtmlTargetElement("*", Attributes ="commented")]
     public class HtmlCommentTagHelper : TagHelper
     {
         private const string StartHtmlComment = "<!-- ";
