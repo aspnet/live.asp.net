@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using live.asp.net.Models;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc.Formatters;
-using Microsoft.Net.Http.Headers;
+using MediaTypeHeaderValue = Microsoft.Net.Http.Headers.MediaTypeHeaderValue;
 
 namespace live.asp.net.Formatters
 {
@@ -41,6 +41,14 @@ namespace live.asp.net.Formatters
             else
             {
                 base.WriteResponseHeaders(context);
+
+                var contentDisposition = new System.Net.Mime.ContentDisposition
+                {
+                    FileName = "meeting.ics",
+                    Inline = true,
+                };
+
+                context.HttpContext.Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
             }
         }
 
