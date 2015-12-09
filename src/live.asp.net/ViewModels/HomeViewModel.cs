@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using live.asp.net.Models;
-using Microsoft.Framework.WebEncoders;
+using Microsoft.Extensions.WebEncoders;
 
 namespace live.asp.net.ViewModels
 {

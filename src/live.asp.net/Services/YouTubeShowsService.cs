@@ -12,9 +12,9 @@ using Google.Apis.YouTube.v3;
 using live.asp.net.Models;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNet.Hosting;
-using Microsoft.Framework.Caching.Memory;
-using Microsoft.Framework.OptionsModel;
-using Microsoft.Framework.WebEncoders;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.WebEncoders;
 
 namespace live.asp.net.Services
 {

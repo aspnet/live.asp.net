@@ -9,8 +9,8 @@ using live.asp.net.ViewModels;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Framework.Caching.Memory;
-using Microsoft.Framework.OptionsModel;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.OptionsModel;
 
 namespace live.asp.net.Controllers
 {

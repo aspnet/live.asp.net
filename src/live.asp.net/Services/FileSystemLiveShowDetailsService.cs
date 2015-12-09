@@ -5,8 +5,8 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using live.asp.net.Models;
-using Microsoft.Dnx.Runtime;
-using Microsoft.Framework.Caching.Memory;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 
 namespace live.asp.net.Services
