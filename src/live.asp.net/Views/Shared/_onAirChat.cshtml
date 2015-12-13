@@ -7,7 +7,7 @@
         <div class="OnAirTextArea" id="chatWindow"></div>
         <form asp-controller="OnAir" asp-action="Chat" method="post" class="form-horizontal" role="form" id="chat">
             <input asp-for="Message" type="text"/>
-            <input asp-for="UserName" type="hidden" value="@(!User.Identity.IsAuthenticated ? Context.Request.Cookies["UserName"].ToString() : User.Identity.Name)" />
+            <input asp-for="UserName" type="hidden" value="@(!User.Identity.IsAuthenticated ? Context.Request.Cookies["UserName"].ToString() : User.Identity.Name)"/>
         </form>
     </div>
 </div>

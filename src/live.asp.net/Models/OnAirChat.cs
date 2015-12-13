@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-namespace live.asp.net.ViewModels
+using System;
+
+namespace live.asp.net.Models
 {
     public class OnAirChat
     {
         public string UserName { get; set; }
+
         public DateTime TimeStamp { get; set; }
+
         public string Message { get; set; }
 
         public string TimeStampHuman

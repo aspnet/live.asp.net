@@ -7,11 +7,5 @@
             <input asp-for="UserName" type="hidden" value="@(!User.Identity.IsAuthenticated ? Context.Request.Cookies["UserName"].ToString() : User.Identity.Name)"/>
             <button type="submit" class="btn btn-primary">Ask!</button>
         </form>
-        
-        <div style="text-align: right">
-        </div>
-
     </div>
 </div>        
-
-   

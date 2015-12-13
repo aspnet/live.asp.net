@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using live.asp.net.ViewModels;
+using live.asp.net.Models;
 
 namespace live.asp.net.Services
 {
@@ -28,6 +27,7 @@ namespace live.asp.net.Services
             _questionLogs = new Collection<OnAirQuestions>();
             _questionIndex = 0;
         }
+
         public Collection<OnAirChat> GetChat()
         {
             return _chatLogs;
@@ -38,7 +38,7 @@ namespace live.asp.net.Services
             _chatLogs = new Collection<OnAirChat>();
             _questionLogs = new Collection<OnAirQuestions>();
         }
-     
+
         public bool AddChat(OnAirChat onAirChat)
         {
             if (onAirChat.Message == null || onAirChat.UserName == null)

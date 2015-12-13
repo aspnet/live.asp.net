@@ -1,26 +1,24 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using live.asp.net.Services;
-using live.asp.net.ViewModels;
+using live.asp.net.Models;
 using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Mvc;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace live.asp.net.Controllers
 {
- 
     [Route("/OnAir")]
     public class OnAirController : Controller
     {
-        private IOnAir _onAir;
+        private readonly IOnAir _onAir;
 
         public OnAirController(IOnAir onAir)
         {
@@ -31,34 +29,33 @@ namespace live.asp.net.Controllers
         [Route("/onAir/getdata/{lastDateString?}")]
         public JsonResult GetData(string lastDateString)
         {
-            DateTime lastDate = new DateTime();
-            bool gotLastDate = true;
+            var lastDate = new DateTime();
+            var gotLastDate = true;
             try
             {
                 lastDate = DateTime.ParseExact(lastDateString, "yyyyMMddHHmmssff", CultureInfo.InvariantCulture);
-
             }
             catch (FormatException)
             {
                 gotLastDate = false;
             }
-            ChatAndQuestions chatAndQuestions = new ChatAndQuestions();
+            var chatAndQuestions = new OnAirChatAndQuestions();
             chatAndQuestions.chats = new List<OnAirChat>();
             chatAndQuestions.questions = new List<OnAirQuestions>();
             if (gotLastDate)
             {
-                foreach (OnAirChat chat in _onAir.GetChat())
+                foreach (var chat in _onAir.GetChat())
                 {
-                    int result = 0;
+                    int result;
                     result = DateTime.Compare(chat.TimeStamp, lastDate);
                     if (result > 0)
                     {
                         chatAndQuestions.chats.Add(chat);
                     }
                 }
-                foreach (OnAirQuestions question in _onAir.GetQuestions())
+                foreach (var question in _onAir.GetQuestions())
                 {
-                    int result = 0;
+                    int result;
                     result = DateTime.Compare(question.TimeStamp, lastDate);
                     if (result > 0)
                     {
@@ -82,7 +79,7 @@ namespace live.asp.net.Controllers
             chatAndQuestions.LastTime = DateTime.Now.ToString("yyyyMMddHHmmssff");
             return Json(chatAndQuestions);
         }
-        
+
         [HttpPost]
         [Route("/onAir/chat")]
         public string Chat(OnAirChat model)
@@ -90,17 +87,18 @@ namespace live.asp.net.Controllers
             model.TimeStamp = DateTime.Now;
             model.Message = WebUtility.HtmlEncode(model.Message);
             model.UserName = WebUtility.HtmlEncode(model.UserName);
+
             if (User.Identity.IsAuthenticated)
             {
                 model.UserName = $"<b>{User.Identity.Name}</b>";
                 model.Message = $"<b>{model.Message}</b>";
             }
-                foreach (Match match in Regex.Matches(model.Message, "url:(.*?) "))
+            foreach (Match match in Regex.Matches(model.Message, "url:(.*?) "))
             {
-                string url = match.Value.Replace("url:", "").Replace(" ", "");
+                var url = match.Value.Replace("url:", "").Replace(" ", "");
                 model.Message = model.Message.Replace(match.Value, $"<a href=\"{url}\">{url}</a> ");
             }
-            
+
             if (model.UserName != null && model.Message != null)
             {
                 _onAir.AddChat(model);
@@ -136,7 +134,7 @@ namespace live.asp.net.Controllers
         [Route("/onAir/PlusOne/{id?}")]
         public void PlusOne(int id)
         {
-            foreach (OnAirQuestions question in _onAir.GetQuestions())
+            foreach (var question in _onAir.GetQuestions())
             {
                 if (question.Id == id)
                 {
@@ -151,7 +149,7 @@ namespace live.asp.net.Controllers
         [Route("/onAir/Answer/{id?}")]
         public void Answer(int id)
         {
-            foreach (OnAirQuestions question in _onAir.GetQuestions())
+            foreach (var question in _onAir.GetQuestions())
             {
                 if (question.Id == id)
                 {
@@ -167,7 +165,7 @@ namespace live.asp.net.Controllers
         [Route("/onAir/Answered/{id?}")]
         public void Answered(int id)
         {
-            foreach (OnAirQuestions question in _onAir.GetQuestions())
+            foreach (var question in _onAir.GetQuestions())
             {
                 if (question.Id == id)
                 {
