@@ -8,7 +8,7 @@
         <div class="col-md-3 ScrollOverFlow" id="QuestionBar">
         </div>
     </div>
-    @if (!String.IsNullOrEmpty(Context.Request.Cookies["UserName"]))
+    @if (!String.IsNullOrEmpty(Context.Request.Cookies["UserName"]) || User.Identity.IsAuthenticated)
     {
         <div class="row">
             <div class="col-md-9">

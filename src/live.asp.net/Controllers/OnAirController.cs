@@ -89,12 +89,18 @@ namespace live.asp.net.Controllers
         {
             model.TimeStamp = DateTime.Now;
             model.Message = WebUtility.HtmlEncode(model.Message);
-            foreach (Match match in Regex.Matches(model.Message, "url:(.*?) "))
+            model.UserName = WebUtility.HtmlEncode(model.UserName);
+            if (User.Identity.IsAuthenticated)
+            {
+                model.UserName = $"<b>{User.Identity.Name}</b>";
+                model.Message = $"<b>{model.Message}</b>";
+            }
+                foreach (Match match in Regex.Matches(model.Message, "url:(.*?) "))
             {
                 string url = match.Value.Replace("url:", "").Replace(" ", "");
                 model.Message = model.Message.Replace(match.Value, $"<a href=\"{url}\">{url}</a> ");
             }
-
+            
             if (model.UserName != null && model.Message != null)
             {
                 _onAir.AddChat(model);
@@ -106,7 +112,7 @@ namespace live.asp.net.Controllers
         [Route("/onAir/Join")]
         public IActionResult Join(string userName)
         {
-            
+            userName = WebUtility.HtmlEncode(userName);
             Response.Cookies.Append("UserName", userName);
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -117,6 +123,7 @@ namespace live.asp.net.Controllers
         public string AskQuestion(OnAirQuestions model)
         {
             model.TimeStamp = DateTime.Now;
+            model.UserName = WebUtility.HtmlEncode(model.UserName);
             model.Vote = 0;
             if (model.Question != null && model.UserName != null)
             {

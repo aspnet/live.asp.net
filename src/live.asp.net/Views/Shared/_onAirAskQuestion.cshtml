@@ -4,7 +4,7 @@
     <div class="panel-body SmallPaddingNoMargin">
         <form asp-controller="OnAir" asp-action="AskQuestion" method="post" class="form-horizontal" role="form" id="AskQuestion">
             <textarea asp-for="Question" class="OnAirTextArea"></textarea>
-            <input asp-for="UserName" type="hidden" value="@Context.Request.Cookies["UserName"]"/>
+            <input asp-for="UserName" type="hidden" value="@(!User.Identity.IsAuthenticated ? Context.Request.Cookies["UserName"].ToString() : User.Identity.Name)"/>
             <button type="submit" class="btn btn-primary">Ask!</button>
         </form>
         
