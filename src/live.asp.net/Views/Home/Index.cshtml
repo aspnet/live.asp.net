@@ -33,7 +33,8 @@
             }
             else if (Model.IsOnAir)
             {
-                <partial name="_HangoutEmbed" model="Model"></partial>
+                <partial name="_onAir" model="Model"/>
+                
             }
             else
             {
@@ -117,6 +118,7 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/OnAir.js"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
@@ -126,6 +128,8 @@
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        
         </script>
+        <script src="~/js/OnAir.js"></script>
     </environment>
 }

@@ -1,0 +1,17 @@
+﻿@model live.asp.net.ViewModels.OnAirQuestions
+<div class="panel panel-primary OnAir">
+    <div class="panel-heading SmallPaddingNoMargin">Ask a question</div>
+    <div class="panel-body SmallPaddingNoMargin">
+        <form asp-controller="OnAir" asp-action="AskQuestion" method="post" class="form-horizontal" role="form" id="AskQuestion">
+            <textarea asp-for="Question" class="OnAirTextArea"></textarea>
+            <input asp-for="UserName" type="hidden" value="@Context.Request.Cookies["UserName"]"/>
+            <button type="submit" class="btn btn-primary">Ask!</button>
+        </form>
+        
+        <div style="text-align: right">
+        </div>
+
+    </div>
+</div>        
+
+   

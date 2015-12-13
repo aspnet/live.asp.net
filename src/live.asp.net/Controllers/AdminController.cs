@@ -25,8 +25,9 @@ namespace live.asp.net.Controllers
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
         private readonly IHostingEnvironment _env;
-
+        private IOnAir _onAir;
         public AdminController(
+            IOnAir onAir,
             IHostingEnvironment env,
             ILiveShowDetailsService liveShowDetails,
             IMemoryCache memoryCache,
@@ -36,6 +37,7 @@ namespace live.asp.net.Controllers
             _memoryCache = memoryCache;
             _appSettings = appSettings.Value;
             _env = env;
+            _onAir = onAir;
         }
 
         [HttpGet]
@@ -67,7 +69,7 @@ namespace live.asp.net.Controllers
         public async Task<IActionResult> Save(AdminViewModel model)
         {
             LiveShowDetails liveShowDetails;
-
+            _onAir.Reset();
             if (!ModelState.IsValid)
             {
                 // Model validation error, just return and let the error render

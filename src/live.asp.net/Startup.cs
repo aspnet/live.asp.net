@@ -1,9 +1,11 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.ObjectModel;
 using System.Security.Claims;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
+using live.asp.net.ViewModels;
 using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
@@ -42,10 +44,13 @@ namespace live.asp.net
         }
 
         public IConfiguration Configuration { get; set; }
+        //Move Later
+       
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.AddSingleton<IOnAir, OnAir>();
 
             services.AddAuthorization(options =>
             {
