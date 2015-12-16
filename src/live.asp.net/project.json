@@ -23,6 +23,7 @@
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
     "Microsoft.ApplicationInsights.AspNet": "1.0.0-*",
     "Newtonsoft.Json": "7.0.1",
+    "Microsoft.AspNet.SignalR.Server": "3.0.0-rc1-final",
     "Google.Apis.YouTube.v3": "1.9.2.1540",
     "WindowsAzure.Storage": "6.1.1-*"
   },

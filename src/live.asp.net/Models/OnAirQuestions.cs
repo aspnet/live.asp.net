@@ -19,8 +19,6 @@ namespace live.asp.net.Models
 
         public bool Answered { get; set; }
 
-        public int? Vote { get; set; }
-
-        public string AdminMenu { get; set; }
+        public int Vote { get; set; }
     }
 }

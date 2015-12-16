@@ -1,11 +1,9 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.ObjectModel;
 using System.Security.Claims;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
-using live.asp.net.ViewModels;
 using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
@@ -64,6 +62,10 @@ namespace live.asp.net
             });
 
             services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddSignalR(options =>
+            {
+                options.Hubs.EnableDetailedErrors = true;
+            });
 
             services.AddMvc(options =>
             {
@@ -105,7 +107,7 @@ namespace live.asp.net
             {
                 app.UseApplicationInsightsExceptionTelemetry();
             }
-
+            
             app.UseIISPlatformHandler();
 
             app.UseStaticFiles();
@@ -118,6 +120,7 @@ namespace live.asp.net
             app.UseOpenIdConnectAuthentication(options =>
             {
                 options.AutomaticAuthenticate = true;
+                options.RequireHttpsMetadata = false;
                 options.AutomaticChallenge = true;
                 options.ClientId = Configuration["Authentication:AzureAd:ClientId"];
                 options.Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"];
@@ -133,7 +136,7 @@ namespace live.asp.net
                 }
                 return next();
             });
-
+            app.UseSignalR();
             app.UseMvc();
         }
     }

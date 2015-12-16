@@ -8,32 +8,18 @@
         <div class="col-md-3 ScrollOverFlow" id="QuestionBar">
         </div>
     </div>
-    @if (!string.IsNullOrEmpty(Context.Request.Cookies["UserName"]) || User.Identity.IsAuthenticated)
-    {
-        <div class="row">
-            <div class="col-md-9">
-                <partial name="_onAirChat"/>
-            </div>
-            <div class="col-md-3">
-                <partial name="_onAirAskQuestion"/>
-            </div>
-        </div>
-    }
-</div>
-@if (string.IsNullOrEmpty(Context.Request.Cookies["UserName"]))
-{
-    <div class="row">
-        <form asp-controller="OnAir" asp-action="Join" method="POST" class="form-inline">
-            <div class="form-group">
 
-                <label class="col-md-3 control-label">Chat Handle</label>
-                <div class="col-md-5">
-                    <input type="text" value="" name="UserName" class="form-control"/>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary">Join Conversation</button>
-                </div>
-            </div>
-        </form>
+    <div class="row" id="chatbar">
+
     </div>
-}
+</div>
+
+<div class="form-group col-md-5" id="Join">
+    <label class="col-md-3 control-label">Chat Handle</label>
+    <div class="col-md-5">
+        <input type="text" id="ChatHandle" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary" id="JoinConversation">Join Conversation</button>
+    </div>
+</div>
