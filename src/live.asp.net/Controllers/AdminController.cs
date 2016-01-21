@@ -15,7 +15,7 @@ using Microsoft.Extensions.OptionsModel;
 namespace live.asp.net.Controllers
 {
     [Route("/admin")]
-    [Authorize]
+    [Authorize("Admin")]
     public class AdminController : Controller
     {
         private const string PST = "Pacific Standard Time";
