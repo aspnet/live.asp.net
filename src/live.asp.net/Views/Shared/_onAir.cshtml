@@ -1,0 +1,25 @@
+﻿@using live.asp.net.ViewModels
+@model HomeViewModel
+<div class="OnAir">
+    <div class="row">
+        <div class="col-md-9">
+            <partial name="_HangoutEmbed" model="Model"></partial>
+        </div>
+        <div class="col-md-3 ScrollOverFlow" id="QuestionBar">
+        </div>
+    </div>
+
+    <div class="row" id="chatbar">
+
+    </div>
+</div>
+
+<div class="form-group col-md-5" id="Join">
+    <label class="col-md-3 control-label">Chat Handle</label>
+    <div class="col-md-5">
+        <input type="text" id="ChatHandle" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary" id="JoinConversation">Join Conversation</button>
+    </div>
+</div>

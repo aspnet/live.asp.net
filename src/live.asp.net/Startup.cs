@@ -42,10 +42,13 @@ namespace live.asp.net
         }
 
         public IConfiguration Configuration { get; set; }
+        //Move Later
+       
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.AddSingleton<IOnAir, OnAir>();
 
             services.AddAuthorization(options =>
             {
@@ -59,6 +62,10 @@ namespace live.asp.net
             });
 
             services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddSignalR(options =>
+            {
+                options.Hubs.EnableDetailedErrors = true;
+            });
 
             services.AddMvc(options =>
             {
@@ -100,7 +107,7 @@ namespace live.asp.net
             {
                 app.UseApplicationInsightsExceptionTelemetry();
             }
-
+            
             app.UseIISPlatformHandler();
 
             app.UseStaticFiles();
@@ -113,6 +120,7 @@ namespace live.asp.net
             app.UseOpenIdConnectAuthentication(options =>
             {
                 options.AutomaticAuthenticate = true;
+                options.RequireHttpsMetadata = false;
                 options.AutomaticChallenge = true;
                 options.ClientId = Configuration["Authentication:AzureAd:ClientId"];
                 options.Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"];
@@ -128,7 +136,7 @@ namespace live.asp.net
                 }
                 return next();
             });
-
+            app.UseSignalR();
             app.UseMvc();
         }
     }

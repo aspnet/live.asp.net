@@ -1,0 +1,55 @@
+﻿.SmallPaddingNoMargin {
+    padding: 5px;
+    margin: 0;
+}
+.OnAirTextArea {
+    width: 100%;
+    max-width: 100%;
+    height: 75px;
+    border: 1px solid gray;
+}
+.OnAir {
+    margin: 10px 0;
+    color: black;
+}
+.ScrollOverFlow {
+    overflow-y: auto;
+}
+.Question {
+    max-height: 90px;
+}
+
+.OnAir input, .OnAir button {
+    width: 100%;
+    max-width: 100%;
+    height: 30px;
+    border: 1px solid gray;
+    margin: 2px 0;
+}
+#QuestionBar {
+    margin-top: 30px;
+}
+#chatWindow {
+    overflow-y: auto;
+}
+
+.OnAir .panel-heading a:visited, .OnAir .panel-heading a:active, .OnAir .panel-heading a {
+    color: white;
+}
+
+.panel-answering .panel-heading {
+    background: darkgreen;
+    border: 1px darkgreen solid;
+}
+.panel-answering {
+    border: 1px darkgreen solid;
+}
+
+.panel-answered .panel-heading {
+    background: red;
+    border: 1px red solid;
+    color: black;
+}
+.panel-answered {
+    border: 1px red solid;
+}
