@@ -21,7 +21,7 @@
     "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
-    "Microsoft.ApplicationInsights.AspNet": "1.0.0-*",
+    "Microsoft.ApplicationInsights.AspNet": "1.0.0-rc1",
     "Newtonsoft.Json": "7.0.1",
     "Google.Apis.YouTube.v3": "1.9.2.1540",
     "WindowsAzure.Storage": "6.1.1-*"
