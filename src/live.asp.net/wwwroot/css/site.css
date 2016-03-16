@@ -32,6 +32,10 @@ h2 a, h2 a:hover, h2 a:focus, h2 a:active, h2 a:visited {
     color: #fff;
 }
 
+.jumbotronLink {
+  font-size: smaller;
+}
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
@@ -127,6 +131,10 @@ footer {
             float: left;
             margin-right: 1em;
         }
+
+dd {
+  margin-bottom: 15px;
+}
 
 .youtube-show > a > div {
     background: #000;

@@ -45,10 +45,18 @@ namespace live.asp.net.Controllers
             return liveShowDetails;
         }
 
+        [Route("/faq")]
+        public IActionResult Faq()
+        {
+            return View();
+        }
+      
+
         [Route("/error")]
         public IActionResult Error()
         {
             return View();
         }
+
     }
 }

@@ -1,0 +1,77 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using live.asp.net.ViewModels
+@using live.asp.net.Models
+@model HomeViewModel
+
+@{
+  ViewData["Title"] = "ASP.NET Community Standup - FAQ";
+}
+
+@section PreContent {
+  <div class="jumbotron">
+    <div class="container">
+      <a href="https://www.microsoft.com">
+        <svg width="100" height="21">
+          <image xlink:href="/images/Microsoft_logo.svg" src="/images/mslogo.png" width="100" height="21"></image>
+        </svg>
+      </a>
+      <h1 class="text-center">
+        ASP.NET Community Standup
+      </h1>
+      <h2 class="text-center">Frequently Asked Questions</h2>
+      <div class="text-center">
+        <h2><a asp-controller="Home" asp-action="index" class="jumbotronLink">Return to the ASP.NET Community Standup Home</a></h2>
+      </div>
+    </div>
+  </div>
+}
+
+<dl>
+  <dt>When will ASP.NET Core 1.0 RTM be released?</dt>
+  <dd>
+    The team wants to ensure that they announce a date that they can deliver on.  As they are still working
+    through significant rework for compatibility with the new .NET Command-Line-Interface (CLI), there is no
+    date to share at this time.  The roadmap is available on the <a href="https://github.com/aspnet/home/wiki/roadmap">ASP.NET GitHub Wiki</a>.
+  </dd>
+  <dt>Will there be an intermediary alpha or beta release before RC2</dt>
+  <dd>No, the next public release will be RC2.  Nightly builds are available and described on the <a href="https://github.com/aspnet/Home/wiki/NuGet-feeds">NuGet-Feeds page of the ASP.NET GitHub Wiki</a></dd>
+  <dt>With the delay in the RTM date, can you get my favorite feature completed before RTM?</dt>
+  <dd>
+    The list of features to be delivered with RTM is currently locked.  The next features on the roadmap are identified and will be updated once the current
+    milestone goals have been met.
+  </dd>
+  <dt>Will the links be made available after the standup?</dt>
+  <dd>
+    The links will always be made available in the next day or two after the standup on the <a href="http://blogs.msdn.com/webdev">MSDN WebDev blog</a>.  All notes are tagged
+    under <a href="https://blogs.msdn.microsoft.com/webdev/tag/communitystandup/">CommunityStandup</a>.
+  </dd>
+  <dt>When will my favorite feature be available in ASP.NET Core?</dt>
+  <dd>
+    The roadmap of currently planned features is available on the <a href="https://github.com/aspnet/home/wiki/roadmap">ASP.NET GitHub Wiki</a>.
+  </dd>
+  <dt>Can you help me with this code?</dt>
+  <dd>Post these type of support questions to <a href="http://stackoverflow.com/questions/tagged/asp.net-core">StackOverflow with a tag of "asp.net-core"</a> and members of the team can locate it and answer it for all to see and learn from.</dd>
+
+</dl>
+
+<p><i>Last Updated March 16, 2016</i></p>
+
+
+@section Scripts {
+  <environment names="Development">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+  </environment>
+  <environment names="Staging,Production">
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
+            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+            asp-fallback-test="window.jQuery">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
+            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+    </script>
+  </environment>
+}
