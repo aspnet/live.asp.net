@@ -13,7 +13,7 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:11321/",
       "environmentVariables": {
-        "Hosting:Environment": "Development"
+        "AspNetCore_Environment": "Development"
       }
     },
     "web": {

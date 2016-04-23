@@ -4,14 +4,15 @@
 using System.Security.Claims;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
-using Microsoft.AspNet.Authentication.Cookies;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace live.asp.net
 {
@@ -19,21 +20,19 @@ namespace live.asp.net
     {
         private readonly IHostingEnvironment _env;
 
-        public static void Main(string[] args) => WebApplication.Run<Startup>(args);
-
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
             _env = env;
 
             var builder = new ConfigurationBuilder()
-                .SetBasePath(appEnv.ApplicationBasePath)
+                .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             if (_env.IsDevelopment())
             {
                 builder.AddUserSecrets();
-                builder.AddApplicationInsightsSettings(developerMode: true);
+                //builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
             builder.AddEnvironmentVariables();
@@ -41,11 +40,13 @@ namespace live.asp.net
             Configuration = builder.Build();
         }
 
-        public IConfiguration Configuration { get; set; }
+        public IConfigurationRoot Configuration { get; set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<AppSettings>(options => Configuration.GetSection("AppSettings").Bind(options));
+
+            services.AddAuthentication(SharedOptions => SharedOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
 
             services.AddAuthorization(options =>
             {
@@ -58,7 +59,7 @@ namespace live.asp.net
                 });
             });
 
-            services.AddApplicationInsightsTelemetry(Configuration);
+            //services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc(options =>
             {
@@ -84,7 +85,7 @@ namespace live.asp.net
 
             if (env.IsProduction())
             {
-                app.UseApplicationInsightsRequestTelemetry();
+                //app.UseApplicationInsightsRequestTelemetry();
             }
 
             if (env.IsDevelopment())
@@ -98,26 +99,24 @@ namespace live.asp.net
 
             if (env.IsProduction())
             {
-                app.UseApplicationInsightsExceptionTelemetry();
+               //app.UseApplicationInsightsExceptionTelemetry();
             }
-
-            app.UseIISPlatformHandler();
 
             app.UseStaticFiles();
 
-            app.UseCookieAuthentication(options =>
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                options.AutomaticAuthenticate = true;
+                AutomaticAuthenticate = true
             });
 
-            app.UseOpenIdConnectAuthentication(options =>
+            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
             {
-                options.AutomaticAuthenticate = true;
-                options.AutomaticChallenge = true;
-                options.ClientId = Configuration["Authentication:AzureAd:ClientId"];
-                options.Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"];
-                options.PostLogoutRedirectUri = Configuration["Authentication:AzureAd:PostLogoutRedirectUri"];
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                ClientId = Configuration["Authentication:AzureAd:ClientId"],
+                Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"],
+                ResponseType = OpenIdConnectResponseTypes.IdToken,
+                SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme
             });
 
             app.Use((context, next) =>

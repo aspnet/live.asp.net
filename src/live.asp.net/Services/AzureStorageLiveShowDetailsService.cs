@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using live.asp.net.Models;
 using Microsoft.ApplicationInsights;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;

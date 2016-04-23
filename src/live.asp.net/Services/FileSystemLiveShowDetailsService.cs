@@ -52,7 +52,7 @@ namespace live.asp.net.Services
             }
 
             var fileContents = JsonConvert.SerializeObject(liveShowDetails);
-            using (var fileWriter = new StreamWriter(_filePath))
+            using (var fileWriter = new StreamWriter(File.OpenWrite(_filePath)))
             {
                 await fileWriter.WriteAsync(fileContents);
             }
@@ -68,7 +68,7 @@ namespace live.asp.net.Services
             }
 
             string fileContents;
-            using (var fileReader = new StreamReader(_filePath))
+            using (var fileReader = new StreamReader(File.OpenWrite(_filePath)))
             {
                 fileContents = await fileReader.ReadToEndAsync();
             }

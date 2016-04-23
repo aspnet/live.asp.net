@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using live.asp.net.Models;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace live.asp.net.Controllers
 {

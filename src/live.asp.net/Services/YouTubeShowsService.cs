@@ -11,10 +11,10 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using live.asp.net.Models;
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNet.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.OptionsModel;
-using Microsoft.Extensions.WebEncoders;
+using Microsoft.Extensions.Options;
+using System.Text.Encodings.Web;
 
 namespace live.asp.net.Services
 {
@@ -25,18 +25,18 @@ namespace live.asp.net.Services
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
-        private readonly TelemetryClient _telemetry;
+        //private readonly TelemetryClient _telemetry;
 
         public YouTubeShowsService(
             IHostingEnvironment env,
             IOptions<AppSettings> appSettings,
-            IMemoryCache memoryCache,
-            TelemetryClient telemetry)
+            IMemoryCache memoryCache/*,
+            TelemetryClient telemetry*/)
         {
             _env = env;
             _appSettings = appSettings.Value;
             _cache = memoryCache;
-            _telemetry = telemetry;
+            //_telemetry = telemetry;
         }
 
         public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache)
@@ -80,7 +80,7 @@ namespace live.asp.net.Services
 
                 var requestStart = DateTimeOffset.UtcNow;
                 var playlistItems = await listRequest.ExecuteAsync();
-                _telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
+                //_telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
 
                 var result = new ShowList();
 
@@ -123,16 +123,16 @@ namespace live.asp.net.Services
 
         private static string GetVideoUrl(string id, string playlistId, long itemIndex)
         {
-            var encodedId = UrlEncoder.Default.UrlEncode(id);
-            var encodedPlaylistId = UrlEncoder.Default.UrlEncode(playlistId);
-            var encodedItemIndex = UrlEncoder.Default.UrlEncode(itemIndex.ToString());
+            var encodedId = UrlEncoder.Default.Encode(id);
+            var encodedPlaylistId = UrlEncoder.Default.Encode(playlistId);
+            var encodedItemIndex = UrlEncoder.Default.Encode(itemIndex.ToString());
 
             return $"https://www.youtube.com/watch?v={encodedId}&list={encodedPlaylistId}&index={encodedItemIndex}";
         }
 
         private static string GetPlaylistUrl(string playlistId)
         {
-            var encodedPlaylistId = UrlEncoder.Default.UrlEncode(playlistId);
+            var encodedPlaylistId = UrlEncoder.Default.Encode(playlistId);
 
             return $"https://www.youtube.com/playlist?list={encodedPlaylistId}";
         }
