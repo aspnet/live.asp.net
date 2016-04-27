@@ -5,8 +5,8 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using live.asp.net.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 
 namespace live.asp.net.Services
@@ -16,15 +16,13 @@ namespace live.asp.net.Services
         private static readonly string CacheKey = nameof(FileSystemLiveShowDetailsService);
         private static readonly string FileName = "ShowDetails.json";
 
-        private readonly IApplicationEnvironment _appEnv;
         private readonly IMemoryCache _cache;
         private readonly string _filePath;
 
-        public FileSystemLiveShowDetailsService(IApplicationEnvironment appEnv, IMemoryCache cache)
+        public FileSystemLiveShowDetailsService(IHostingEnvironment hostingEnv, IMemoryCache cache)
         {
-            _appEnv = appEnv;
             _cache = cache;
-            _filePath = Path.Combine(_appEnv.ApplicationBasePath, FileName);
+            _filePath = Path.Combine(hostingEnv.ContentRootPath, FileName);
         }
 
         public async Task<LiveShowDetails> LoadAsync()
@@ -52,7 +50,7 @@ namespace live.asp.net.Services
             }
 
             var fileContents = JsonConvert.SerializeObject(liveShowDetails);
-            using (var fileWriter = new StreamWriter(File.OpenWrite(_filePath)))
+            using (var fileWriter = new StreamWriter(new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true)))
             {
                 await fileWriter.WriteAsync(fileContents);
             }
@@ -68,7 +66,7 @@ namespace live.asp.net.Services
             }
 
             string fileContents;
-            using (var fileReader = new StreamReader(File.OpenWrite(_filePath)))
+            using (var fileReader = new StreamReader(new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read, 4096, useAsync: true)))
             {
                 fileContents = await fileReader.ReadToEndAsync();
             }
