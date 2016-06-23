@@ -12,36 +12,35 @@
 
   "dependencies": {
     "Microsoft.NETCore.App": {
-      "version": "1.0.0-rc2-3002426",
+      "version": "1.0.0-rc2-3002702",
       "type": "platform"
     },
-    "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-24018",
-    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-20634",
-    "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-rc2-20634",
-    "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0-rc2-20634",
-    "Microsoft.AspNetCore.Authentication.OpenIdConnect": "0.1.0-rc2-20634",
-    "Microsoft.AspNetCore.Diagnostics": "1.0.0-rc2-20634",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-20634",
-    "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-20634",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-20634",
-    "Microsoft.Extensions.Configuration.Binder": "1.0.0-rc2-20634",
-    "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-20634",
-    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0-rc2-20634",
-    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0-rc2-20634",
-    "Microsoft.Extensions.Logging": "1.0.0-rc2-20634",
-    "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-20634",
-    "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-20634",
-    "Microsoft.ApplicationInsights.AspNetCore": "1.0.0-rc2",
+    "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-24027",
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Authentication.OpenIdConnect": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.Binder": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
+    "Microsoft.ApplicationInsights.AspNetCore": "1.0.0-rc2-final",
     "Newtonsoft.Json": "8.0.3",
-    "Google.Apis.YouTube.v3": "1.12.0.461",
+    "Google.Apis.YouTube.v3": "1.13.0.481",
     "WindowsAzure.Storage": "7.0.1-preview",
-    "System.Net.NameResolution": "4.0.0-rc2-24018"
+    "System.Net.NameResolution": "4.0.0-rc2-24027"
   },
 
   "tools": {
     "dotnet-razor-tooling": {
-      "version": "1.0.0-rc2-20581",
-      "imports": "portable-net45+wp80+win8+wpa81+dnxcore50"
+      "version": "1.0.0-rc2-final",
+      "imports": "portable-dnxcore50+net45+win8+wp8+wpa81"
     }
   },
 
