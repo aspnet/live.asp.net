@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -45,7 +46,9 @@ namespace live.asp.net
         {
             services.Configure<AppSettings>(options => Configuration.GetSection("AppSettings").Bind(options));
 
-            services.Configure<ForwardedHeadersOptions>(options => options.ForwardLimit = null);
+            // Configure header fowarding to only include the protocol due to behavior of ARR in Azure Web Sites
+            // See: https://github.com/aspnet/IISIntegration/issues/140#issuecomment-215135928
+            services.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders = ForwardedHeaders.XForwardedProto);
 
             services.AddAuthentication(SharedOptions => SharedOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
 
