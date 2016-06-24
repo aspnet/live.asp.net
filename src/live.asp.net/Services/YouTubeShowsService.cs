@@ -25,18 +25,18 @@ namespace live.asp.net.Services
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
-        //private readonly TelemetryClient _telemetry;
+        private readonly TelemetryClient _telemetry;
 
         public YouTubeShowsService(
             IHostingEnvironment env,
             IOptions<AppSettings> appSettings,
-            IMemoryCache memoryCache/*,
-            TelemetryClient telemetry*/)
+            IMemoryCache memoryCache,
+            TelemetryClient telemetry)
         {
             _env = env;
             _appSettings = appSettings.Value;
             _cache = memoryCache;
-            //_telemetry = telemetry;
+            _telemetry = telemetry;
         }
 
         public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache)
@@ -80,7 +80,7 @@ namespace live.asp.net.Services
 
                 var requestStart = DateTimeOffset.UtcNow;
                 var playlistItems = await listRequest.ExecuteAsync();
-                //_telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
+                _telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
 
                 var result = new ShowList();
 

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.ApplicationInsights.Extensibility
-@*@inject TelemetryConfiguration TelemetryConfiguration*@
+@inject TelemetryConfiguration TelemetryConfiguration
 
 <environment names="Production">
 
@@ -17,5 +17,5 @@
             ga('liveaspnetTracker.send', 'pageview');
     </script>
 
-    @*  @Html.ApplicationInsightsJavaScript(TelemetryConfiguration) *@
+    @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
 </environment>
