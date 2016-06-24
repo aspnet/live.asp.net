@@ -67,6 +67,8 @@ namespace live.asp.net
 
             services.AddScoped<IShowsService, YouTubeShowsService>();
 
+            services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
+
             if (string.IsNullOrEmpty(Configuration["AppSettings:AzureStorageConnectionString"]))
             {
                 services.AddSingleton<ILiveShowDetailsService, FileSystemLiveShowDetailsService>();

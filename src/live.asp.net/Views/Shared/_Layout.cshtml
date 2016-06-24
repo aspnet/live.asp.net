@@ -1,4 +1,5 @@
 ﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment HostingEnvironment
+@inject live.asp.net.Services.IDeploymentEnvironment DeploymentEnvironment
 
 <!DOCTYPE html>
 <html>
@@ -63,6 +64,7 @@
 <cache>
 <!-- Environment: @HostingEnvironment.EnvironmentName -->
 <!-- Application: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationName, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion -->
+<!-- Deployment: @DeploymentEnvironment.DeploymentId -->
 <!-- Framework: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.RuntimeFramework -->
 <!-- Runtime: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.RuntimeType, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.RuntimeArchitecture, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.RuntimeVersion -->
 <!-- OS: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.OperatingSystem @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.OperatingSystemVersion  -->
