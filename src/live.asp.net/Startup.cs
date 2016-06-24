@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace live.asp.net
@@ -20,7 +19,7 @@ namespace live.asp.net
     {
         private readonly IHostingEnvironment _env;
 
-        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
+        public Startup(IHostingEnvironment env)
         {
             _env = env;
 
@@ -32,7 +31,7 @@ namespace live.asp.net
             if (_env.IsDevelopment())
             {
                 builder.AddUserSecrets();
-                //builder.AddApplicationInsightsSettings(developerMode: true);
+                builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
             builder.AddEnvironmentVariables();
@@ -59,7 +58,7 @@ namespace live.asp.net
                 });
             });
 
-            //services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc(options =>
             {
@@ -85,7 +84,7 @@ namespace live.asp.net
 
             if (env.IsProduction())
             {
-                //app.UseApplicationInsightsRequestTelemetry();
+                app.UseApplicationInsightsRequestTelemetry();
             }
 
             if (env.IsDevelopment())
@@ -99,7 +98,7 @@ namespace live.asp.net
 
             if (env.IsProduction())
             {
-               //app.UseApplicationInsightsExceptionTelemetry();
+               app.UseApplicationInsightsExceptionTelemetry();
             }
 
             app.UseStaticFiles();

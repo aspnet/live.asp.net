@@ -1,5 +1,5 @@
 ﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment HostingEnvironment
-@inject Microsoft.Extensions.PlatformAbstractions.IApplicationEnvironment ApplicationEnvironment
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -60,5 +60,10 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+<cache>
 <!-- Environment: @HostingEnvironment.EnvironmentName -->
-<!-- Framework: @ApplicationEnvironment.RuntimeFramework -->
+<!-- Application: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationName, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion -->
+<!-- Framework: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.RuntimeFramework -->
+<!-- Runtime: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.RuntimeType, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.RuntimeArchitecture, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.RuntimeVersion -->
+<!-- OS: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.OperatingSystem @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Runtime.OperatingSystemVersion  -->
+</cache>

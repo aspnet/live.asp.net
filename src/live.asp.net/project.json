@@ -4,10 +4,19 @@
   "webroot": "wwwroot",
   "userSecretsId": "aspnet5-live.asp.net-20150723035013",
 
-  "compilationOptions": {
+  "buildOptions": {
     "warningsAsErrors": true,
     "emitEntryPoint": true,
     "preserveCompilationContext": true
+  },
+
+  "publishOptions": {
+    "include": [
+      "Views",
+      "wwwroot",
+      "web.config",
+      "appsettings.json"
+    ]
   },
 
   "dependencies": {
@@ -26,21 +35,30 @@
     "Microsoft.Extensions.Configuration.Binder": "1.0.0-rc2-final",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
     "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-final",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0-rc2-final",
     "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.0.0-preview1-final",
+      "type": "build"
+    },
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0-rc2-final",
     "Newtonsoft.Json": "8.0.3",
-    "Google.Apis.YouTube.v3": "1.13.0.481",
-    "WindowsAzure.Storage": "7.0.1-preview",
+    "Google.Apis.YouTube.v3": "1.13.1.529",
+    "WindowsAzure.Storage": "7.0.2-preview",
     "System.Net.NameResolution": "4.0.0-rc2-24027"
   },
 
   "tools": {
-    "dotnet-razor-tooling": {
-      "version": "1.0.0-rc2-final",
-      "imports": "portable-dnxcore50+net45+win8+wp8+wpa81"
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.0.0-preview1-final",
+      "imports": "portable-net45+win8+dnxcore50"
+    },
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+      "version": "1.0.0-preview1-final",
+      "imports": "portable-net45+win8+dnxcore50"
     }
   },
 
@@ -53,22 +71,6 @@
       ]
     }
   },
-
-  "content": [
-    "Views",
-    "wwwroot",
-    "web.config",
-    "appsettings.json"
-  ],
-
-  "exclude": [
-    "wwwroot",
-    "node_modules"
-  ],
-  "publishExclude": [
-    "**.user",
-    "**.vspscc"
-  ],
 
   "scripts": {
     "prepublish": [ "npm install", "bower install", "gulp clean", "gulp csslint", "gulp jshint", "gulp min" ]
