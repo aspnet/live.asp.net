@@ -45,25 +45,22 @@ namespace live.asp.net
         {
             services.Configure<AppSettings>(options => Configuration.GetSection("AppSettings").Bind(options));
 
+            services.Configure<ForwardedHeadersOptions>(options => options.ForwardLimit = null);
+
             services.AddAuthentication(SharedOptions => SharedOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
 
             services.AddAuthorization(options =>
-            {
                 options.AddPolicy("Admin", policyBuilder =>
-                {
                     policyBuilder.RequireClaim(
                         ClaimTypes.Name,
                         Configuration["Authorization:AdminUsers"].Split(',')
-                    );
-                });
-            });
+                    )
+                )
+            );
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddMvc(options =>
-            {
-                options.OutputFormatters.Add(new iCalendarOutputFormatter());
-            });
+            services.AddMvc(options => options.OutputFormatters.Add(new iCalendarOutputFormatter()));
 
             services.AddScoped<IShowsService, YouTubeShowsService>();
 
