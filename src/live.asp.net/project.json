@@ -52,6 +52,10 @@
   },
 
   "tools": {
+    "Microsoft.Extensions.SecretManager.Tools": {
+      "version": "1.0.0-preview1-final",
+      "imports": "portable-net45+win8+dnxcore50"
+    },
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview1-final",
       "imports": "portable-net45+win8+dnxcore50"
