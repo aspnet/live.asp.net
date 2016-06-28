@@ -116,7 +116,7 @@ namespace live.asp.net
                 AutomaticChallenge = true,
                 ClientId = Configuration["Authentication:AzureAd:ClientId"],
                 Authority = Configuration["Authentication:AzureAd:AADInstance"] + Configuration["Authentication:AzureAd:TenantId"],
-                ResponseType = OpenIdConnectResponseTypes.IdToken,
+                ResponseType = OpenIdConnectResponseType.IdToken,
                 SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme
             });
 
