@@ -1,7 +1,6 @@
 {
   "version": "1.0.0-*",
 
-  "webroot": "wwwroot",
   "userSecretsId": "aspnet5-live.asp.net-20150723035013",
 
   "buildOptions": {
@@ -17,6 +16,12 @@
       "web.config",
       "appsettings.json"
     ]
+  },
+
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
   },
 
   "dependencies": {
@@ -66,9 +71,8 @@
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
-        "portable-dnxcore50+net45+win8+wp8+wpa81",
-        "portable-net45+win8+wpa81",
-        "dotnet5.6"
+        "dotnet5.6",
+        "portable-net45+win8+wp8+wpa81"
       ]
     }
   },

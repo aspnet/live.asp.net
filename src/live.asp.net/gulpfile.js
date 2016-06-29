@@ -49,7 +49,7 @@ gulp.task("min", ["min:js", "min:css"]);
 gulp.task("jshint", function() {
     return gulp.src(paths.js)
         .pipe(jshint())
-        .pipe(jshint.reporter())
+        .pipe(jshint.reporter());
 });
 
 gulp.task("csslint", function() {
