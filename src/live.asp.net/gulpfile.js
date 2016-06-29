@@ -30,14 +30,14 @@ gulp.task("clean:css", function (cb) {
 
 gulp.task("clean", ["clean:js", "clean:css"]);
 
-gulp.task("min:js", function () {
+gulp.task("min:js", ["clean:js", "jshint"], function () {
     return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
         .pipe(concat(paths.concatJsDest))
         .pipe(uglify())
         .pipe(gulp.dest("."));
 });
 
-gulp.task("min:css", function () {
+gulp.task("min:css", ["clean:css", "csslint"], function () {
     return gulp.src([paths.css, "!" + paths.minCss])
         .pipe(concat(paths.concatCssDest))
         .pipe(cssmin())
@@ -57,3 +57,7 @@ gulp.task("csslint", function() {
         .pipe(csslint())
         .pipe(csslint.reporter());
 });
+
+gulp.task("lint", ["jshint", "csslint"]);
+
+gulp.task("prepublish", ["min"]);
