@@ -81,7 +81,7 @@ IF EXIST "%REPO_TEMP%" (
   cd %REPO_TEMP%
 )
 
-git checkout %SCM_COMMIT_ID%
+git checkout %SCM_COMMIT_ID% --quiet
 
 SET DEPLOYMENT_SOURCE=%REPO_TEMP%
 
