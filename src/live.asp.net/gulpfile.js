@@ -24,6 +24,7 @@ var library = {
     require.resolve('bootstrap/dist/js/bootstrap.js'),
     require.resolve('bootstrap/dist/js/bootstrap.min.js'),
     require.resolve('bootstrap/dist/css/bootstrap.css'),
+    require.resolve('bootstrap/dist/css/bootstrap.min.css'),
     // glob pattern to get all files within the directory
     path.dirname(require.resolve('bootstrap/dist/fonts/glyphicons-halflings-regular.woff')) + '/**',
     // declare each file
