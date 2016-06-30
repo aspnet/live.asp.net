@@ -59,7 +59,6 @@ IF DEFINED CLEAN_LOCAL_DEPLOYMENT_TEMP (
 
 SET REPO_TEMP=%temp%\___repoTemp%random%
 IF EXIST "%REPO_TEMP%" rd /s /q "%REPO_TEMP%"
-mkdir "%REPO_TEMP%"
 
 IF DEFINED MSBUILD_PATH goto MsbuildPathDefined
 SET MSBUILD_PATH=%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe
@@ -74,9 +73,8 @@ echo Handling ASP.NET Core Web Application deployment.
 
 echo Cloning repo (just the deployment commit) to temp location
 
+git clone -o %SCM_COMMIT_ID% https://github.com/aspnet/live.asp.net --depth 1 --quiet %REPO_TEMP%
 cd %REPO_TEMP%
-git clone -o %SCM_COMMIT_ID% https://github.com/aspnet/live.asp.net --depth 1 --quiet
-cd live.asp.net
 
 SET DEPLOYMENT_SOURCE=%REPO_TEMP%
 
