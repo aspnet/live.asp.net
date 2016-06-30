@@ -42,21 +42,21 @@ paths.minCss = paths.webroot + "css/**/*.min.css";
 paths.concatJsDest = paths.webroot + "js/site.min.js";
 paths.concatCssDest = paths.webroot + "css/site.min.css";
 
-gulp.task("lib", function () {
+gulp.task("lib", ["clean"], function () {
   return gulp.src(library.source, { base: library.base })
     .pipe(gulp.dest(paths.library));
 });
 
-gulp.task("clean:lib", function (cb) {
-  del(paths.library, cb);
+gulp.task("clean:lib", function () {
+    return del(paths.library);
 });
 
-gulp.task("clean:js", function (cb) {
-    del(paths.concatJsDest, cb);
+gulp.task("clean:js", function () {
+    return(del(paths.concatJsDest));
 });
 
-gulp.task("clean:css", function (cb) {
-    del(paths.concatCssDest, cb);
+gulp.task("clean:css", function () {
+    return(del(paths.concatCssDest));
 });
 
 gulp.task("clean", ["clean:js", "clean:css", "clean:lib"]);
@@ -75,20 +75,20 @@ gulp.task("min:css", function () {
         .pipe(gulp.dest("."));
 });
 
-gulp.task("min", ["min:js", "min:css"]);
+gulp.task("min", ["lib", "min:js", "min:css"]);
 
-gulp.task("jshint", function() {
-    return gulp.src(paths.js)
+gulp.task("jshint", ["lib"], function() {
+    return gulp.src([paths.js, "!" + paths.minJs])
         .pipe(jshint())
         .pipe(jshint.reporter())
 });
 
-gulp.task("csslint", function() {
-    return gulp.src(paths.css)
+gulp.task("csslint", ["lib"], function() {
+    return gulp.src([paths.css, "!" + paths + paths.minCss])
         .pipe(csslint())
         .pipe(csslint.reporter());
 });
 
-gulp.task("build", ["clean", "min", "lib", "csslint", "jshint"]);
+gulp.task("build", ["lib", "csslint", "jshint", "min"]);
 
 gulp.task("default", ["build"]);
