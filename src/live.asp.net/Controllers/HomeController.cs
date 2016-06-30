@@ -50,5 +50,19 @@ namespace live.asp.net.Controllers
         {
             return View();
         }
-    }
+
+        [HttpGet("/showStatus")]
+        public async Task<ShowStatus> IsOnAir()
+        {
+            var liveShowDetails = await _liveShowDetails.LoadAsync();
+
+            var hvm = new HomeViewModel
+            {
+                AdminMessage = liveShowDetails?.AdminMessage,
+                LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl
+            };
+
+            return hvm.ShowStatus;
+        }
+    } 
 }

@@ -6,6 +6,12 @@
 
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+	var countdownPollInterval = 500;
+	var finalCountdown = 10 * 60;
+	var liveShowPollInterval = 15 * 1000;
+
+	var SHOW_STATUS = { "OffAir": 1, "OnAir": 2, "Standby": 3 };
+
     Math.trunc = Math.trunc || function (x) {
         return x < 0 ? Math.ceil(x) : Math.floor(x);
     };
@@ -78,10 +84,26 @@
         };
     }
 
+    function checkShowStatus(showStatus) {
+        $.get("/showStatus", function(showNewStatus) {
+            if ((showStatus === SHOW_STATUS.OffAir && showNewStatus === SHOW_STATUS.Standby)
+                || (showStatus === SHOW_STATUS.Standby && showNewStatus === SHOW_STATUS.OnAir)
+                || (showStatus === SHOW_STATUS.Standby && showNewStatus === SHOW_STATUS.OffAir)
+                || (showStatus === SHOW_STATUS.OnAir && showNewStatus === SHOW_STATUS.Standby)) {
+                window.document.location.reload();
+            }
+	    });
+	}
+
     function countdownTo(futureDate, tickCallback, endCallback) {
+	    var isOnAirPolling;
         var interval = window.setInterval(function () {
             var now = new Date(),
                 diff = dateDiff(now, futureDate);
+
+            if (!isOnAirPolling && diff.totalSecs < finalCountdown) {
+			    isOnAirPolling = window.setInterval(checkShowStatus, liveShowPollInterval, SHOW_STATUS.OffAir);
+			}
 
             if (diff.totalSecs < 0) {
                 //window.console.log("Clearing interval");
@@ -91,7 +113,7 @@
             }
 
             tickCallback(diff);
-        }, 500);
+        }, countdownPollInterval);
     }
 
     function data(el, name) {
@@ -108,7 +130,18 @@
             data(el, "utc-sec")));
     }
 
-    window.siteJs = {
+	window.siteJs = {
+        checkForShowStatusChange: function(elementId) {
+	        var statusElement = window.document.getElementById(elementId),
+		        showStatus,
+		        showStateChangePolling;
+                
+            showStatus = parseInt(statusElement.getAttribute("data-status"));     
+
+            if (showStatus === SHOW_STATUS.Standby) {
+	            showStateChangePolling = window.setInterval(checkShowStatus, liveShowPollInterval, SHOW_STATUS.Standby);
+            }
+        },
         setNextShowDetails: function (elementId) {
             // Get the show details
             var countdownEl,
