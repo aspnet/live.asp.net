@@ -74,13 +74,14 @@ SET REPO_URL=https://github.com/aspnet/live.asp.net
 
 IF EXIST "%REPO_TEMP%" (
   cd %REPO_TEMP%
-  git fetch origin
-  git checkout %SCM_COMMIT_ID%
+  git fetch origin --quiet
 ) ELSE (
-  echo Cloning repo (just the deployment commit) to temp location
+  echo Cloning repo to temp location
   git clone %REPO_URL% --quiet %REPO_TEMP%
   cd %REPO_TEMP%
 )
+
+git checkout %SCM_COMMIT_ID%
 
 SET DEPLOYMENT_SOURCE=%REPO_TEMP%
 
