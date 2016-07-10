@@ -74,7 +74,7 @@ namespace live.asp.net.Controllers
                 liveShowDetails = await _liveShowDetails.LoadAsync();
                 UpdateAdminViewModel(model, liveShowDetails);
 
-                return View("Index", model);
+                return View(nameof(Index), model);
             }
 
             if (!string.IsNullOrEmpty(model.LiveShowEmbedUrl) && model.LiveShowEmbedUrl.StartsWith("http://"))
@@ -93,7 +93,7 @@ namespace live.asp.net.Controllers
 
             HttpContext.Response.Cookies.Append("msg", "1");
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost("clearcache")]
@@ -103,7 +103,7 @@ namespace live.asp.net.Controllers
 
             HttpContext.Response.Cookies.Append("msg", "2");
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         private void UpdateAdminViewModel(AdminViewModel model, LiveShowDetails liveShowDetails)
