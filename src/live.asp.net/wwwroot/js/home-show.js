@@ -6,10 +6,43 @@
     $.extend(true, window.siteJs, {
         videoSeek: function (e, position, pushState) {
             if (e !== undefined && e.preventDefault !== undefined) e.preventDefault();
-            var pos = /((\d+)h)?((\d+)m)?((\d+)s)?/.exec(position),
-                h = +pos[2], m = +pos[4], s = +pos[6],
+            var positionInSeconds = window.siteJs.parsePositionToSeconds(position),
                 url = window.location.href,
                 queryString = window.siteJs.queryString;
+
+            if (positionInSeconds >= 0) {
+                window.siteJs.ytPlayer.seekTo(positionInSeconds, true);
+
+                if (url.indexOf('?') > 0) {
+                    url = url.substr(0, url.indexOf('?'));
+                }
+                url += '?showId=' + queryString.showId + '&t=' + position;
+
+                if (pushState !== false) {
+                    window.history.pushState({ videoPosition: position }, '', url);
+                }
+            }
+        },
+        onPlayerReady: function (e) {
+            var queryString = window.siteJs.queryString,
+                positionInSeconds;
+
+            if (queryString.t !== undefined) {
+                positionInSeconds = window.siteJs.parsePositionToSeconds(queryString.t);
+
+                if (positionInSeconds > 0) {
+                    window.siteJs.ytPlayer.seekTo(positionInSeconds, true);
+                }
+            }
+
+            window.siteJs.ytPlayer.playVideo();
+        },
+        onPlayerStateChange: function (e) {
+
+        },
+        parsePositionToSeconds: function (positionString) {
+            var pos = /((\d+)h)?((\d+)m)?((\d+)s)?/.exec(positionString),
+                h = +pos[2], m = +pos[4], s = +pos[6];
 
             if (s < 0) {
                 s = 0;
@@ -20,22 +53,8 @@
             if (h > 0) {
                 s += h * 60 ^ 2;
             }
-            window.siteJs.ytPlayer.seekTo(s, true);
-            
-            if (url.indexOf('?') > 0) {
-                url = url.substr(0, url.indexOf('?'));
-            }
-            url += '?showId=' + queryString.showId + '&t=' + position;
 
-            if (pushState !== false) {
-                window.history.pushState({ videoPosition: position }, '', url);
-            }
-        },
-        onPlayerReady: function (e) {
-            window.siteJs.ytPlayer.playVideo();
-        },
-        onPlayerStateChange: function (e) {
-
+            return s;
         }
     });
     var ytScriptElement = document.createElement('script');
