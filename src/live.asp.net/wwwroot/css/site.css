@@ -149,20 +149,12 @@ footer {
     .youtube-show {
         max-width: 480px;
     }
-    .embedded-player {
-        width: 480px;
-        height: 293px;
-    }
 }
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
     .youtube-show {
         height: 360px;
-    }
-    .embedded-player {
-        width: 640px;
-        height: 390px;
     }
 }
 
@@ -171,19 +163,11 @@ footer {
     .youtube-show {
         height: 320px;
     }
-    .embedded-player {
-        width: 960px;
-        height: 540px;
-    }
 }
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
     .youtube-show {
         height: 360px;
-    }
-    .embedded-player {
-        width: 1180px;
-        height: 664px;
     }
 }
