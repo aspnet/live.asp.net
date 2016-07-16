@@ -9,29 +9,42 @@
     <meta hidden="hidden" id="showId" content="@Model.Show.ProviderId" />
 }
 
+@section PreContent {
+    <div class="jumbotron">
+        <div class="container">
+            <a href="https://www.microsoft.com">
+                <svg width="100" height="21">
+                    <image xlink:href="/images/Microsoft_logo.svg" src="/images/mslogo.png" width="100" height="21"></image>
+                </svg>
+            </a>
+            <h1 class="text-center">ASP.NET Community Standup</h1>
+            <h3 class="text-center">
+                @if (Model.Show.HasTitle)
+                {
+                    <span>@Model.Show.Title</span><br />
+                }
+                <span class="show-date">@Model.Show.ShowDate.DateTime.ToString("MMM dd, yyyy")</span>
+                @if (Model.Show.IsNew)
+                {
+                    <span class="label label-success label-new-show">New</span>
+                }
+            </h3>
+        </div>
+    </div>
+}
 
 <div id="ytPlayerContainer" class="embed-responsive embed-responsive-16by9">
     <div id="ytPlayer" class="embed-responsive-item"></div>
 </div>
 
-    
+
 <div class="caption text-center">
     <a href="@Model.Show.Url" title="Watch on YouTube"></a>
-    <h3>
-        @if (Model.Show.HasTitle)
-        {
-            <span>@Model.Show.Title</span><br />
-        }
-        <span class="show-date">@Model.Show.ShowDate.DateTime.ToString("MMM dd, yyyy")</span>
-        @if (Model.Show.IsNew)
-        {
-            <span class="label label-success label-new-show">New</span>
-        }
-    </h3>
 </div>
 
 @if (Model.HasShowDetailDescription)
 {
+    <h4>Description</h4>
     <div>@Html.Raw(Model.ShowDetails.Description)</div>
 }
 
@@ -39,13 +52,13 @@
 {
     <div>
         <h4>Index</h4>
-        @foreach(var group in Model.TableOfContentsGroups)
+        @foreach (var group in Model.TableOfContentsGroups)
         {
             <h5>@Html.Raw(group.Header)</h5>
             <ul>
                 @foreach (var item in group.Items)
                 {
-                    <li><a href="#" onclick="window.siteJs.videoSeek(event, '@item.PositionAsUrlParameter')">[@item.PositionAsText]</a> @item.Description</li>
+                    <li><a href="#" onclick="window.siteJs.videoSeek(event, '@item.PositionAsUrlParameter')">[@item.PositionAsText]</a> @Html.Raw(item.Description)</li>
                 }
             </ul>
         }
