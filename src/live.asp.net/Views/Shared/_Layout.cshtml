@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
     <partial name="_AnalyticsHead" />
+    @RenderSection("HeadContent", required: false)
 </head>
 <body>
     <partial name="_AnalyticsBody" />

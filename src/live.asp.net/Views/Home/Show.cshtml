@@ -5,11 +5,14 @@
 @{
     ViewData["Title"] = "ASP.NET Community Standup";
 }
+@section HeadContent {
+    <meta hidden="hidden" id="showId" content="@Model.Show.ProviderId" />
+}
 
 <div class="center-block">
-    <iframe id="ytplayer" type="text/html" class="embedded-player"
-            src="https://www.youtube.com/embed/@Model.Show.ProviderId?autoplay=1&origin=https://live.asp.net"
-            frameborder="0"></iframe>
+    <div id="ytPlayerContainer" class="embedded-player">
+        <div id="ytPlayer"></div>
+    </div>
 </div>
     
 <div class="caption text-center">
@@ -31,9 +34,9 @@
     <h4>Index</h4>
     <h5>Clutter</h5>
     <ul>
-        <li><a href="#" onclick="">[00:00]</a> Scott Hanselman talks about...</li>
-        <li><a href="#" onclick="">[01:40]</a> Scott Hanselman shows his new 3D printed stuff...</li>
-        <li><a href="#" onclick="">[02:40]</a> Damian Edwards talks about...</li>
+        <li><a href="#" onclick="window.siteJs.videoSeek(event, '00m00s')">[00:00]</a> Scott Hanselman talks about...</li>
+        <li><a href="#" onclick="window.siteJs.videoSeek(event, '1m40s')">[01:40]</a> Scott Hanselman shows his new 3D printed stuff...</li>
+        <li><a href="#" onclick="window.siteJs.videoSeek(event, '2m40s')">[02:40]</a> Damian Edwards talks about...</li>
     </ul>
     <h5>Welcome</h5>
     <ul>
@@ -62,3 +65,31 @@
         <li><a href="#" onclick="">[57:24]</a> Dramatic zoom out.</li>
     </ul>
 </div>
+
+
+@section Scripts {
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.4.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+    </environment>
+    <cache>
+        <environment names="Development">
+            <script src="~/js/site.js" inline="true"></script>
+            <script src="~/js/home-show.js" inline="true"></script>
+        </environment>
+        <environment names="Staging,Production">
+            <script src="~/js/site.min.js" inline="true"></script>
+            <script src="~/js/home-show.min.js" inline="true"></script>
+        </environment>
+    </cache>
+}
