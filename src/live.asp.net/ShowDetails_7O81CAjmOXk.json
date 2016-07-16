@@ -1,48 +1,18 @@
 ﻿{
   "ShowId": "7O81CAjmOXk",
-  "Description": "Blah, blah, blah",
+  "Description": "<p>This is a special standup with only Scott and Damian, where Damian is in the \"Smurf lab\" in Redmond showing the servers that the team use when they run performance tests for ASP.NET 5.</p><p>Damian is demoing a load generator running on an Ubuntu server, sending about 7.4 million requests per second, pushing 8.5Gbps through the web server running on a Windows machine.</p>",
   "TableOfContents": {
     "Groups": [
       {
         "GroupHeader": "Pre-show",
         "Items": [
           {
-            "Position": "00:00:00",
-            "Description": "Scott Hanselman talks about..."
+            "Position": "00:00:08",
+            "Description": "Welcome by Scott Hanselman."
           },
           {
-            "Position": "00:01:40",
-            "Description": "Scott Hanselman shows his new 3D printed stuff..."
-          },
-          {
-            "Position": "00:02:40",
-            "Description": "Damian Edwards talks about..."
-          }
-        ]
-      },
-      {
-        "GroupHeader": "Welcome",
-        "Items": [
-          {
-            "Position": "00:06:20",
-            "Description": "Welcome by Scott Hanselman..."
-          }
-        ]
-      },
-      {
-        "GroupHeader": "Community content",
-        "Items": [
-          {
-            "Position": "00:07:50",
-            "Description": "Jon Galloway presents site #1..."
-          },
-          {
-            "Position": "00:08:00",
-            "Description": "Site #2 about..."
-          },
-          {
-            "Position": "00:08:10",
-            "Description": "Site #3 about..."
+            "Position": "00:00:17",
+            "Description": "Damian Edwards showing the \"Smurf lab\"."
           }
         ]
       },
@@ -50,12 +20,28 @@
         "GroupHeader": "Todays standup topic",
         "Items": [
           {
-            "Position": "00:09:50",
-            "Description": "Damian Edwards introduces..."
+            "Position": "00:04:00",
+            "Description": "Damian Edwards talks about the performance tests they run in the lab."
           },
           {
-            "Position": "00:10:40",
-            "Description": "Guest talks about..."
+            "Position": "00:05:35",
+            "Description": "Pull Request <a href=\"https://github.com/aspnet/benchmarks/pull/10\">#10</a> by Ben Adams using Managed Registered IO Server."
+          },
+          {
+            "Position": "00:09:15",
+            "Description": "Damian uses a Linux load testing tool to send about 7.4 million requests per second, pushing 8.5Gbps through the web server running on a Windows machine."
+          },
+          {
+            "Position": "00:11:52",
+            "Description": "Nick Craver at StackOverflow is asking whether only half of the CPU cores are taking the load."
+          },
+          {
+            "Position": "00:15:20",
+            "Description": "Damian Edwards tells about the performance they're currently seing on libuv v.s. RIO on Windows. The idea was to base Kestrel on libuv on both Linux and Windows, but after seing the RIO throughput they're now reconsidering that."
+          },
+          {
+            "Position": "00:16:35",
+            "Description": "Damian Edwards shows the benchmarks for the currently highest performing web servers, where four of them are Java based."
           }
         ]
       },
@@ -63,16 +49,24 @@
         "GroupHeader": "Q &amp; A",
         "Items": [
           {
-            "Position": "00:40:41",
-            "Description": "Question #1 about..."
+            "Position": "00:20:38",
+            "Description": "Are there any gotchas for VS RTM being on nightly builds other than the ones that Andrew announced?"
           },
           {
-            "Position": "00:43:20",
-            "Description": "Question #2 about..."
+            "Position": "00:21:35",
+            "Description": "With the ASP.NET 5 roadmap now published, are there any features in 4.X that will not be in ASP.NET 5 RTM?"
           },
           {
-            "Position": "00:50:34",
-            "Description": "Question #3 about..."
+            "Position": "00:22:20",
+            "Description": "With RTM, do you uninstall RC or do an in-place upgrade to ASP.NET 5?"
+          },
+          {
+            "Position": "00:22:33",
+            "Description": "What's the guidence for SignalR related to ASP.NET 5?"
+          },
+          {
+            "Position": "00:24:22",
+            "Description": "Scott Hanselman has a question whether the features that are planned to be delivered after the intial release can be worked on by the community? Like SignalR and Web Pages."
           }
         ]
       },
@@ -80,12 +74,20 @@
         "GroupHeader": "Wrap up",
         "Items": [
           {
-            "Position": "00:55:30",
-            "Description": "Damian Edwards talks about..."
+            "Position": "00:20:54",
+            "Description": "Scott Hanselman rounds off the show."
           },
           {
-            "Position": "00:57:24",
+            "Position": "00:26:11",
             "Description": "Dramatic zoom out..."
+          },
+          {
+            "Position": "00:26:22",
+            "Description": "Damian's GitHub t-shirt."
+          },
+          {
+            "Position": "00:26:34",
+            "Description": "Alan, a guy walking by randomly at the end of the show."
           }
         ]
       }
