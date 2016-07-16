@@ -66,6 +66,34 @@ namespace live.asp.net.Services
             return result;
         }
 
+        public async Task<Show> GetShowAsync(string providerId, ClaimsPrincipal user, bool disableCache)
+        {
+            if (string.IsNullOrEmpty(_appSettings.YouTubeApiKey))
+            {
+                return DesignData.Shows.Where(s => s.ProviderId == providerId).FirstOrDefault();
+            }
+
+            if (user.Identity.IsAuthenticated && disableCache)
+            {
+                return await GetShowDetails(providerId);
+            }
+
+            var showCacheKey = $"{CacheKey}_Show_{providerId}";
+            var result = _cache.Get<Show>(showCacheKey);
+
+            if (result == null)
+            {
+                result = await GetShowDetails(providerId);
+
+                _cache.Set(showCacheKey, result, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+                });
+            }
+
+            return result;
+        }
+
         private async Task<ShowList> GetShowsList()
         {
             using (var client = new YouTubeService(new BaseClientService.Initializer
@@ -104,6 +132,35 @@ namespace live.asp.net.Services
             }
         }
 
+        private async Task<Show> GetShowDetails(string providerId)
+        {
+            using (var client = new YouTubeService(new BaseClientService.Initializer
+            {
+                ApplicationName = _appSettings.YouTubeApplicationName,
+                ApiKey = _appSettings.YouTubeApiKey
+            }))
+            {
+                var videoRequest = client.Videos.List("snippet, recordingDetails");
+                videoRequest.Id = providerId;
+                var requestStart = DateTimeOffset.UtcNow;
+                var videoDetails = await videoRequest.ExecuteAsync();
+                _telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
+
+                var result = videoDetails.Items.Select(item => new Show
+                {
+                    Provider = "YouTube",
+                    ProviderId = item.Id,
+                    Title = GetUsefulBitsFromTitle(item.Snippet.Title),
+                    Description = item.Snippet.Description,
+                    ShowDate = DateTimeOffset.Parse(item.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
+                    ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
+                    Url = GetVideoUrl(item.Id)
+                }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
         private static string GetUsefulBitsFromTitle(string title)
         {
             if (title.Count(c => c == '-') < 2)
@@ -119,6 +176,13 @@ namespace live.asp.net.Services
             }
 
             return string.Empty;
+        }
+
+        private static string GetVideoUrl(string id)
+        {
+            var encodedId = UrlEncoder.Default.Encode(id);
+
+            return $"https://www.youtube.com/watch?v={encodedId}";
         }
 
         private static string GetVideoUrl(string id, string playlistId, long itemIndex)

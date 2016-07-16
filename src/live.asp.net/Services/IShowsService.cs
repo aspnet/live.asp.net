@@ -9,5 +9,6 @@ namespace live.asp.net.Services
     public interface IShowsService
     {
         Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache);
+        Task<Models.Show> GetShowAsync(string providerId, ClaimsPrincipal user, bool disableCache);
     }
 }

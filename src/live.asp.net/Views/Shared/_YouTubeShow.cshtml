@@ -3,7 +3,7 @@
 
 <div class="col-sm-6 col-md-4">
     <div class="thumbnail youtube-show bottom-buffer center-block">
-        <a href="@Model.Url" title="Watch this episode">
+        <a href="Home/Show?showId=@Model.ProviderId" title="Watch this episode">
             <div>
                 <img class="img-responsive center-block" src="@Model.ThumbnailUrl" alt="Thumbnail of episode" />
             </div>
@@ -11,7 +11,7 @@
         <div class="caption text-center">
             
                 <h3>
-                    <a href="@Model.Url" title="Watch this episode">
+                    <a href="Home/Show?showId=@Model.ProviderId" title="Watch this episode">
                         @if (Model.HasTitle)
                         {
                             @Model.Title<br />

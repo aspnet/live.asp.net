@@ -36,6 +36,16 @@ namespace live.asp.net.Controllers
             });
         }
 
+        [Route("/Home/Show")]
+        public async Task<IActionResult> Show(string showId, bool? disableCache)
+        {
+            var showDetails = await _showsService.GetShowAsync(showId, User, disableCache ?? false);
+            return View(new ShowViewModel
+            {
+                Show = showDetails
+            });
+        }
+
         [HttpGet("/ical")]
         [Produces("text/calendar")]
         public async Task<LiveShowDetails> GetiCal()

@@ -1,0 +1,64 @@
+﻿@using live.asp.net.ViewModels
+@using live.asp.net.Models
+@model ShowViewModel
+
+@{
+    ViewData["Title"] = "ASP.NET Community Standup";
+}
+
+<div class="center-block">
+    <iframe id="ytplayer" type="text/html" class="embedded-player"
+            src="https://www.youtube.com/embed/@Model.Show.ProviderId?autoplay=1&origin=https://live.asp.net"
+            frameborder="0"></iframe>
+</div>
+    
+<div class="caption text-center">
+    <a href="@Model.Show.Url" title="Watch on YouTube"></a>
+    <h3>
+        @if (Model.Show.HasTitle)
+        {
+            <span>@Model.Show.Title</span><br />
+        }
+        <span class="show-date">@Model.Show.ShowDate.DateTime.ToString("MMM dd, yyyy")</span>
+        @if (Model.Show.IsNew)
+        {
+            <span class="label label-success label-new-show">New</span>
+        }
+    </h3>
+</div>
+
+<div>
+    <h4>Index</h4>
+    <h5>Clutter</h5>
+    <ul>
+        <li><a href="#" onclick="">[00:00]</a> Scott Hanselman talks about...</li>
+        <li><a href="#" onclick="">[01:40]</a> Scott Hanselman shows his new 3D printed stuff...</li>
+        <li><a href="#" onclick="">[02:40]</a> Damian Edwards talks about...</li>
+    </ul>
+    <h5>Welcome</h5>
+    <ul>
+        <li><a href="#" onclick="">[06:20]</a> Welcome by Scott Hanselman...</li>
+    </ul>
+    <h5>Community content</h5>
+    <ul>
+        <li><a href="#" onclick="">[07:50]</a> Jon Galloway presents site #1...</li>
+        <li><a href="#" onclick="">[08:00]</a> Site #2 about...</li>
+        <li><a href="#" onclick="">[08:10]</a> Site #3 about...</li>
+    </ul>
+    <h5>Todays standup topic</h5>
+    <ul>
+        <li><a href="#" onclick="">[09:50]</a> Damian Edwards introduces...</li>
+        <li><a href="#" onclick="">[10:40]</a> Guest talks about...</li>
+    </ul>
+    <h5>Q &amp; A</h5>
+    <ul>
+        <li><a href="#" onclick="">[40:41]</a> Question #1 about...</li>
+        <li><a href="#" onclick="">[43:20]</a> Question #2 about...</li>
+        <li><a href="#" onclick="">[50:34]</a> Question #3 about...</li>
+    </ul>
+    <h5>Wrap up</h5>
+    <ul>
+        <li><a href="#" onclick="">[55:30]</a> Damian Edwards talks about...</li>
+        <li><a href="#" onclick="">[57:24]</a> Dramatic zoom out.</li>
+    </ul>
+</div>
