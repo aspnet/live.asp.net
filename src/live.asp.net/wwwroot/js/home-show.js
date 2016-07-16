@@ -44,7 +44,9 @@
             var pos = /((\d+)h)?((\d+)m)?((\d+)s)?/.exec(positionString),
                 h = +pos[2], m = +pos[4], s = +pos[6];
 
-            if (s < 0) {
+            if (isNaN(s) && isNaN(m) && isNaN(h)) return undefined;
+
+            if (isNaN(s) || s < 0) {
                 s = 0;
             }
             if (m > 0) {

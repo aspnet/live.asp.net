@@ -40,10 +40,16 @@ namespace live.asp.net.Controllers
         public async Task<IActionResult> Show(string showId, bool? disableCache)
         {
             var showDetails = await _showsService.GetShowAsync(showId, User, disableCache ?? false);
-            return View(new ShowViewModel
+
+            if (showDetails != null)
             {
-                Show = showDetails
-            });
+                return View(new ShowViewModel
+                {
+                    Show = showDetails
+                });
+            }
+
+            return View("Error");
         }
 
         [HttpGet("/ical")]
