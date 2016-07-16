@@ -12,11 +12,13 @@ namespace live.asp.net.Controllers
     public class HomeController : Controller
     {
         private readonly ILiveShowDetailsService _liveShowDetails;
+        private readonly IShowDetailsService _showDetails;
         private readonly IShowsService _showsService;
 
-        public HomeController(IShowsService showsService, ILiveShowDetailsService liveShowDetails)
+        public HomeController(IShowsService showsService, IShowDetailsService showDetails, ILiveShowDetailsService liveShowDetails)
         {
             _showsService = showsService;
+            _showDetails = showDetails;
             _liveShowDetails = liveShowDetails;
         }
 
@@ -39,13 +41,15 @@ namespace live.asp.net.Controllers
         [Route("/Home/Show")]
         public async Task<IActionResult> Show(string showId, bool? disableCache)
         {
-            var showDetails = await _showsService.GetShowAsync(showId, User, disableCache ?? false);
+            var show = await _showsService.GetShowAsync(showId, User, disableCache ?? false);
+            var showDetails = await _showDetails.LoadAsync(showId);
 
-            if (showDetails != null)
+            if (show != null)
             {
                 return View(new ShowViewModel
                 {
-                    Show = showDetails
+                    Show = show,
+                    ShowDetails = showDetails
                 });
             }
 

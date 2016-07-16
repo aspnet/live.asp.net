@@ -247,6 +247,133 @@ namespace live.asp.net.Services
                     Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
                 },
             };
-        }
+
+            public static readonly IList<ShowDetails> ShowDetails = new List<ShowDetails>
+            {
+                new ShowDetails
+                {
+                    ShowId = "7O81CAjmOXk",
+                    Description = "Blah, blah, blah",
+                    TableOfContents = new TableOfContents
+                    {
+                        Groups = new List<TableOfContentsGroup>
+                        {
+                            new TableOfContentsGroup
+                            {
+                                GroupHeader = "Pre-show",
+                                Items = new List<TableOfContentsItem>
+                                {
+                                    new TableOfContentsItem
+                                    {
+                                        Position = TimeSpan.Zero,
+                                        Description = "Scott Hanselman talks about..."
+                                    },
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 1, 40),
+                                        Description = "Scott Hanselman shows his new 3D printed stuff..."
+                                    },
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 2, 40),
+                                        Description = "Damian Edwards talks about..."
+                                    }
+                                }
+                            },
+                            new TableOfContentsGroup
+                            {
+                                GroupHeader = "Welcome",
+                                Items = new List<TableOfContentsItem>
+                                {
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 6, 20),
+                                        Description = "Welcome by Scott Hanselman..."
+                                    }
+                                }
+                            },
+                            new TableOfContentsGroup
+                            {
+                                GroupHeader = "Community content",
+                                Items = new List<TableOfContentsItem>
+                                {
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 7, 50),
+                                        Description = "Jon Galloway presents site #1..."
+                                    },
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 8, 0),
+                                        Description = "Site #2 about..."
+                                    },
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 8, 10),
+                                        Description = "Site #3 about..."
+                                    }
+                                }
+                            },
+                            new TableOfContentsGroup
+                            {
+                                GroupHeader = "Todays standup topic",
+                                Items = new List<TableOfContentsItem>
+                                {
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 9, 50),
+                                        Description = "Damian Edwards introduces..."
+                                    },
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 10, 40),
+                                        Description = "Guest talks about..."
+                                    }
+                                }
+                            },
+                            new TableOfContentsGroup
+                            {
+                                GroupHeader = "Q &amp; A",
+                                Items = new List<TableOfContentsItem>
+                                {
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 40, 41),
+                                        Description = "Question #1 about..."
+                                    },
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 43, 20),
+                                        Description = "Question #2 about..."
+                                    },
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 50, 34),
+                                        Description = "Question #3 about..."
+                                    }
+                                }
+                            },
+                            new TableOfContentsGroup
+                            {
+                                GroupHeader = "Wrap up",
+                                Items = new List<TableOfContentsItem>
+                                {
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 55, 30),
+                                        Description = "Damian Edwards talks about..."
+                                    },
+                                    new TableOfContentsItem
+                                    {
+                                        Position = new TimeSpan(0, 57, 24),
+                                        Description = "Dramatic zoom out..."
+                                    }
+                                }
+                            }
+                    }  // TableOfContent Groups for show 7O81CAjmOXk
+                    }  // TableOfContents for show 7O81CAjmOXk
+                }  // ShowDetails for show 7O81CAjmOXk
+            };  // ShowDetails readonly field
+        }  // DesignData
     }
 }

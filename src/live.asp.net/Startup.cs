@@ -67,10 +67,12 @@ namespace live.asp.net
             if (string.IsNullOrEmpty(Configuration["AppSettings:AzureStorageConnectionString"]))
             {
                 services.AddSingleton<ILiveShowDetailsService, FileSystemLiveShowDetailsService>();
+                services.AddSingleton<IShowDetailsService, FileSystemShowDetailsService>();
             }
             else
             {
                 services.AddSingleton<ILiveShowDetailsService, AzureStorageLiveShowDetailsService>();
+                services.AddSingleton<IShowDetailsService, AzureStorageShowDetailsService>();
             }
         }
 

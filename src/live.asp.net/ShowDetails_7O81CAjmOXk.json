@@ -1,0 +1,94 @@
+﻿{
+  "ShowId": "7O81CAjmOXk",
+  "Description": "Blah, blah, blah",
+  "TableOfContents": {
+    "Groups": [
+      {
+        "GroupHeader": "Pre-show",
+        "Items": [
+          {
+            "Position": "00:00:00",
+            "Description": "Scott Hanselman talks about..."
+          },
+          {
+            "Position": "00:01:40",
+            "Description": "Scott Hanselman shows his new 3D printed stuff..."
+          },
+          {
+            "Position": "00:02:40",
+            "Description": "Damian Edwards talks about..."
+          }
+        ]
+      },
+      {
+        "GroupHeader": "Welcome",
+        "Items": [
+          {
+            "Position": "00:06:20",
+            "Description": "Welcome by Scott Hanselman..."
+          }
+        ]
+      },
+      {
+        "GroupHeader": "Community content",
+        "Items": [
+          {
+            "Position": "00:07:50",
+            "Description": "Jon Galloway presents site #1..."
+          },
+          {
+            "Position": "00:08:00",
+            "Description": "Site #2 about..."
+          },
+          {
+            "Position": "00:08:10",
+            "Description": "Site #3 about..."
+          }
+        ]
+      },
+      {
+        "GroupHeader": "Todays standup topic",
+        "Items": [
+          {
+            "Position": "00:09:50",
+            "Description": "Damian Edwards introduces..."
+          },
+          {
+            "Position": "00:10:40",
+            "Description": "Guest talks about..."
+          }
+        ]
+      },
+      {
+        "GroupHeader": "Q &amp; A",
+        "Items": [
+          {
+            "Position": "00:40:41",
+            "Description": "Question #1 about..."
+          },
+          {
+            "Position": "00:43:20",
+            "Description": "Question #2 about..."
+          },
+          {
+            "Position": "00:50:34",
+            "Description": "Question #3 about..."
+          }
+        ]
+      },
+      {
+        "GroupHeader": "Wrap up",
+        "Items": [
+          {
+            "Position": "00:55:30",
+            "Description": "Damian Edwards talks about..."
+          },
+          {
+            "Position": "00:57:24",
+            "Description": "Dramatic zoom out..."
+          }
+        ]
+      }
+    ]
+  }
+}
