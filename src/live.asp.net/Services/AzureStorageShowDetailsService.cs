@@ -39,7 +39,7 @@ namespace live.asp.net.Services
             {
                 showDetails = await LoadFromAzureStorage(showId);
 
-                _cache.Set(CacheKey, showDetails, new MemoryCacheEntryOptions
+                _cache.Set(GetCacheKey(showId), showDetails, new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.MaxValue
                 });
