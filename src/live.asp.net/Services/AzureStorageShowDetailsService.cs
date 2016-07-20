@@ -19,7 +19,7 @@ namespace live.asp.net.Services
 
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
-        private readonly TelemetryClient _telemtry;
+        private readonly TelemetryClient _telemetry;
 
         public AzureStorageShowDetailsService(
             IOptions<AppSettings> appSettings,
@@ -28,7 +28,7 @@ namespace live.asp.net.Services
         {
             _appSettings = appSettings.Value;
             _cache = cache;
-            _telemtry = telemetry;
+            _telemetry = telemetry;
         }
 
         public async Task<ShowDetails> LoadAsync(string showId)
@@ -105,7 +105,7 @@ namespace live.asp.net.Services
 
             var downloadStarted = DateTimeOffset.UtcNow;
             var fileContents = await blockBlob.DownloadTextAsync();
-            _telemtry.TrackDependency("Azure.BlobStorage", "DownloadTextAsync", downloadStarted, DateTimeOffset.UtcNow - downloadStarted, true);
+            _telemetry.TrackDependency("Azure.BlobStorage", "DownloadTextAsync", downloadStarted, DateTimeOffset.UtcNow - downloadStarted, true);
 
             return JsonConvert.DeserializeObject<ShowDetails>(fileContents);
         }
@@ -122,7 +122,7 @@ namespace live.asp.net.Services
 
             var uploadStarted = DateTimeOffset.UtcNow;
             await blockBlob.UploadTextAsync(fileContents);
-            _telemtry.TrackDependency("Azure.BlobStorage", "UploadTextAsync", uploadStarted, DateTimeOffset.UtcNow - uploadStarted, true);
+            _telemetry.TrackDependency("Azure.BlobStorage", "UploadTextAsync", uploadStarted, DateTimeOffset.UtcNow - uploadStarted, true);
         }
 
         private async Task DeleteFromAzureStorage(string showId)
@@ -135,7 +135,7 @@ namespace live.asp.net.Services
             
             var deleteStarted = DateTimeOffset.UtcNow;
             await blockBlob.DeleteIfExistsAsync();
-            _telemtry.TrackDependency("Azure.BlobStorage", "DeleteIfExistsAsync", deleteStarted, DateTimeOffset.UtcNow - deleteStarted, true);
+            _telemetry.TrackDependency("Azure.BlobStorage", "DeleteIfExistsAsync", deleteStarted, DateTimeOffset.UtcNow - deleteStarted, true);
         }
 
         private CloudBlobContainer GetStorageContainer()
