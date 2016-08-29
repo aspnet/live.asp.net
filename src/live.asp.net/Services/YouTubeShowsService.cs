@@ -11,10 +11,10 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using live.asp.net.Models;
 using Microsoft.ApplicationInsights;
-using Microsoft.AspNet.Hosting;
-using Microsoft.Framework.Caching.Memory;
-using Microsoft.Framework.OptionsModel;
-using Microsoft.Framework.WebEncoders;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using System.Text.Encodings.Web;
 using Google.Apis.YouTube.v3.Data;
 using static System.Xml.XmlConvert;
 
@@ -150,16 +150,16 @@ namespace live.asp.net.Services
 
         private static string GetVideoUrl(string id, string playlistId, long itemIndex)
         {
-            var encodedId = UrlEncoder.Default.UrlEncode(id);
-            var encodedPlaylistId = UrlEncoder.Default.UrlEncode(playlistId);
-            var encodedItemIndex = UrlEncoder.Default.UrlEncode(itemIndex.ToString());
+            var encodedId = UrlEncoder.Default.Encode(id);
+            var encodedPlaylistId = UrlEncoder.Default.Encode(playlistId);
+            var encodedItemIndex = UrlEncoder.Default.Encode(itemIndex.ToString());
 
             return $"https://www.youtube.com/watch?v={encodedId}&list={encodedPlaylistId}&index={encodedItemIndex}";
         }
 
         private static string GetPlaylistUrl(string playlistId)
         {
-            var encodedPlaylistId = UrlEncoder.Default.UrlEncode(playlistId);
+            var encodedPlaylistId = UrlEncoder.Default.Encode(playlistId);
 
             return $"https://www.youtube.com/playlist?list={encodedPlaylistId}";
         }

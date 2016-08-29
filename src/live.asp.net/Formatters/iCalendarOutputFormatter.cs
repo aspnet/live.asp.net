@@ -5,8 +5,8 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using live.asp.net.Models;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc.Formatters;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
 
 namespace live.asp.net.Formatters
@@ -22,12 +22,12 @@ namespace live.asp.net.Formatters
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/calendar"));
         }
 
-        protected override bool CanWriteType(Type declaredType, Type runtimeType)
+        protected override bool CanWriteType(Type type)
         {
-            return declaredType == typeof(LiveShowDetails) || runtimeType == typeof(LiveShowDetails);
+            return type == typeof(LiveShowDetails);
         }
 
-        public override void WriteResponseHeaders(OutputFormatterContext context)
+        public override void WriteResponseHeaders(OutputFormatterWriteContext context)
         {
             var liveShowDetails = context.Object as LiveShowDetails;
 
@@ -44,7 +44,7 @@ namespace live.asp.net.Formatters
             }
         }
 
-        public override Task WriteResponseBodyAsync(OutputFormatterContext context)
+        public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context)
         {
             var liveShowDetails = context.Object as LiveShowDetails;
 

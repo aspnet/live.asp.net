@@ -4,11 +4,11 @@
 using System;
 using System.IO;
 using System.Text;
-using Microsoft.AspNet.FileProviders;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.AspNet.Mvc.ViewFeatures;
-using Microsoft.AspNet.Razor.Runtime.TagHelpers;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace live.asp.net.TagHelpers
 {
@@ -77,7 +77,7 @@ namespace live.asp.net.TagHelpers
             using (var readStream = fileInfo.CreateReadStream())
             using (var reader = new StreamReader(readStream, Encoding.UTF8))
             {
-                output.Content.Append(reader.ReadToEnd());
+                output.Content.AppendHtml(reader.ReadToEnd());
             }
 
             output.Attributes.Remove(src);

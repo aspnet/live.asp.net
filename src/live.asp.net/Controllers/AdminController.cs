@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using live.asp.net.Models;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
-using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Mvc;
-using Microsoft.Framework.Caching.Memory;
-using Microsoft.Framework.OptionsModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace live.asp.net.Controllers
 {
     [Route("/admin")]
-    [Authorize]
+    [Authorize("Admin")]
     public class AdminController : Controller
     {
         private const string PST = "Pacific Standard Time";
@@ -85,7 +85,7 @@ namespace live.asp.net.Controllers
             liveShowDetails = new LiveShowDetails();
             liveShowDetails.LiveShowEmbedUrl = model.LiveShowEmbedUrl;
             liveShowDetails.NextShowDateUtc = model.NextShowDatePst.HasValue
-                ? TimeZoneInfo.ConvertTimeToUtc(model.NextShowDatePst.Value, _pstTimeZone)
+                ? TimeZoneInfo.ConvertTime(model.NextShowDatePst.Value, _pstTimeZone, TimeZoneInfo.Utc)
                 : (DateTime?)null;
             liveShowDetails.AdminMessage = model.AdminMessage;
 
@@ -111,8 +111,9 @@ namespace live.asp.net.Controllers
             model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
             if (liveShowDetails?.NextShowDateUtc != null)
             {
-                var nextShowDatePst = TimeZoneInfo.ConvertTimeFromUtc(
+                var nextShowDatePst = TimeZoneInfo.ConvertTime(
                     liveShowDetails.NextShowDateUtc.Value,
+                    TimeZoneInfo.Utc,
                     _pstTimeZone);
                 model.NextShowDatePst = nextShowDatePst;
             }

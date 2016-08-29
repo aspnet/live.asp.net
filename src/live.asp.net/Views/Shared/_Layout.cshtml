@@ -1,5 +1,6 @@
-﻿@inject Microsoft.AspNet.Hosting.IHostingEnvironment HostingEnvironment
-@inject Microsoft.Dnx.Runtime.IApplicationEnvironment ApplicationEnvironment
+﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment HostingEnvironment
+@inject live.asp.net.Services.IDeploymentEnvironment DeploymentEnvironment
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,12 +14,12 @@
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="invisible"
               asp-fallback-test-property="visibility"
               asp-fallback-test-value="hidden" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-file-version="true" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
     <partial name="_AnalyticsHead" />
 </head>
@@ -60,5 +61,11 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+<cache>
 <!-- Environment: @HostingEnvironment.EnvironmentName -->
-<!-- Framework: @ApplicationEnvironment.RuntimeFramework -->
+<!-- Application: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationName, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion -->
+<!-- Deployment: @DeploymentEnvironment.DeploymentId -->
+<!-- Framework: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.RuntimeFramework -->
+<!-- Runtime: @System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription, @System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.RuntimeFramework.Version -->
+<!-- OS: @System.Runtime.InteropServices.RuntimeInformation.OSDescription @System.Runtime.InteropServices.RuntimeInformation.OSArchitecture  -->
+</cache>

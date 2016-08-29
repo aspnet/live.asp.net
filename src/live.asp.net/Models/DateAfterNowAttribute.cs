@@ -33,7 +33,7 @@ namespace live.asp.net.Models
             if (!string.IsNullOrEmpty(TimeZoneId))
             {
                 var timeZone = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
-                now = TimeZoneInfo.ConvertTimeFromUtc(now, timeZone);
+                now = TimeZoneInfo.ConvertTime(now, TimeZoneInfo.Utc, timeZone);
             }
             
             return (DateTime)value > now;
