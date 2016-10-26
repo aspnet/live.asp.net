@@ -17,18 +17,14 @@ namespace live.asp.net
 {
     public class Startup
     {
-        private readonly IHostingEnvironment _env;
-
         public Startup(IHostingEnvironment env)
         {
-            _env = env;
-
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-            if (_env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 builder.AddUserSecrets();
                 builder.AddApplicationInsightsSettings(developerMode: true);
@@ -76,13 +72,13 @@ namespace live.asp.net
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
-            if (env.IsProduction())
+            if (env.IsDevelopment())
             {
-                app.UseApplicationInsightsRequestTelemetry();
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
             }
+
+            app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -93,10 +89,7 @@ namespace live.asp.net
                 app.UseExceptionHandler("/error");
             }
 
-            if (env.IsProduction())
-            {
-               app.UseApplicationInsightsExceptionTelemetry();
-            }
+            app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
 

@@ -151,7 +151,7 @@ namespace live.asp.net.Services
                     Title = "ASP.NET Community Standup - July 21st 2015",
                     Provider = "YouTube",
                     ProviderId = "7O81CAjmOXk",
-                    ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
+                    ThumbnailUrl = "https://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
                     Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
                 },
                 new Show
@@ -160,7 +160,7 @@ namespace live.asp.net.Services
                     Title = "ASP.NET Community Standup - July 14th 2015",
                     Provider = "YouTube",
                     ProviderId = "bFXseBPGAyQ",
-                    ThumbnailUrl = "http://img.youtube.com/vi/bFXseBPGAyQ/mqdefault.jpg",
+                    ThumbnailUrl = "https://img.youtube.com/vi/bFXseBPGAyQ/mqdefault.jpg",
                     Url = "https://www.youtube.com/watch?v=bFXseBPGAyQ&index=2&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
                 },
 
@@ -170,7 +170,7 @@ namespace live.asp.net.Services
                     Title = "ASP.NET Community Standup - July 7th 2015",
                     Provider = "YouTube",
                     ProviderId = "APagQ1CIVGA",
-                    ThumbnailUrl = "http://img.youtube.com/vi/APagQ1CIVGA/mqdefault.jpg",
+                    ThumbnailUrl = "https://img.youtube.com/vi/APagQ1CIVGA/mqdefault.jpg",
                     Url = "https://www.youtube.com/watch?v=APagQ1CIVGA&index=3&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
                 },
                 new Show
@@ -179,7 +179,7 @@ namespace live.asp.net.Services
                     Title = "ASP.NET Community Standup - July 21st 2015",
                     Provider = "YouTube",
                     ProviderId = "7O81CAjmOXk",
-                    ThumbnailUrl = "http://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
+                    ThumbnailUrl = "https://img.youtube.com/vi/7O81CAjmOXk/mqdefault.jpg",
                     Url = "https://www.youtube.com/watch?v=7O81CAjmOXk&index=1&list=PL0M0zPgJ3HSftTAAHttA3JQU4vOjXFquF"
                 },
             };
