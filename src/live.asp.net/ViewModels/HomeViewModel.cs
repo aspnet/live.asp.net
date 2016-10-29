@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using live.asp.net.Models;
 using System.Text.Encodings.Web;
+using live.asp.net.Models;
 
 namespace live.asp.net.ViewModels
 {

@@ -76,18 +76,14 @@ namespace live.asp.net
             {
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
-            }
-
-            app.UseApplicationInsightsRequestTelemetry();
-
-            if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
             }
             else
-            {   
+            {
                 app.UseExceptionHandler("/error");
             }
+
+            app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();
 

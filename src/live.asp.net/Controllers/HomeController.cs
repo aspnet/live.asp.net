@@ -20,7 +20,7 @@ namespace live.asp.net.Controllers
             _liveShowDetails = liveShowDetails;
         }
 
-        [Route("/")]
+        [HttpGet("/")]
         public async Task<IActionResult> Index(bool? disableCache)
         {
             var liveShowDetails = await _liveShowDetails.LoadAsync();
@@ -45,7 +45,7 @@ namespace live.asp.net.Controllers
             return liveShowDetails;
         }
 
-        [Route("/error")]
+        [HttpGet("/error")]
         public IActionResult Error()
         {
             return View();
