@@ -35,6 +35,13 @@
             </div>
         </div>
         <div class="form-group">
+            <label asp-for="LiveShowHtml" class="col-md-3 control-label"></label>
+            <div class="col-md-9">
+                <textarea asp-for="LiveShowHtml" class="form-control html-input" rows="4"></textarea>
+                <span asp-validation-for="LiveShowHtml" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
             <label asp-for="NextShowDatePst" class="col-md-3 control-label"></label>
             <div class="col-md-9">
                 <div class="row">

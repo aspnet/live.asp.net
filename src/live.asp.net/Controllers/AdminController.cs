@@ -84,6 +84,7 @@ namespace live.asp.net.Controllers
 
             liveShowDetails = new LiveShowDetails();
             liveShowDetails.LiveShowEmbedUrl = model.LiveShowEmbedUrl;
+            liveShowDetails.LiveShowHtml = model.LiveShowHtml;
             liveShowDetails.NextShowDateUtc = model.NextShowDatePst.HasValue
                 ? TimeZoneInfo.ConvertTime(model.NextShowDatePst.Value, _pstTimeZone, TimeZoneInfo.Utc)
                 : (DateTime?)null;
@@ -109,6 +110,7 @@ namespace live.asp.net.Controllers
         private void UpdateAdminViewModel(AdminViewModel model, LiveShowDetails liveShowDetails)
         {
             model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
+            model.LiveShowHtml = liveShowDetails?.LiveShowHtml;
             if (liveShowDetails?.NextShowDateUtc != null)
             {
                 var nextShowDatePst = TimeZoneInfo.ConvertTime(

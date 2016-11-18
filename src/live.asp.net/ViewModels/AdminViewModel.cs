@@ -12,6 +12,10 @@ namespace live.asp.net.ViewModels
         [Display(Name = "Streaming Embed URL", Description = "URL for embedding the live show")]
         [DataType(DataType.Url)]
         public string LiveShowEmbedUrl { get; set; }
+        
+        [Display(Name = "Streaming HTML", Description = "HTML content for the live show")]
+        [DataType(DataType.MultilineText)]
+        public string LiveShowHtml { get; set; }
 
         [Display(Name = "Next Show Date/time", Description = "Exact date and time of the next live show")]
         [DateAfterNow(TimeZoneId = "Pacific Standard Time")]

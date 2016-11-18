@@ -14,9 +14,13 @@ namespace live.asp.net.ViewModels
         private static readonly string _googleCalendarText = UrlEncoder.Default.Encode("ASP.NET Community Standup");
         private static readonly string _googleCalendarLocation = UrlEncoder.Default.Encode("https://live.asp.net/");
 
-        public bool IsOnAir => !HasAdminMessage && !string.IsNullOrEmpty(LiveShowEmbedUrl);
+        public bool IsOnAir => !HasAdminMessage && (IsLiveShowEmbedded || !string.IsNullOrEmpty(LiveShowHtml));
 
         public string LiveShowEmbedUrl { get; set; }
+
+        public string LiveShowHtml { get; set; }
+
+        public bool IsLiveShowEmbedded => !string.IsNullOrEmpty(LiveShowEmbedUrl);
 
         public DateTime? NextShowDateUtc { get; set; }
 

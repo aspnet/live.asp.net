@@ -105,8 +105,12 @@ a, a:hover {
     margin-bottom: 0;
 }
 
-.admin-screen input {
+.admin-screen input, .admin-screen textarea {
     max-width: 400px;
+}
+
+.html-input {
+    font-family: Consolas, monospace
 }
 
 .bottom-buffer {

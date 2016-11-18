@@ -31,6 +31,7 @@ namespace live.asp.net.Controllers
                 AdminMessage = liveShowDetails?.AdminMessage,
                 NextShowDateUtc = liveShowDetails?.NextShowDateUtc,
                 LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl,
+                LiveShowHtml = liveShowDetails?.LiveShowHtml,
                 PreviousShows = showList.Shows,
                 MoreShowsUrl = showList.MoreShowsUrl
             });
