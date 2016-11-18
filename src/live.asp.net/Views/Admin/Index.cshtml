@@ -22,42 +22,43 @@
         <div asp-validation-summary="All" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="AdminMessage" class="col-md-3 control-label"></label>
-            <div class="col-md-9">
+            <div class="col-md-5">
                 <input asp-for="AdminMessage" class="form-control" />
                 <span asp-validation-for="AdminMessage" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
             <label asp-for="LiveShowEmbedUrl" class="col-md-3 control-label"></label>
-            <div class="col-md-9">
+            <div class="col-md-5">
                 <input asp-for="LiveShowEmbedUrl" class="form-control" />
                 <span asp-validation-for="LiveShowEmbedUrl" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
             <label asp-for="LiveShowHtml" class="col-md-3 control-label"></label>
-            <div class="col-md-9">
+            <div class="col-md-5">
                 <textarea asp-for="LiveShowHtml" class="form-control html-input" rows="4"></textarea>
                 <span asp-validation-for="LiveShowHtml" class="text-danger"></span>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="nextShowDate">
             <label asp-for="NextShowDatePst" class="col-md-3 control-label"></label>
-            <div class="col-md-9">
-                <div class="row">
-                    <div class="col-md-3 co">
-                        <input asp-for="NextShowDatePst" asp-format="{0:MM/dd/yyyy HH:mm}"
-                               class="form-control" placeholder="MM/dd/yyyy HH:mm" maxlength="16" />
+            <div class="col-md-5">
+                <div class="input-group">
+                    <input asp-for="NextShowDatePst" asp-format="{0:MM/dd/yyyy HH:mm}"
+                        class="form-control" placeholder="MM/dd/yyyy HH:mm" maxlength="16" />
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Next Tuesday <span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="#" data-suggestion="@Model.NextShowDateSuggestionPstAM">10:00 AM</a></li>
+                            <li><a href="#" data-suggestion="@Model.NextShowDateSuggestionPstPM">3:45 PM</a></li>
+                        </ul>
                     </div>
-                    <div class="col-md-9">
-                        <span class="help-block">Pacific Time</span>
+                    <div class="input-group-addon">
+                        Pacific Time
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <span asp-validation-for="NextShowDatePst" class="text-danger"></span>
-                    </div>
-                </div>
+                <span asp-validation-for="NextShowDatePst" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
@@ -151,6 +152,16 @@
                         $self.data("state", "hidden");
                         $self.removeClass("click-to-show-revealed");
                     }
+                });
+            
+            var nextShowDateInput = $("#nextShowDate input");
+
+            var suggestions = $("#nextShowDate a[data-suggestion]");
+
+            suggestions
+                .click(e => {
+                    nextShowDateInput.val($(e.target).data("suggestion"));
+                    e.preventDefault();
                 });
         });
     </script>

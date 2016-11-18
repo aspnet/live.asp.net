@@ -39,13 +39,6 @@ h2 a, h2 a:hover, h2 a:focus, h2 a:active, h2 a:visited {
     padding-right: 15px;
 }
 
-/* Set widths on the form inputs since otherwise they're 100% wide */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
-
 a, a:hover {
     color: rgb(38, 124, 178);
 }
@@ -103,10 +96,6 @@ a, a:hover {
 .thumbnail .caption h3 {
     margin-top: 0;
     margin-bottom: 0;
-}
-
-.admin-screen input, .admin-screen textarea {
-    max-width: 400px;
 }
 
 .html-input {

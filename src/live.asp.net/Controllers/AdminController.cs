@@ -120,8 +120,31 @@ namespace live.asp.net.Controllers
                 model.NextShowDatePst = nextShowDatePst;
             }
             model.AdminMessage = liveShowDetails?.AdminMessage;
+            var nextTuesday = GetNextTuesday();
+            model.NextShowDateSuggestionPstAM = nextTuesday.AddHours(10).ToString("MM/dd/yyyy HH:mm");
+            model.NextShowDateSuggestionPstPM = nextTuesday.AddHours(15).AddMinutes(45).ToString("MM/dd/yyyy HH:mm");
             model.AppSettings = _appSettings;
             model.EnvironmentName = _env.EnvironmentName;
+        }
+
+        private DateTime GetNextTuesday()
+        {
+            var nowPst = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, _pstTimeZone);
+            var nextTuesday = nowPst;
+
+            if (nextTuesday.DayOfWeek == DayOfWeek.Tuesday)
+            {
+                nextTuesday = nowPst.AddDays(7);
+            }
+            else
+            {
+                while (nextTuesday.DayOfWeek != DayOfWeek.Tuesday)
+                {
+                    nextTuesday = nextTuesday.AddDays(1);
+                }
+            }
+
+            return nextTuesday.Date;
         }
     }
 }
