@@ -54,7 +54,8 @@ namespace live.asp.net
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddMvc(options => options.OutputFormatters.Add(new iCalendarOutputFormatter()));
+            services.AddMvc(options => options.OutputFormatters.Add(new iCalendarOutputFormatter()))
+                .AddCookieTempDataProvider();
 
             services.AddScoped<IShowsService, YouTubeShowsService>();
 

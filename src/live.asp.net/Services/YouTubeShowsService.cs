@@ -139,7 +139,7 @@ namespace live.asp.net.Services
 
         private static class DesignData
         {
-            private static readonly TimeSpan _pdtOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
+            private static readonly TimeSpan _pstOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
 
             public static readonly string LiveShow = null;
 
@@ -147,7 +147,7 @@ namespace live.asp.net.Services
             {
                 new Show
                 {
-                    ShowDate = new DateTimeOffset(2015, 7, 21, 9, 30, 0, _pdtOffset),
+                    ShowDate = new DateTimeOffset(2015, 7, 21, 9, 30, 0, _pstOffset),
                     Title = "ASP.NET Community Standup - July 21st 2015",
                     Provider = "YouTube",
                     ProviderId = "7O81CAjmOXk",
@@ -156,7 +156,7 @@ namespace live.asp.net.Services
                 },
                 new Show
                 {
-                    ShowDate = new DateTimeOffset(2015, 7, 14, 15, 30, 0, _pdtOffset),
+                    ShowDate = new DateTimeOffset(2015, 7, 14, 15, 30, 0, _pstOffset),
                     Title = "ASP.NET Community Standup - July 14th 2015",
                     Provider = "YouTube",
                     ProviderId = "bFXseBPGAyQ",
@@ -166,7 +166,7 @@ namespace live.asp.net.Services
 
                 new Show
                 {
-                    ShowDate = new DateTimeOffset(2015, 7, 7, 15, 30, 0, _pdtOffset),
+                    ShowDate = new DateTimeOffset(2015, 7, 7, 15, 30, 0, _pstOffset),
                     Title = "ASP.NET Community Standup - July 7th 2015",
                     Provider = "YouTube",
                     ProviderId = "APagQ1CIVGA",

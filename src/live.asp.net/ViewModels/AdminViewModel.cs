@@ -21,16 +21,16 @@ namespace live.asp.net.ViewModels
         [DateAfterNow(TimeZoneId = "Pacific Standard Time")]
         public DateTime? NextShowDatePst { get; set; }
 
+        [Display(Name = "Standby Message", Description = "Message to show on home page during show standby")]
+        public string AdminMessage { get; set; }
+
         public string NextShowDateSuggestionPstAM { get; set; }
 
         public string NextShowDateSuggestionPstPM { get; set; }
 
-        [Display(Name = "Standby Message", Description = "Message to show on home page during show standby")]
-        public string AdminMessage { get; set; }
-
         public string SuccessMessage { get; set; }
 
-        public bool ShowSucessMessage => !string.IsNullOrEmpty(SuccessMessage);
+        public bool ShowSuccessMessage => !string.IsNullOrEmpty(SuccessMessage);
 
         public AppSettings AppSettings { get; set; }
 

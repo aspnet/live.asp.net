@@ -18,9 +18,6 @@ namespace live.asp.net.Controllers
     [Authorize("Admin")]
     public class AdminController : Controller
     {
-        private const string PST = "Pacific Standard Time";
-        private static readonly TimeZoneInfo _pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById(PST);
-        private static readonly TimeSpan _pstOffset = _pstTimeZone.BaseUtcOffset;
         private readonly ILiveShowDetailsService _liveShowDetails;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
@@ -41,20 +38,10 @@ namespace live.asp.net.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = new AdminViewModel();
-
-            var msg = HttpContext.Request.Cookies["msg"];
-            HttpContext.Response.Cookies.Delete("msg");
-
-            switch (msg)
+            var model = new AdminViewModel
             {
-                case "1":
-                    model.SuccessMessage = "Live show details saved successfully!";
-                    break;
-                case "2":
-                    model.SuccessMessage = "YouTube cache cleared successfully!";
-                    break;
-            }
+                SuccessMessage = (string)TempData[nameof(AdminViewModel.SuccessMessage)]
+            };
 
             var liveShowDetails = await _liveShowDetails.LoadAsync();
 
@@ -63,8 +50,20 @@ namespace live.asp.net.Controllers
             return View(model);
         }
 
+        [ModelMetadataType(typeof(AdminViewModel))]
+        public class AdminInputModel
+        {
+            public string LiveShowEmbedUrl { get; set; }
+
+            public string LiveShowHtml { get; set; }
+
+            public DateTime? NextShowDatePst { get; set; }
+
+            public string AdminMessage { get; set; }
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Save(AdminViewModel model)
+        public async Task<IActionResult> Save(AdminInputModel input)
         {
             LiveShowDetails liveShowDetails;
 
@@ -72,29 +71,28 @@ namespace live.asp.net.Controllers
             {
                 // Model validation error, just return and let the error render
                 liveShowDetails = await _liveShowDetails.LoadAsync();
-                UpdateAdminViewModel(model, liveShowDetails);
+                var viewModel = new AdminViewModel();
+                UpdateAdminViewModel(viewModel, liveShowDetails);
 
-                return View("Index", model);
+                return View(nameof(Index), viewModel);
             }
 
-            if (!string.IsNullOrEmpty(model.LiveShowEmbedUrl) && model.LiveShowEmbedUrl.StartsWith("http://"))
+            if (!string.IsNullOrEmpty(input.LiveShowEmbedUrl) && input.LiveShowEmbedUrl.StartsWith("http://"))
             {
-                model.LiveShowEmbedUrl = "https://" + model.LiveShowEmbedUrl.Substring("http://".Length);
+                input.LiveShowEmbedUrl = "https://" + input.LiveShowEmbedUrl.Substring("http://".Length);
             }
 
             liveShowDetails = new LiveShowDetails();
-            liveShowDetails.LiveShowEmbedUrl = model.LiveShowEmbedUrl;
-            liveShowDetails.LiveShowHtml = model.LiveShowHtml;
-            liveShowDetails.NextShowDateUtc = model.NextShowDatePst.HasValue
-                ? TimeZoneInfo.ConvertTime(model.NextShowDatePst.Value, _pstTimeZone, TimeZoneInfo.Utc)
-                : (DateTime?)null;
-            liveShowDetails.AdminMessage = model.AdminMessage;
+            liveShowDetails.LiveShowEmbedUrl = input.LiveShowEmbedUrl;
+            liveShowDetails.LiveShowHtml = input.LiveShowHtml;
+            liveShowDetails.NextShowDateUtc = input.NextShowDatePst?.ConvertFromPtcToUtc();
+            liveShowDetails.AdminMessage = input.AdminMessage;
 
             await _liveShowDetails.SaveAsync(liveShowDetails);
 
-            HttpContext.Response.Cookies.Append("msg", "1");
+            TempData[nameof(AdminViewModel.SuccessMessage)] = "Live show details saved successfully!";
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost("clearcache")]
@@ -102,34 +100,29 @@ namespace live.asp.net.Controllers
         {
             _memoryCache.Remove(YouTubeShowsService.CacheKey);
 
-            HttpContext.Response.Cookies.Append("msg", "2");
+            TempData[nameof(AdminViewModel.SuccessMessage)] = "YouTube cache cleared successfully!";
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         private void UpdateAdminViewModel(AdminViewModel model, LiveShowDetails liveShowDetails)
         {
             model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
             model.LiveShowHtml = liveShowDetails?.LiveShowHtml;
-            if (liveShowDetails?.NextShowDateUtc != null)
-            {
-                var nextShowDatePst = TimeZoneInfo.ConvertTime(
-                    liveShowDetails.NextShowDateUtc.Value,
-                    TimeZoneInfo.Utc,
-                    _pstTimeZone);
-                model.NextShowDatePst = nextShowDatePst;
-            }
+            model.NextShowDatePst = liveShowDetails?.NextShowDateUtc?.ConvertFromUtcToPst();
             model.AdminMessage = liveShowDetails?.AdminMessage;
+
             var nextTuesday = GetNextTuesday();
             model.NextShowDateSuggestionPstAM = nextTuesday.AddHours(10).ToString("MM/dd/yyyy HH:mm");
             model.NextShowDateSuggestionPstPM = nextTuesday.AddHours(15).AddMinutes(45).ToString("MM/dd/yyyy HH:mm");
+
             model.AppSettings = _appSettings;
             model.EnvironmentName = _env.EnvironmentName;
         }
 
         private DateTime GetNextTuesday()
         {
-            var nowPst = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, _pstTimeZone);
+            var nowPst = DateTime.UtcNow.ConvertFromUtcToPst();
             var remainingDays = 7 - ((int) nowPst.DayOfWeek + 5) % 7;
             var nextTuesday = nowPst.AddDays(remainingDays);
 
