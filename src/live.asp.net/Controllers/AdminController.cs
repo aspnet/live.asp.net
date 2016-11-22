@@ -130,19 +130,8 @@ namespace live.asp.net.Controllers
         private DateTime GetNextTuesday()
         {
             var nowPst = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, _pstTimeZone);
-            var nextTuesday = nowPst;
-
-            if (nextTuesday.DayOfWeek == DayOfWeek.Tuesday)
-            {
-                nextTuesday = nowPst.AddDays(7);
-            }
-            else
-            {
-                while (nextTuesday.DayOfWeek != DayOfWeek.Tuesday)
-                {
-                    nextTuesday = nextTuesday.AddDays(1);
-                }
-            }
+            var remainingDays = 7 - ((int) nowPst.DayOfWeek + 5) % 7;
+            var nextTuesday = nowPst.AddDays(remainingDays);
 
             return nextTuesday.Date;
         }
