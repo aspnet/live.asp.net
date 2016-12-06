@@ -1,6 +1,7 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved. 
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Threading.Tasks;
 using live.asp.net.Models;
 using live.asp.net.Services;
@@ -35,6 +36,17 @@ namespace live.asp.net.Controllers
                 PreviousShows = showList.Shows,
                 MoreShowsUrl = showList.MoreShowsUrl
             });
+        }
+
+        [HttpGet("/feed.atom")]
+        [Produces("application/atom+xml")]
+        public async Task<string> GetFeed()
+        {
+            var feedService = new FeedService(_showsService);
+            var request = Url.ActionContext.HttpContext.Request;
+            var absoluteRoot = new Uri(request.Scheme + "://" + request.Host.Value).ToString();
+
+            return await feedService.GetFeed(absoluteRoot, User);
         }
 
         [HttpGet("/ical")]

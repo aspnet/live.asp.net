@@ -9,6 +9,7 @@
     <title>@ViewData["Title"]</title>
     <meta name="description" content="The weekly ASP.NET Community Standup covers live community Q&amp;A, product team discussion, and the most recent updates. Hosted by Scott Hanselman, Damian Edwards, and Jon Galloway. Recordings of previous meetings are available." />
     <link rel="shortcut icon" href="~/favicon.ico" />
+    <link rel="alternate" type="application/atom+xml" title="ASP.NET Community Standup Episodes Feed" href="/feed.atom">
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -29,7 +30,7 @@
     @RenderSection("PreContent", required: false)
     <div class="container body-content">
         @RenderBody()
-        
+
         <footer>
             <div class="row">
                 <div class="col-md-6">
@@ -46,6 +47,7 @@
                             <li><a href="https://www.asp.net/terms-of-use">Terms of Use</a></li>
                             <li><a href="https://github.com/aspnet/live.asp.net">Source Code</a></li>
                             <li><a href="https://github.com/aspnet/live.asp.net/issues">Issue Tracker</a></li>
+                            <li><a href="@Url.Content("~/feed.atom")">Subscribe to the Episodes Feed</a></li>
                         </ul>
                     </nav>
                 </div>
