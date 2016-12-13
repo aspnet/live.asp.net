@@ -1,0 +1,92 @@
+{
+  "version": "1.0.0-*",
+
+  "userSecretsId": "aspnet5-live.asp.net-20150723035013",
+
+  "buildOptions": {
+    "warningsAsErrors": true,
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
+  },
+
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  },
+
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "version": "1.1.0",
+      "type": "platform"
+    },
+    "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
+    "Microsoft.AspNetCore.Authentication.OpenIdConnect": "1.1.0",
+    "Microsoft.AspNetCore.Diagnostics": "1.1.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+    "Microsoft.AspNetCore.StaticFiles": "1.1.0",
+    "Microsoft.Extensions.Configuration.Binder": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "Microsoft.Extensions.Logging.Debug": "1.1.0",
+    "Microsoft.AspNetCore.AzureAppServicesIntegration": "1.0.0",
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.1.0-preview4-final",
+      "type": "build"
+    },
+    "Microsoft.AspNetCore.Mvc.Razor.ViewCompilation.Design": {
+      "version": "1.1.0-preview4-final",
+      "type": "build"
+    },
+    "Microsoft.ApplicationInsights.AspNetCore": "1.0.2",
+    "Newtonsoft.Json": "9.0.1",
+    "Google.Apis.YouTube.v3": "1.18.0.655"
+  },
+
+  "tools": {
+    "Microsoft.Extensions.SecretManager.Tools": {
+      "version": "1.1.0-preview4-final"
+    },
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.1.0-preview4-final"
+    },
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+      "version": "1.1.0-preview4-final"
+    },
+    "Microsoft.AspNetCore.Mvc.Razor.ViewCompilation.Tools": {
+      "version": "1.1.0-preview4-final"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.1": {
+      "imports": [
+        "dotnet5.6",
+        "portable-net45+win8+wpa81"
+      ]
+    }
+  },
+
+  "publishOptions": {
+    "include": [
+      "appsettings.json",
+      "appsettings.Production.json",
+      "wwwroot",
+      "web.config"
+    ]
+  },
+
+  "scripts": {
+    "prepublish": [ "npm install", "gulp prepublish" ],
+    "postpublish": [
+      "dotnet razor-precompile --configuration %publish:Configuration% --framework %publish:TargetFramework% --output-path %publish:OutputPath% %publish:ProjectPath%",
+      "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%"
+    ]
+  }
+}
