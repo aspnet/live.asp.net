@@ -3,8 +3,6 @@
 
 using System;
 using System.Security.Claims;
-using live.asp.net.Formatters;
-using live.asp.net.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -16,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using live.asp.net.Formatters;
+using live.asp.net.Services;
 
 namespace live.asp.net
 {
@@ -96,6 +96,11 @@ namespace live.asp.net
             }
 
             app.UseStatusCodePages();
+            app.UseStaticFiles();
+
+            app.UseRewriter(new RewriteOptions()
+                .AddIISUrlRewrite(env.ContentRootFileProvider, "urlRewrite.config"));
+
             app.UseStaticFiles();
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
