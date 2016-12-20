@@ -16,10 +16,10 @@
         "AspNetCore_Environment": "Development"
       }
     },
-    "web": {
-      "commandName": "web",
+    "live.asp.net": {
+      "commandName": "Project",
       "environmentVariables": {
-        "Hosting:Environment": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

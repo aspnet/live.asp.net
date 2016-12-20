@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -51,8 +52,14 @@ namespace live.asp.net
                 )
             );
 
+            // Turn off compaction on memory pressure as it results in things being evicted during the priming of the cache
+            // on application start.
+            services.AddMemoryCache(options => options.CompactOnMemoryPressure = false);
+
             services.AddMvc(options => options.OutputFormatters.Add(new iCalendarOutputFormatter()))
                 .AddCookieTempDataProvider();
+
+            services.AddSingleton<CachedWebRootFileProvider>();
 
             services.AddScoped<IShowsService, YouTubeShowsService>();
 
@@ -68,7 +75,7 @@ namespace live.asp.net
             }
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CachedWebRootFileProvider cachedWebRoot)
         {
             if (env.IsDevelopment())
             {
@@ -85,7 +92,8 @@ namespace live.asp.net
                 app.UseExceptionHandler("/error");
             }
 
-            app.UseStaticFiles();
+            cachedWebRoot.PrimeCache();
+            app.UseStaticFiles(new StaticFileOptions { FileProvider = cachedWebRoot });
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
