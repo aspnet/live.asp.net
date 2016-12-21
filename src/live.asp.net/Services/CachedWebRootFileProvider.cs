@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.FileProviders;
@@ -26,6 +27,7 @@ namespace live.asp.net.Services
 
         public void PrimeCache()
         {
+            // TODO: Log time taken to prime the cache
             _logger.LogInformation("Priming the cache");
             PrimeCacheImpl("/");
         }
@@ -33,7 +35,11 @@ namespace live.asp.net.Services
         private void PrimeCacheImpl(string currentPath)
         {
             _logger.LogTrace("Priming cache for {currentPath}", currentPath);
+
+            // TODO: Normalize the currentPath here, e.g. strip/always-add leading slashes, ensure slash consistency, etc.
             var prefix = string.Equals(currentPath, "/", StringComparison.OrdinalIgnoreCase) ? "/" : currentPath + "/";
+
+            // TODO: Parallel.ForEach?
             foreach (var fileInfo in GetDirectoryContents(currentPath))
             {
                 if (fileInfo.IsDirectory)
@@ -76,8 +82,7 @@ namespace live.asp.net.Services
             private static readonly int _fileSizeLimit = 256 * 1024; // bytes
             private readonly IFileProvider _fileProvider;
             private readonly string _subpath;
-            private IFileInfo _fileInfo;
-            private byte[] _contents;
+            private CacheEntry _cacheEntry;
             private readonly ILogger _logger;
 
             public CachedFileInfo(ILogger logger, IFileProvider fileProvider, string subpath)
@@ -86,39 +91,40 @@ namespace live.asp.net.Services
                 _fileProvider = fileProvider;
                 _subpath = subpath;
 
-                Refresh();
+                LoadFileInfoFromUnderlyingProvider();
             }
 
-            private void Refresh()
+            private void LoadFileInfoFromUnderlyingProvider()
             {
-                _logger.LogDebug("Refreshing contents for {subpath}", _subpath);
-
-                lock (this)
+                // TODO: Handle file load exceptions here
+                var existingCacheEntry = _cacheEntry;
+                var newCacheEntry = new CacheEntry(_fileProvider.GetFileInfo(_subpath), null);
+                var oldCacheEntry = Interlocked.CompareExchange(ref _cacheEntry, newCacheEntry, existingCacheEntry);
+                if (oldCacheEntry == existingCacheEntry)
                 {
-                    _contents = null;
-                    // TODO: Handle file load exceptions here
-                    _fileInfo = _fileProvider.GetFileInfo(_subpath); 
-                    IDisposable callback = null;
-                    callback = _fileProvider.Watch(_subpath).RegisterChangeCallback(_ =>
-                    {
-                        _logger.LogDebug("Change detected for {subpath}", _subpath);
-                        Refresh();
-                        callback.Dispose();
-                    }, null);
+                    _logger.LogDebug("Refreshed contents for {subpath} located at {filepath}", _subpath, newCacheEntry.FileInfo.PhysicalPath);
+                    _fileProvider.Watch(_subpath).RegisterChangeCallback(OnChange, this);
                 }
             }
 
-            public bool Exists => _fileInfo.Exists;
+            private static void OnChange(object state)
+            {
+                var self = (CachedFileInfo)state;
+                self._logger.LogDebug("Change detected for {subpath} located at {filepath}", self._subpath, self._cacheEntry.FileInfo.PhysicalPath);
+                self.LoadFileInfoFromUnderlyingProvider();
+            }
 
-            public bool IsDirectory => _fileInfo.IsDirectory;
+            public bool Exists => _cacheEntry.FileInfo.Exists;
 
-            public DateTimeOffset LastModified => _fileInfo.LastModified;
+            public bool IsDirectory => _cacheEntry.FileInfo.IsDirectory;
 
-            public long Length => _fileInfo.Length;
+            public DateTimeOffset LastModified => _cacheEntry.FileInfo.LastModified;
 
-            public string Name => _fileInfo.Name;
+            public long Length => _cacheEntry.FileInfo.Length;
 
-            public string PhysicalPath => _fileInfo.PhysicalPath;
+            public string Name => _cacheEntry.FileInfo.Name;
+
+            public string PhysicalPath => _cacheEntry.FileInfo.PhysicalPath;
 
             public Stream CreateReadStream()
             {
@@ -126,25 +132,49 @@ namespace live.asp.net.Services
                 {
                     // TODO: The length limit check should really be done in the CachedWebRootFileProvider itself
                     //       as this implementation can result in the FileInfo meta-data being cached while the stream
-                    //       (and thus the file contents) itself not being cached, so things like length won't match.s
+                    //       (and thus the file contents) itself not being cached, so things like length won't match.
                     _logger.LogTrace("Stream for {subpath} not cached as it's over the file size limit of {fileSizeLimit}", _subpath, _fileSizeLimit);
-                    return _fileInfo.CreateReadStream();
+                    return _cacheEntry.FileInfo.CreateReadStream();
                 }
 
-                lock (this)
+                var contents = _cacheEntry.Contents;
+                if (contents != null)
                 {
-                    if (_contents == null)
+                    return new MemoryStream(contents);
+                }
+                else
+                {
+                    _logger.LogTrace("Reading file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
+                    using (var fs = _cacheEntry.FileInfo.CreateReadStream())
+                    using (var ms = new MemoryStream((int)fs.Length))
                     {
-                        _logger.LogTrace("Caching file contents for {subpath}", _subpath);
-                        using (var fs = _fileInfo.CreateReadStream())
-                        using (var ms = new MemoryStream((int)fs.Length))
-                        {
-                            fs.CopyTo(ms);
-                            _contents = ms.ToArray();
-                        }
+                        fs.CopyTo(ms);
+                        contents = ms.ToArray();
                     }
 
-                    return new MemoryStream(_contents);
+                    _cacheEntry.TrySetContents(contents);
+
+                    return new MemoryStream(contents);
+                }
+            }
+
+            private class CacheEntry
+            {
+                private byte[] _contents;
+
+                public CacheEntry(IFileInfo fileInfo, byte[] contents)
+                {
+                    FileInfo = fileInfo;
+                    _contents = contents;
+                }
+
+                public IFileInfo FileInfo { get; }
+
+                public byte[] Contents => _contents;
+
+                public bool TrySetContents(byte[] contents)
+                {
+                    return Interlocked.CompareExchange(ref _contents, contents, null) == null;
                 }
             }
         }
