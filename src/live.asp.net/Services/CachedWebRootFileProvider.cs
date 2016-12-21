@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,8 @@ namespace live.asp.net.Services
 {
     public class CachedWebRootFileProvider : IFileProvider
     {
+        private static readonly double TimestampToTicks = TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
+
         private readonly ILogger<CachedWebRootFileProvider> _logger;
         private readonly IFileProvider _fileProvider;
         private readonly IMemoryCache _cache;
@@ -27,14 +30,24 @@ namespace live.asp.net.Services
 
         public void PrimeCache()
         {
-            // TODO: Log time taken to prime the cache
+            var startTimestamp = _logger.IsEnabled(LogLevel.Information) ? Stopwatch.GetTimestamp() : 0;
+
             _logger.LogInformation("Priming the cache");
-            PrimeCacheImpl("/");
+            var cacheSize = PrimeCacheImpl("/");
+
+            if (startTimestamp != 0)
+            {
+                var currentTimestamp = Stopwatch.GetTimestamp();
+                var elapsed = new TimeSpan((long)(TimestampToTicks * (currentTimestamp - startTimestamp)));
+                _logger.LogInformation("Cache primed with {cacheEntriesCount} entries totalling {cacheEntriesSizeBytes} bytes in {elapsed}", cacheSize.Item1, cacheSize.Item2, elapsed);
+            }
         }
 
-        private void PrimeCacheImpl(string currentPath)
+        private Tuple<int, long> PrimeCacheImpl(string currentPath)
         {
             _logger.LogTrace("Priming cache for {currentPath}", currentPath);
+            var cacheEntriesAdded = 0;
+            var bytesCached = (long)0;
 
             // TODO: Normalize the currentPath here, e.g. strip/always-add leading slashes, ensure slash consistency, etc.
             var prefix = string.Equals(currentPath, "/", StringComparison.OrdinalIgnoreCase) ? "/" : currentPath + "/";
@@ -44,19 +57,29 @@ namespace live.asp.net.Services
             {
                 if (fileInfo.IsDirectory)
                 {
-                    PrimeCacheImpl(prefix + fileInfo.Name);
+                    var cacheSize = PrimeCacheImpl(prefix + fileInfo.Name);
+                    cacheEntriesAdded += cacheSize.Item1;
+                    bytesCached += cacheSize.Item2;
                 }
                 else
                 {
-                    GetFileInfo(prefix + fileInfo.Name).CreateReadStream().Dispose();
+                    var stream = GetFileInfo(prefix + fileInfo.Name).CreateReadStream();
+                    bytesCached += stream.Length;
+                    stream.Dispose();
+                    cacheEntriesAdded++;
                 }
             }
+
+            return Tuple.Create(cacheEntriesAdded, bytesCached);
         }
 
         // TODO: Should move the lookup of the FileInfo here such that we can check length against limit and
         //       whether IFileInfo.Exists is false and not cache in that case.
+        //       Indeed it might be possible to simplify this a lot by doing all the logic here and letting IMemoryCache
+        //       deal with concurrency checks, etc. rather than CachedFileInfo doing it internally.
 
         public IDirectoryContents GetDirectoryContents(string subpath) =>
+            // TODO: Normalize the subpath here, e.g. strip/always-add leading slashes, ensure slash consistency, etc.
             _cache.GetOrCreate(nameof(GetDirectoryContents) + "_" + subpath, ce =>
             {
                 ce.RegisterPostEvictionCallback((key, value, reason, s) =>
@@ -65,6 +88,7 @@ namespace live.asp.net.Services
             });
 
         public IFileInfo GetFileInfo(string subpath) =>
+            // TODO: Normalize the subpath here, e.g. strip/always-add leading slashes, ensure slash consistency, etc.
             _cache.GetOrCreate(nameof(GetFileInfo) + "_" + subpath, ce =>
             {
                 ce.RegisterPostEvictionCallback((key, value, reason, s) =>
@@ -96,13 +120,12 @@ namespace live.asp.net.Services
 
             private void LoadFileInfoFromUnderlyingProvider()
             {
-                // TODO: Handle file load exceptions here
                 var existingCacheEntry = _cacheEntry;
                 var newCacheEntry = new CacheEntry(_fileProvider.GetFileInfo(_subpath), null);
                 var oldCacheEntry = Interlocked.CompareExchange(ref _cacheEntry, newCacheEntry, existingCacheEntry);
                 if (oldCacheEntry == existingCacheEntry)
                 {
-                    _logger.LogDebug("Refreshed contents for {subpath} located at {filepath}", _subpath, newCacheEntry.FileInfo.PhysicalPath);
+                    _logger.LogDebug("Loaded file info for {subpath} located at {filepath}", _subpath, newCacheEntry.FileInfo.PhysicalPath);
                     _fileProvider.Watch(_subpath).RegisterChangeCallback(OnChange, this);
                 }
             }
@@ -133,18 +156,19 @@ namespace live.asp.net.Services
                     // TODO: The length limit check should really be done in the CachedWebRootFileProvider itself
                     //       as this implementation can result in the FileInfo meta-data being cached while the stream
                     //       (and thus the file contents) itself not being cached, so things like length won't match.
-                    _logger.LogTrace("Stream for {subpath} not cached as it's over the file size limit of {fileSizeLimit}", _subpath, _fileSizeLimit);
+                    _logger.LogTrace("File contents for {subpath} will not be cached as it's over the file size limit of {fileSizeLimit}", _subpath, _fileSizeLimit);
                     return _cacheEntry.FileInfo.CreateReadStream();
                 }
 
                 var contents = _cacheEntry.Contents;
                 if (contents != null)
                 {
+                    _logger.LogTrace("Returning cached file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
                     return new MemoryStream(contents);
                 }
                 else
                 {
-                    _logger.LogTrace("Reading file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
+                    _logger.LogTrace("Loading file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
                     using (var fs = _cacheEntry.FileInfo.CreateReadStream())
                     using (var ms = new MemoryStream((int)fs.Length))
                     {
@@ -152,7 +176,10 @@ namespace live.asp.net.Services
                         contents = ms.ToArray();
                     }
 
-                    _cacheEntry.TrySetContents(contents);
+                    if (_cacheEntry.TrySetContents(contents))
+                    {
+                        _logger.LogTrace("Cached file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
+                    }
 
                     return new MemoryStream(contents);
                 }
