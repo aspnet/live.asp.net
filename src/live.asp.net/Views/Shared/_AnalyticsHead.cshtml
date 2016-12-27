@@ -1,5 +1,4 @@
-﻿@using Microsoft.ApplicationInsights.Extensibility
-@inject TelemetryConfiguration TelemetryConfiguration
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet AppInsightsJs
 
 <environment names="Production">
     <script type="text/javascript">
@@ -16,5 +15,5 @@
             ga('liveaspnetTracker.send', 'pageview');
     </script>
 
-    @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
+    @Html.Raw(AppInsightsJs.FullScript)
 </environment>

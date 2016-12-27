@@ -27,7 +27,6 @@ namespace live.asp.net
             if (env.IsDevelopment())
             {
                 builder.AddUserSecrets();
-                builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
             builder.AddEnvironmentVariables();
@@ -51,8 +50,6 @@ namespace live.asp.net
                     )
                 )
             );
-
-            services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc(options => options.OutputFormatters.Add(new iCalendarOutputFormatter()))
                 .AddCookieTempDataProvider();
@@ -79,8 +76,6 @@ namespace live.asp.net
                 loggerFactory.AddDebug();
             }
 
-            app.UseApplicationInsightsRequestTelemetry();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -89,8 +84,6 @@ namespace live.asp.net
             {   
                 app.UseExceptionHandler("/error");
             }
-
-            app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
 
