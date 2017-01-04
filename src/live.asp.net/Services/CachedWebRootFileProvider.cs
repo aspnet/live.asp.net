@@ -15,6 +15,7 @@ namespace live.asp.net.Services
 {
     public class CachedWebRootFileProvider : IFileProvider
     {
+        private static readonly int _fileSizeLimit = 256 * 1024; // bytes
         private static readonly double TimestampToTicks = TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
 
         private readonly ILogger<CachedWebRootFileProvider> _logger;
@@ -72,28 +73,70 @@ namespace live.asp.net.Services
             return Tuple.Create(cacheEntriesAdded, bytesCached);
         }
 
-        // TODO: Should move the lookup of the FileInfo here such that we can check length against limit and
-        //       whether IFileInfo.Exists is false and not cache in that case.
-        //       Indeed it might be possible to simplify this a lot by doing all the logic here and letting IMemoryCache
-        //       deal with concurrency checks, etc. rather than CachedFileInfo doing it internally.
-
-        public IDirectoryContents GetDirectoryContents(string subpath) =>
+        public IDirectoryContents GetDirectoryContents(string subpath)
+        {
             // TODO: Normalize the subpath here, e.g. strip/always-add leading slashes, ensure slash consistency, etc.
-            _cache.GetOrCreate(nameof(GetDirectoryContents) + "_" + subpath, ce =>
+            var key = nameof(GetDirectoryContents) + "_" + subpath;
+            IDirectoryContents cachedResult;
+            if (_cache.TryGetValue(key, out cachedResult))
             {
-                ce.RegisterPostEvictionCallback((key, value, reason, s) =>
-                    _logger.LogTrace("Cache entry {key} was evicted due to {reason}", key, reason));
-                return _fileProvider.GetDirectoryContents(subpath);
-            });
+                // Item already exists in cache, just return it
+                return cachedResult;
+            }
+            
+            var directoryContents = _fileProvider.GetDirectoryContents(subpath);
+            if (!directoryContents.Exists)
+            {
+                // Requested subpath doesn't exist, just return
+                return directoryContents;
+            }
 
-        public IFileInfo GetFileInfo(string subpath) =>
+            // Create the cache entry and return
+            var cacheEntry = _cache.CreateEntry(key);
+            cacheEntry.Value = directoryContents;
+            cacheEntry.RegisterPostEvictionCallback((k, value, reason, s) =>
+                _logger.LogTrace("Cache entry {key} was evicted due to {reason}", k, reason));
+            return directoryContents;
+        }
+
+        public IFileInfo GetFileInfo(string subpath)
+        {
             // TODO: Normalize the subpath here, e.g. strip/always-add leading slashes, ensure slash consistency, etc.
-            _cache.GetOrCreate(nameof(GetFileInfo) + "_" + subpath, ce =>
+            var key = nameof(GetFileInfo) + "_" + subpath;
+            IFileInfo cachedResult;
+            if (_cache.TryGetValue(key, out cachedResult))
             {
-                ce.RegisterPostEvictionCallback((key, value, reason, s) =>
-                    _logger.LogTrace("Cache entry {key} was evicted due to {reason}", key, reason));
-                return new CachedFileInfo(_logger, _fileProvider, subpath);
-            });
+                // Item already exists in cache, just return it
+                return cachedResult;
+            }
+
+            var fileInfo = _fileProvider.GetFileInfo(subpath);
+            if (!fileInfo.Exists)
+            {
+                // Requested subpath doesn't exist, just return it
+                return fileInfo;
+            }
+
+            if (fileInfo.Length > _fileSizeLimit)
+            {
+                // File is too large to cache, just return it
+                _logger.LogTrace("File contents for {subpath} will not be cached as it's over the file size limit of {fileSizeLimit}", subpath, _fileSizeLimit);
+                return fileInfo;
+            }
+
+            // Create the cache entry and return
+            var cachedFileInfo = new CachedFileInfo(_logger, fileInfo, subpath);
+            var fileChangedToken = Watch(subpath);
+            fileChangedToken.RegisterChangeCallback(_ => _logger.LogDebug("Change detected for {subpath} located at {filepath}", subpath, fileInfo.PhysicalPath), null);
+            var cacheEntry = _cache.CreateEntry(key)
+                .RegisterPostEvictionCallback((k, value, reason, s) =>
+                    _logger.LogTrace("Cache entry {key} was evicted due to {reason}", k, reason))
+                .AddExpirationToken(fileChangedToken)
+                .SetValue(cachedFileInfo);
+            // You have to call Dispose() to actually add the item to the underlying cache. Yeah, I know.
+            cacheEntry.Dispose();
+            return cachedFileInfo;
+        }
 
         public IChangeToken Watch(string filter)
         {
@@ -102,74 +145,43 @@ namespace live.asp.net.Services
 
         private class CachedFileInfo : IFileInfo
         {
-            private static readonly int _fileSizeLimit = 256 * 1024; // bytes
-            private readonly IFileProvider _fileProvider;
-            private readonly string _subpath;
-            private CacheEntry _cacheEntry;
             private readonly ILogger _logger;
+            private readonly IFileInfo _fileInfo;
+            private readonly string _subpath;
+            private byte[] _contents;
 
-            public CachedFileInfo(ILogger logger, IFileProvider fileProvider, string subpath)
+            public CachedFileInfo(ILogger logger, IFileInfo fileInfo, string subpath)
             {
                 _logger = logger;
-                _fileProvider = fileProvider;
+                _fileInfo = fileInfo;
                 _subpath = subpath;
-
-                LoadFileInfoFromUnderlyingProvider();
             }
 
-            private void LoadFileInfoFromUnderlyingProvider()
-            {
-                var existingCacheEntry = _cacheEntry;
-                var newCacheEntry = new CacheEntry(_fileProvider.GetFileInfo(_subpath), null);
-                var oldCacheEntry = Interlocked.CompareExchange(ref _cacheEntry, newCacheEntry, existingCacheEntry);
-                if (oldCacheEntry == existingCacheEntry)
-                {
-                    _logger.LogDebug("Loaded file info for {subpath} located at {filepath}", _subpath, newCacheEntry.FileInfo.PhysicalPath);
-                    _fileProvider.Watch(_subpath).RegisterChangeCallback(OnChange, this);
-                }
-            }
+            public bool Exists => _fileInfo.Exists;
 
-            private static void OnChange(object state)
-            {
-                var self = (CachedFileInfo)state;
-                self._logger.LogDebug("Change detected for {subpath} located at {filepath}", self._subpath, self._cacheEntry.FileInfo.PhysicalPath);
-                self.LoadFileInfoFromUnderlyingProvider();
-            }
+            public bool IsDirectory => _fileInfo.IsDirectory;
 
-            public bool Exists => _cacheEntry.FileInfo.Exists;
+            public DateTimeOffset LastModified => _fileInfo.LastModified;
 
-            public bool IsDirectory => _cacheEntry.FileInfo.IsDirectory;
+            public long Length => _fileInfo.Length;
 
-            public DateTimeOffset LastModified => _cacheEntry.FileInfo.LastModified;
+            public string Name => _fileInfo.Name;
 
-            public long Length => _cacheEntry.FileInfo.Length;
-
-            public string Name => _cacheEntry.FileInfo.Name;
-
-            public string PhysicalPath => _cacheEntry.FileInfo.PhysicalPath;
+            public string PhysicalPath => _fileInfo.PhysicalPath;
 
             public Stream CreateReadStream()
             {
-                if (Length >= _fileSizeLimit)
-                {
-                    // TODO: The length limit check should really be done in the CachedWebRootFileProvider itself
-                    //       as this implementation can result in the FileInfo meta-data being cached while the stream
-                    //       (and thus the file contents) itself not being cached, so things like length won't match.
-                    _logger.LogTrace("File contents for {subpath} will not be cached as it's over the file size limit of {fileSizeLimit}", _subpath, _fileSizeLimit);
-                    return _cacheEntry.FileInfo.CreateReadStream();
-                }
-
-                var contents = _cacheEntry.Contents;
+                var contents = _contents;
                 if (contents != null)
                 {
-                    _logger.LogTrace("Returning cached file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
+                    _logger.LogTrace("Returning cached file contents for {subpath} located at {filepath}", _subpath, _fileInfo.PhysicalPath);
                     return new MemoryStream(contents);
                 }
                 else
                 {
-                    _logger.LogTrace("Loading file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
+                    _logger.LogTrace("Loading file contents for {subpath} located at {filepath}", _subpath, _fileInfo.PhysicalPath);
                     MemoryStream ms;
-                    using (var fs = _cacheEntry.FileInfo.CreateReadStream())
+                    using (var fs = _fileInfo.CreateReadStream())
                     {
                         ms = new MemoryStream((int)fs.Length);
                         fs.CopyTo(ms);
@@ -177,32 +189,12 @@ namespace live.asp.net.Services
                         ms.Position = 0;
                     }
 
-                    if (_cacheEntry.TrySetContents(contents))
+                    if (Interlocked.CompareExchange(ref _contents, contents, null) == null)
                     {
-                        _logger.LogTrace("Cached file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
+                        _logger.LogTrace("Cached file contents for {subpath} located at {filepath}", _subpath, _fileInfo.PhysicalPath);
                     }
 
                     return ms;
-                }
-            }
-
-            private class CacheEntry
-            {
-                private byte[] _contents;
-
-                public CacheEntry(IFileInfo fileInfo, byte[] contents)
-                {
-                    FileInfo = fileInfo;
-                    _contents = contents;
-                }
-
-                public IFileInfo FileInfo { get; }
-
-                public byte[] Contents => _contents;
-
-                public bool TrySetContents(byte[] contents)
-                {
-                    return Interlocked.CompareExchange(ref _contents, contents, null) == null;
                 }
             }
         }
