@@ -52,7 +52,6 @@ namespace live.asp.net.Services
             // TODO: Normalize the currentPath here, e.g. strip/always-add leading slashes, ensure slash consistency, etc.
             var prefix = string.Equals(currentPath, "/", StringComparison.OrdinalIgnoreCase) ? "/" : currentPath + "/";
 
-            // TODO: Parallel.ForEach?
             foreach (var fileInfo in GetDirectoryContents(currentPath))
             {
                 if (fileInfo.IsDirectory)
@@ -169,11 +168,13 @@ namespace live.asp.net.Services
                 else
                 {
                     _logger.LogTrace("Loading file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
+                    MemoryStream ms;
                     using (var fs = _cacheEntry.FileInfo.CreateReadStream())
-                    using (var ms = new MemoryStream((int)fs.Length))
                     {
+                        ms = new MemoryStream((int)fs.Length);
                         fs.CopyTo(ms);
                         contents = ms.ToArray();
+                        ms.Position = 0;
                     }
 
                     if (_cacheEntry.TrySetContents(contents))
@@ -181,7 +182,7 @@ namespace live.asp.net.Services
                         _logger.LogTrace("Cached file contents for {subpath} located at {filepath}", _subpath, _cacheEntry.FileInfo.PhysicalPath);
                     }
 
-                    return new MemoryStream(contents);
+                    return ms;
                 }
             }
 
