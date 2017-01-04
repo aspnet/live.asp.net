@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.AspNetCore.Html;
 
 namespace live.asp.net.TagHelpers
 {
@@ -36,10 +37,39 @@ namespace live.asp.net.TagHelpers
 
             var src = output.Attributes["src"];
 
-            var path = src?.Value.ToString();
-            if (path == null)
+            if (src == null)
             {
                 return;
+            }
+
+            string path = null;
+            if (src.Value is string)
+            {
+                path = (string)src.Value;
+            }
+            else
+            {
+                var pathHtmlString = src.Value as HtmlString;
+                if (pathHtmlString != null)
+                {
+                    path = pathHtmlString.Value;
+                }
+                else
+                {
+                    var pathHtmlContent = src.Value as IHtmlContent;
+                    if (pathHtmlContent != null)
+                    {
+                        using (var tw = new StringWriter())
+                        {
+                            pathHtmlContent.WriteTo(tw, NullHtmlEncoder.Default);
+                            path = tw.ToString();
+                        }
+                    }
+                    else
+                    {
+                        path = src.Value.ToString();
+                    }
+                }
             }
 
             var resolvedPath = path;
