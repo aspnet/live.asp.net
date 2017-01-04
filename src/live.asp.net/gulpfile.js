@@ -7,7 +7,6 @@ var gulp = require("gulp"),
     uglify = require("gulp-uglify"),
     jshint = require('gulp-jshint'),
     csslint = require('gulp-csslint'),
-    project = require("./project.json"),
     path = require("path");
 
 var paths = {
