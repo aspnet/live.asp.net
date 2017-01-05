@@ -9,20 +9,19 @@
             </div>
         </a>
         <div class="caption text-center">
-            
-                <h3>
-                    <a href="@Model.Url" title="Watch this episode">
-                        @if (Model.HasTitle)
-                        {
-                            @Model.Title<br />
-                        }
-                    </a>
-                    <span class="show-date">@Model.ShowDate.DateTime.ToString("MMM dd, yyyy")</span>
-                    @if (Model.IsNew)
+            <h3>
+                <a href="@Model.Url" title="Watch this episode">
+                    @if (Model.HasTitle)
                     {
-                        <span class="label label-success label-new-show">New</span>
+                        @Model.Title<br />
                     }
-                </h3>
+                </a>
+                <span class="show-date">@Model.ShowDate.DateTime.ToString("MMM dd, yyyy")</span>
+                @if (Model.IsNew)
+                {
+                    <span class="label label-success label-new-show">New</span>
+                }
+            </h3>
         </div>
     </div>
 </div>

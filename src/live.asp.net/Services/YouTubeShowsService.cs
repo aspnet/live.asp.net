@@ -76,7 +76,7 @@ namespace live.asp.net.Services
             {
                 var listRequest = client.PlaylistItems.List("snippet");
                 listRequest.PlaylistId = _appSettings.YouTubePlaylistId;
-                listRequest.MaxResults = 3 * 8;
+                listRequest.MaxResults = 5 * 3; // 5 rows of 3 episodes
 
                 var requestStart = DateTimeOffset.UtcNow;
                 var playlistItems = await listRequest.ExecuteAsync();

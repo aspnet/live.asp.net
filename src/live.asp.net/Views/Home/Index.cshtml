@@ -66,19 +66,6 @@
                                 <li><a href="@Model.AddToGoogleUrl" target="_blank">Add to Google Calendar</a></li>
                             </ul>
                         </div>
-                        <cache>
-                            <environment names="Development">
-                                <script src="~/js/site.js" inline="true"></script>
-                            </environment>
-                            <environment names="Staging,Production">
-                                <script src="~/js/site.min.js" inline="true"></script>
-                            </environment>
-                        </cache>
-                        <script>
-                            (function () {
-                                window.siteJs.setNextShowDetails("nextShowDetails");
-                            })();
-                        </script>
                     }
                     else
                     {
@@ -117,15 +104,24 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/home.js" inline="true"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.4.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-        </script>
+        <cache>
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.4.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery">
+            </script>
+            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+            </script>
+            <script src="~/js/home.min.js" inline="true"></script>
+        </cache>
     </environment>
+    <script>
+        (function () {
+            window.siteJs.setNextShowDetails("nextShowDetails");
+        })();
+    </script>
 }

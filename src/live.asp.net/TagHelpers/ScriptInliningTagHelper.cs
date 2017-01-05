@@ -42,19 +42,11 @@ namespace live.asp.net.TagHelpers
                 return;
             }
 
-            string path = null;
-            if (src.Value is string)
+            var path = src.Value as string;
+            if (path == null)
             {
-                path = (string)src.Value;
-            }
-            else
-            {
-                var pathHtmlString = src.Value as HtmlString;
-                if (pathHtmlString != null)
-                {
-                    path = pathHtmlString.Value;
-                }
-                else
+                path = (src.Value as HtmlString)?.Value;
+                if (path == null)
                 {
                     var pathHtmlContent = src.Value as IHtmlContent;
                     if (pathHtmlContent != null)
