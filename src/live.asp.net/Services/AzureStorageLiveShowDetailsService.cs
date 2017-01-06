@@ -80,31 +80,15 @@ namespace live.asp.net.Services
                 return null;
             }
 
-            var started = Timing.GetTimestamp();
             string fileContents = null;
+            var started = Timing.GetTimestamp();
             try
             {
                 fileContents = await blockBlob.DownloadTextAsync();
             }
             finally
             {
-                if (_telemetry.IsEnabled())
-                {
-                    var duration = Timing.GetDuration(started);
-                    var dependency = new DependencyTelemetry
-                    {
-                        Type = "Storage",
-                        Target = blockBlob.StorageUri.PrimaryUri.Host,
-                        Name = blockBlob.Name,
-                        Data = "Download",
-                        Timestamp = DateTimeOffset.UtcNow,
-                        Duration = duration,
-                        Success = fileContents != null
-                    };
-                    dependency.Metrics.Add("Size", fileContents.Length);
-                    dependency.Properties.Add("Storage Uri", blockBlob.StorageUri.PrimaryUri.ToString());
-                    _telemetry.TrackDependency(dependency);
-                }
+                TrackDependency(blockBlob, "Download", fileContents.Length, started, succeeded: fileContents != null);
             }
 
             return JsonConvert.DeserializeObject<LiveShowDetails>(fileContents);
@@ -133,25 +117,31 @@ namespace live.asp.net.Services
             }
             finally
             {
-                if (_telemetry.IsEnabled())
-                {
-                    var duration = Timing.GetDuration(started);
-                    var dependency = new DependencyTelemetry
-                    {
-                        Type = "Storage",
-                        Target = blockBlob.StorageUri.PrimaryUri.ToString(),
-                        Name = blockBlob.Name,
-                        Data = "Upload",
-                        Timestamp = DateTimeOffset.UtcNow,
-                        Duration = duration,
-                        Success = succeeded
-                    };
-                    dependency.Metrics.Add("Size", fileContents.Length);
-                    _telemetry.TrackDependency(dependency);
-                }
+                TrackDependency(blockBlob, "Upload", fileContents.Length, started, succeeded);
             }
         }
-        
+
+        private void TrackDependency(CloudBlockBlob blockBlob, string operation, long length, long started, bool succeeded)
+        {
+            if (_telemetry.IsEnabled())
+            {
+                var duration = Timing.GetDuration(started);
+                var dependency = new DependencyTelemetry
+                {
+                    Type = "Storage",
+                    Target = blockBlob.StorageUri.PrimaryUri.Host,
+                    Name = blockBlob.Name,
+                    Data = operation,
+                    Timestamp = DateTimeOffset.UtcNow,
+                    Duration = duration,
+                    Success = succeeded
+                };
+                dependency.Metrics.Add("Size", length);
+                dependency.Properties.Add("Storage Uri", blockBlob.StorageUri.PrimaryUri.ToString());
+                _telemetry.TrackDependency(dependency);
+            }
+        }
+
         private CloudBlobContainer GetStorageContainer()
         {
             var account = CloudStorageAccount.Parse(_appSettings.AzureStorageConnectionString);

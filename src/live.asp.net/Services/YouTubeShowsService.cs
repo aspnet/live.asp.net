@@ -89,24 +89,7 @@ namespace live.asp.net.Services
                 }
                 finally
                 {
-                    if (_telemetry.IsEnabled())
-                    {
-                        var duration = Timing.GetDuration(started);
-                        var dependency = new DependencyTelemetry
-                        {
-                            Type = "HTTP",
-                            Target = client.BaseUri,
-                            Name = listRequest.RestPath,
-                            Data = listRequest.CreateRequest().RequestUri.ToString(),
-                            Timestamp = DateTimeOffset.UtcNow,
-                            Duration = duration,
-                            Success = playlistItems != null
-                        };
-                        dependency.Properties.Add("HTTP Method", listRequest.HttpMethod);
-                        dependency.Properties.Add("Event Id", playlistItems.EventId);
-                        dependency.Properties.Add("Total Results", (playlistItems.PageInfo.TotalResults ?? 0).ToString());
-                        _telemetry.TrackDependency(dependency);
-                    }
+                    TrackDependency(client.BaseUri, listRequest, playlistItems, started);
                 }
 
                 var result = new ShowList();
@@ -128,6 +111,28 @@ namespace live.asp.net.Services
                 }
 
                 return result;
+            }
+        }
+
+        private void TrackDependency(string urlHost, PlaylistItemsResource.ListRequest listRequest, PlaylistItemListResponse playlistItems, long started)
+        {
+            if (_telemetry.IsEnabled())
+            {
+                var duration = Timing.GetDuration(started);
+                var dependency = new DependencyTelemetry
+                {
+                    Type = "HTTP",
+                    Target = urlHost,
+                    Name = listRequest.RestPath,
+                    Data = listRequest.CreateRequest().RequestUri.ToString(),
+                    Timestamp = DateTimeOffset.UtcNow,
+                    Duration = duration,
+                    Success = playlistItems != null
+                };
+                dependency.Properties.Add("HTTP Method", listRequest.HttpMethod);
+                dependency.Properties.Add("Event Id", playlistItems.EventId);
+                dependency.Properties.Add("Total Results", (playlistItems.PageInfo.TotalResults ?? 0).ToString());
+                _telemetry.TrackDependency(dependency);
             }
         }
 

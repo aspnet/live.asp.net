@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using live.asp.net.Models;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -22,17 +24,20 @@ namespace live.asp.net.Controllers
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
         private readonly IHostingEnvironment _env;
+        private readonly TelemetryClient _telemetry;
 
         public AdminController(
             IHostingEnvironment env,
             ILiveShowDetailsService liveShowDetails,
             IMemoryCache memoryCache,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            TelemetryClient telemetry)
         {
             _liveShowDetails = liveShowDetails;
             _memoryCache = memoryCache;
             _appSettings = appSettings.Value;
             _env = env;
+            _telemetry = telemetry;
         }
 
         [HttpGet]
@@ -65,12 +70,11 @@ namespace live.asp.net.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(AdminInputModel input)
         {
-            LiveShowDetails liveShowDetails;
+            var liveShowDetails = await _liveShowDetails.LoadAsync();
 
             if (!ModelState.IsValid)
             {
                 // Model validation error, just return and let the error render
-                liveShowDetails = await _liveShowDetails.LoadAsync();
                 var viewModel = new AdminViewModel();
                 UpdateAdminViewModel(viewModel, liveShowDetails);
 
@@ -82,7 +86,8 @@ namespace live.asp.net.Controllers
                 input.LiveShowEmbedUrl = "https://" + input.LiveShowEmbedUrl.Substring("http://".Length);
             }
 
-            liveShowDetails = new LiveShowDetails();
+            TrackShowEvent(input, liveShowDetails);
+
             liveShowDetails.LiveShowEmbedUrl = input.LiveShowEmbedUrl;
             liveShowDetails.LiveShowHtml = input.LiveShowHtml;
             liveShowDetails.NextShowDateUtc = input.NextShowDatePst?.ConvertFromPtcToUtc();
@@ -103,6 +108,22 @@ namespace live.asp.net.Controllers
             TempData[nameof(AdminViewModel.SuccessMessage)] = "YouTube cache cleared successfully!";
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private void TrackShowEvent(AdminInputModel input, LiveShowDetails liveShowDetails)
+        {
+            if (_telemetry.IsEnabled())
+            {
+                var showStarted = string.IsNullOrEmpty(liveShowDetails.LiveShowEmbedUrl) && !string.IsNullOrEmpty(input.LiveShowEmbedUrl);
+                var showEnded = !string.IsNullOrEmpty(liveShowDetails.LiveShowEmbedUrl) && string.IsNullOrEmpty(input.LiveShowEmbedUrl);
+
+                if (showStarted || showEnded)
+                {
+                    var showEvent = new EventTelemetry(showStarted ? "Show Started" : "Show Ended");
+                    showEvent.Properties.Add("Show Embed URL", showStarted ? input.LiveShowEmbedUrl : liveShowDetails.LiveShowEmbedUrl);
+                    _telemetry.TrackEvent(showEvent);
+                }
+            }
         }
 
         private void UpdateAdminViewModel(AdminViewModel model, LiveShowDetails liveShowDetails)
