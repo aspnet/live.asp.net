@@ -91,6 +91,7 @@ namespace live.asp.net.Services
                 {
                     if (_telemetry.IsEnabled())
                     {
+                        var duration = Timing.GetDuration(started);
                         var dependency = new DependencyTelemetry
                         {
                             Type = "HTTP",
@@ -98,12 +99,14 @@ namespace live.asp.net.Services
                             Name = listRequest.RestPath,
                             Data = listRequest.CreateRequest().RequestUri.ToString(),
                             Timestamp = DateTimeOffset.UtcNow,
-                            Duration = Timing.GetDuration(started),
+                            Duration = duration,
                             Success = playlistItems != null
                         };
+                        dependency.Properties.Add("HTTP Method", listRequest.HttpMethod);
+                        dependency.Properties.Add("Event Id", playlistItems.EventId);
+                        dependency.Properties.Add("Total Results", (playlistItems.PageInfo.TotalResults ?? 0).ToString());
                         _telemetry.TrackDependency(dependency);
                     }
-                    //_telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
                 }
 
                 var result = new ShowList();

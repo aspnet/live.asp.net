@@ -90,20 +90,21 @@ namespace live.asp.net.Services
             {
                 if (_telemetry.IsEnabled())
                 {
+                    var duration = Timing.GetDuration(started);
                     var dependency = new DependencyTelemetry
                     {
                         Type = "Storage",
-                        Target = blockBlob.StorageUri.PrimaryUri.ToString(),
+                        Target = blockBlob.StorageUri.PrimaryUri.Host,
                         Name = blockBlob.Name,
                         Data = "Download",
                         Timestamp = DateTimeOffset.UtcNow,
-                        Duration = Timing.GetDuration(started),
+                        Duration = duration,
                         Success = fileContents != null
                     };
                     dependency.Metrics.Add("Size", fileContents.Length);
+                    dependency.Properties.Add("Storage Uri", blockBlob.StorageUri.PrimaryUri.ToString());
                     _telemetry.TrackDependency(dependency);
                 }
-                //_telemtry.TrackDependency("Azure.BlobStorage", "DownloadTextAsync", downloadStarted, DateTimeOffset.UtcNow - downloadStarted, true);
             }
 
             return JsonConvert.DeserializeObject<LiveShowDetails>(fileContents);
@@ -134,6 +135,7 @@ namespace live.asp.net.Services
             {
                 if (_telemetry.IsEnabled())
                 {
+                    var duration = Timing.GetDuration(started);
                     var dependency = new DependencyTelemetry
                     {
                         Type = "Storage",
@@ -141,12 +143,11 @@ namespace live.asp.net.Services
                         Name = blockBlob.Name,
                         Data = "Upload",
                         Timestamp = DateTimeOffset.UtcNow,
-                        Duration = Timing.GetDuration(started),
+                        Duration = duration,
                         Success = succeeded
                     };
                     dependency.Metrics.Add("Size", fileContents.Length);
                     _telemetry.TrackDependency(dependency);
-                    //_telemetry.TrackDependency("Azure.BlobStorage", "UploadTextAsync", uploadStarted, DateTimeOffset.UtcNow - uploadStarted, true);
                 }
             }
         }
