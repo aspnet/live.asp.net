@@ -3,18 +3,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 using live.asp.net.Models;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using System.Text.Encodings.Web;
 
 namespace live.asp.net.Services
 {
@@ -78,9 +81,30 @@ namespace live.asp.net.Services
                 listRequest.PlaylistId = _appSettings.YouTubePlaylistId;
                 listRequest.MaxResults = 5 * 3; // 5 rows of 3 episodes
 
-                var requestStart = DateTimeOffset.UtcNow;
-                var playlistItems = await listRequest.ExecuteAsync();
-                _telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
+                PlaylistItemListResponse playlistItems = null;
+                var started = Timing.GetTimestamp();
+                try
+                {
+                    playlistItems = await listRequest.ExecuteAsync();
+                }
+                finally
+                {
+                    if (_telemetry.IsEnabled())
+                    {
+                        var dependency = new DependencyTelemetry
+                        {
+                            Type = "HTTP",
+                            Target = client.BaseUri,
+                            Name = listRequest.RestPath,
+                            Data = listRequest.CreateRequest().RequestUri.ToString(),
+                            Timestamp = DateTimeOffset.UtcNow,
+                            Duration = Timing.GetDuration(started),
+                            Success = playlistItems != null
+                        };
+                        _telemetry.TrackDependency(dependency);
+                    }
+                    //_telemetry.TrackDependency("YouTube.PlayListItemsApi", "List", requestStart, DateTimeOffset.UtcNow - requestStart, true);
+                }
 
                 var result = new ShowList();
 

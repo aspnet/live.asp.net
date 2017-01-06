@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using live.asp.net.Models;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
@@ -19,7 +20,7 @@ namespace live.asp.net.Services
 
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
-        private readonly TelemetryClient _telemtry;
+        private readonly TelemetryClient _telemetry;
 
         public AzureStorageLiveShowDetailsService(
             IOptions<AppSettings> appSettings,
@@ -28,7 +29,7 @@ namespace live.asp.net.Services
         {
             _appSettings = appSettings.Value;
             _cache = cache;
-            _telemtry = telemetry;
+            _telemetry = telemetry;
         }
 
         public async Task<LiveShowDetails> LoadAsync()
@@ -79,9 +80,31 @@ namespace live.asp.net.Services
                 return null;
             }
 
-            var downloadStarted = DateTimeOffset.UtcNow;
-            var fileContents = await blockBlob.DownloadTextAsync();
-            _telemtry.TrackDependency("Azure.BlobStorage", "DownloadTextAsync", downloadStarted, DateTimeOffset.UtcNow - downloadStarted, true);
+            var started = Timing.GetTimestamp();
+            string fileContents = null;
+            try
+            {
+                fileContents = await blockBlob.DownloadTextAsync();
+            }
+            finally
+            {
+                if (_telemetry.IsEnabled())
+                {
+                    var dependency = new DependencyTelemetry
+                    {
+                        Type = "Storage",
+                        Target = blockBlob.StorageUri.PrimaryUri.ToString(),
+                        Name = blockBlob.Name,
+                        Data = "Download",
+                        Timestamp = DateTimeOffset.UtcNow,
+                        Duration = Timing.GetDuration(started),
+                        Success = fileContents != null
+                    };
+                    dependency.Metrics.Add("Size", fileContents.Length);
+                    _telemetry.TrackDependency(dependency);
+                }
+                //_telemtry.TrackDependency("Azure.BlobStorage", "DownloadTextAsync", downloadStarted, DateTimeOffset.UtcNow - downloadStarted, true);
+            }
 
             return JsonConvert.DeserializeObject<LiveShowDetails>(fileContents);
         }
@@ -96,9 +119,36 @@ namespace live.asp.net.Services
 
             var fileContents = JsonConvert.SerializeObject(liveShowDetails);
 
-            var uploadStarted = DateTimeOffset.UtcNow;
-            await blockBlob.UploadTextAsync(fileContents);
-            _telemtry.TrackDependency("Azure.BlobStorage", "UploadTextAsync", uploadStarted, DateTimeOffset.UtcNow - uploadStarted, true);
+            var succeeded = true;
+            var started = Timing.GetTimestamp();
+            try
+            {
+                await blockBlob.UploadTextAsync(fileContents);
+            }
+            catch
+            {
+                succeeded = false;
+                throw;
+            }
+            finally
+            {
+                if (_telemetry.IsEnabled())
+                {
+                    var dependency = new DependencyTelemetry
+                    {
+                        Type = "Storage",
+                        Target = blockBlob.StorageUri.PrimaryUri.ToString(),
+                        Name = blockBlob.Name,
+                        Data = "Upload",
+                        Timestamp = DateTimeOffset.UtcNow,
+                        Duration = Timing.GetDuration(started),
+                        Success = succeeded
+                    };
+                    dependency.Metrics.Add("Size", fileContents.Length);
+                    _telemetry.TrackDependency(dependency);
+                    //_telemetry.TrackDependency("Azure.BlobStorage", "UploadTextAsync", uploadStarted, DateTimeOffset.UtcNow - uploadStarted, true);
+                }
+            }
         }
         
         private CloudBlobContainer GetStorageContainer()

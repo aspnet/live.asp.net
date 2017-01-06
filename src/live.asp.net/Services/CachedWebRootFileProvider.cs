@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
@@ -16,7 +15,6 @@ namespace live.asp.net.Services
     public class CachedWebRootFileProvider : IFileProvider
     {
         private static readonly int _fileSizeLimit = 256 * 1024; // bytes
-        private static readonly double TimestampToTicks = TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
 
         private readonly ILogger<CachedWebRootFileProvider> _logger;
         private readonly IFileProvider _fileProvider;
@@ -31,16 +29,14 @@ namespace live.asp.net.Services
 
         public void PrimeCache()
         {
-            var startTimestamp = _logger.IsEnabled(LogLevel.Information) ? Stopwatch.GetTimestamp() : 0;
+            var started = _logger.IsEnabled(LogLevel.Information) ? Timing.GetTimestamp() : 0;
 
             _logger.LogInformation("Priming the cache");
             var cacheSize = PrimeCacheImpl("/");
 
-            if (startTimestamp != 0)
+            if (started != 0)
             {
-                var currentTimestamp = Stopwatch.GetTimestamp();
-                var elapsed = new TimeSpan((long)(TimestampToTicks * (currentTimestamp - startTimestamp)));
-                _logger.LogInformation("Cache primed with {cacheEntriesCount} entries totalling {cacheEntriesSizeBytes} bytes in {elapsed}", cacheSize.Item1, cacheSize.Item2, elapsed);
+                _logger.LogInformation("Cache primed with {cacheEntriesCount} entries totalling {cacheEntriesSizeBytes} bytes in {elapsed}", cacheSize.Item1, cacheSize.Item2, Timing.GetDuration(started));
             }
         }
 
