@@ -114,15 +114,17 @@ namespace live.asp.net.Services
             }
         }
 
-        private void TrackDependency(string urlHost, PlaylistItemsResource.ListRequest listRequest, PlaylistItemListResponse playlistItems, long started)
+        private void TrackDependency(string url, PlaylistItemsResource.ListRequest listRequest, PlaylistItemListResponse playlistItems, long started)
         {
             if (_telemetry.IsEnabled())
             {
+                Uri uri = null;
+                Uri.TryCreate(url, UriKind.Absolute, out uri);
                 var duration = Timing.GetDuration(started);
                 var dependency = new DependencyTelemetry
                 {
                     Type = "HTTP",
-                    Target = urlHost,
+                    Target = uri?.Host ?? url,
                     Name = listRequest.RestPath,
                     Data = listRequest.CreateRequest().RequestUri.ToString(),
                     Timestamp = DateTimeOffset.UtcNow,
