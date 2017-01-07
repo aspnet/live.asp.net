@@ -4,14 +4,15 @@
 using System.Security.Claims;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace live.asp.net
@@ -64,6 +65,7 @@ namespace live.asp.net
             services.AddScoped<IShowsService, YouTubeShowsService>();
 
             services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
+            services.AddSingleton<IConfigureOptions<ApplicationInsightsServiceOptions>, ApplicationInsightsServiceOptionsSetup>();
 
             if (string.IsNullOrEmpty(Configuration["AppSettings:AzureStorageConnectionString"]))
             {
