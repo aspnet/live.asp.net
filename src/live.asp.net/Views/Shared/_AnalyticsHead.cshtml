@@ -16,4 +16,10 @@
     </script>
 
     @Html.Raw(AppInsightsJs.FullScript)
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script>
+            appInsights.setAuthenticatedUserContext("@User.Identity.Name.Replace("\\", "\\\\")".replace(/[,;=| ]+/g, "_"));
+        </script>
+    }
 </environment>

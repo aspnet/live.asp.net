@@ -1,10 +1,12 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Security.Claims;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,8 +44,7 @@ namespace live.asp.net
         {
             services.Configure<AppSettings>(options => Configuration.GetSection("AppSettings").Bind(options));
 
-            services.AddAuthentication(SharedOptions => SharedOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
-
+            services.AddAuthentication(options => options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
             services.AddAuthorization(options =>
                 options.AddPolicy("Admin", policyBuilder =>
                     policyBuilder.RequireClaim(
@@ -52,19 +53,14 @@ namespace live.asp.net
                     )
                 )
             );
-
-            // Turn off compaction on memory pressure as it results in things being evicted during the priming of the cache
-            // on application start.
-            services.AddMemoryCache(options => options.CompactOnMemoryPressure = false);
-
             services.AddMvc(options => options.OutputFormatters.Add(new iCalendarOutputFormatter()))
                 .AddCookieTempDataProvider();
 
-            services.AddSingleton<CachedWebRootFileProvider>();
-
+            services.AddCachedWebRoot();
+            services.AddSingleton<IStartupFilter, AppStart>();
             services.AddScoped<IShowsService, YouTubeShowsService>();
-
             services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
+            services.AddSingleton<ITelemetryInitializer, EnvironmentTelemetryInitializer>();
             services.AddSingleton<IConfigureOptions<ApplicationInsightsServiceOptions>, ApplicationInsightsServiceOptionsSetup>();
 
             if (string.IsNullOrEmpty(Configuration["AppSettings:AzureStorageConnectionString"]))
@@ -77,25 +73,29 @@ namespace live.asp.net
             }
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CachedWebRootFileProvider cachedWebRoot)
+        public void Configure(
+            IApplicationBuilder app,
+            IApplicationLifetime appLifetime,
+            IHostingEnvironment env,
+            ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
-                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                // If we're behind IIS in development don't bother logging to the console as the same data is easily
+                // available in the Visual Studio Application Insights search window
+                if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_TOKEN")))
+                {
+                    loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                }
                 loggerFactory.AddDebug();
-            }
-
-            if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
             }
             else
-            {   
+            {
                 app.UseExceptionHandler("/error");
             }
 
-            cachedWebRoot.PrimeCache();
-            app.UseStaticFiles(new StaticFileOptions { FileProvider = cachedWebRoot });
+            app.UseStaticFiles();
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
@@ -112,14 +112,10 @@ namespace live.asp.net
                 SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme
             });
 
-            app.Use((context, next) =>
-            {
-                if (context.Request.Path.StartsWithSegments("/ping"))
-                {
-                    return context.Response.WriteAsync("pong");
-                }
-                return next();
-            });
+            app.Use((context, next) => context.Request.Path.StartsWithSegments("/ping")
+                ? context.Response.WriteAsync("pong")
+                : next()
+            );
 
             app.UseMvc();
         }
