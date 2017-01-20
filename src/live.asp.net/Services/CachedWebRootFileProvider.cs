@@ -51,17 +51,17 @@ namespace live.asp.net.Services
 
             foreach (var fileInfo in GetDirectoryContents(currentPath))
             {
-                var subpath = prefix + fileInfo.Name;
                 if (fileInfo.IsDirectory)
                 {
-                    var cacheSize = PrimeCacheImpl(subpath);
+                    var cacheSize = PrimeCacheImpl(prefix + fileInfo.Name);
                     cacheEntriesAdded += cacheSize.Item1;
                     bytesCached += cacheSize.Item2;
                 }
                 else
                 {
-                    var info = GetFileInfo(subpath);
-                    bytesCached += info.Length;
+                    var stream = GetFileInfo(prefix + fileInfo.Name).CreateReadStream();
+                    bytesCached += stream.Length;
+                    stream.Dispose();
                     cacheEntriesAdded++;
                 }
             }
