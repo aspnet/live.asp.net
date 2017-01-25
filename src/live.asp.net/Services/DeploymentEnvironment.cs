@@ -42,7 +42,7 @@ namespace live.asp.net.Services
                 if (File.Exists(kuduActiveDeploymentPath))
                 {
                     _logger.LogDebug("Kudu active deployment file found, using it to set DeploymentID");
-                    _commitSha = File.ReadAllText(kuduActiveDeploymentPath) + "(kudu)";
+                    _commitSha = File.ReadAllText(kuduActiveDeploymentPath) + " (kudu)";
                 }
                 else
                 {

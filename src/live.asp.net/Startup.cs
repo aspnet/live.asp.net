@@ -95,6 +95,7 @@ namespace live.asp.net
                 app.UseExceptionHandler("/error");
             }
 
+            app.UseStatusCodePages();
             app.UseStaticFiles();
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
