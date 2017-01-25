@@ -21,15 +21,13 @@
               asp-fallback-test-value="hidden" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
-    <partial name="_AnalyticsHead" />
 </head>
 <body>
-    <partial name="_AnalyticsBody" />
 
     @RenderSection("PreContent", required: false)
     <div class="container body-content">
         @RenderBody()
-        
+
         <footer>
             <div class="row">
                 <div class="col-md-6">
@@ -59,6 +57,8 @@
     @RenderSection("PostContent", required: false)
 
     @RenderSection("scripts", required: false)
+ <partial name="_AnalyticsHead" />
+ <partial name="_AnalyticsBody" />
 </body>
 </html>
 <cache>
