@@ -42,33 +42,32 @@ namespace live.asp.net.TagHelpers
                 return;
             }
 
-            var path = src.Value as string;
-            if (path == null)
+            var path = default(string);
+            switch (src.Value)
             {
-                path = (src.Value as HtmlString)?.Value;
-                if (path == null)
-                {
-                    var pathHtmlContent = src.Value as IHtmlContent;
-                    if (pathHtmlContent != null)
+                case string p:
+                    path = p;
+                    break;
+                case HtmlString s when s.Value != null:
+                    path = s.Value;
+                    break;
+                case IHtmlContent pathHtmlContent:
+                    using (var tw = new StringWriter())
                     {
-                        using (var tw = new StringWriter())
-                        {
-                            pathHtmlContent.WriteTo(tw, NullHtmlEncoder.Default);
-                            path = tw.ToString();
-                        }
+                        pathHtmlContent.WriteTo(tw, NullHtmlEncoder.Default);
+                        path = tw.ToString();
                     }
-                    else
-                    {
-                        path = src.Value.ToString();
-                    }
-                }
+                    break;
+                default:
+                    path = src?.Value?.ToString();
+                    break;
             }
+            var resolvedPath = path ?? src.Value.ToString();
 
-            var resolvedPath = path;
-            var queryStringStartIndex = path.IndexOf('?');
+            var queryStringStartIndex = resolvedPath.IndexOf('?');
             if (queryStringStartIndex != -1)
             {
-                resolvedPath = path.Substring(0, queryStringStartIndex);
+                resolvedPath = resolvedPath.Substring(0, queryStringStartIndex);
             }
 
             Uri uri;
