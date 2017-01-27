@@ -31,8 +31,8 @@ namespace live.asp.net.Middlesware
 
             // It's only valid to set the HSTS header over HTTPS itself
             if (httpContext.Request.Host.Host != "localhost"
-                && httpContext.Request.IsHttps
-                && !httpContext.Request.Headers.ContainsKey("Strict-Transport-Security"))
+                && httpContext.Request.IsHttps)
+                //&& !httpContext.Request.Headers.ContainsKey("Strict-Transport-Security"))
             {
                 httpContext.Response.Headers.Add("Strict-Transport-Security", _headerValue);
             }
