@@ -93,6 +93,7 @@ namespace live.asp.net
                 app.UseExceptionHandler("/error");
             }
 
+            app.UseHstsMiddleware();
             app.UseStatusCodePages();
             app.UseStaticFiles();
 
