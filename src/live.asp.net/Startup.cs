@@ -93,7 +93,7 @@ namespace live.asp.net
                 app.UseExceptionHandler("/error");
             }
 
-            app.UseHstsMiddleware();
+            app.UseHsts();
 
             app.UseRewriter(new RewriteOptions()
                 .AddIISUrlRewrite(env.ContentRootFileProvider, "urlRewrite.config"));

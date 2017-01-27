@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using live.asp.net.Middlesware;
 
 namespace live.asp.net.Middlesware
@@ -14,28 +15,50 @@ namespace live.asp.net.Middlesware
     /// </summary>
     public class HstsMiddleware
     {
+        private static readonly string _hstsHeaderName = "Strict-Transport-Security";
         private readonly RequestDelegate _next;
         private readonly HstsOptions _options;
         private readonly string _headerValue;
+        private readonly ILogger<HstsMiddleware> _logger;
 
-        public HstsMiddleware(RequestDelegate next, HstsOptions options)
+        public HstsMiddleware(RequestDelegate next, HstsOptions options, ILogger<HstsMiddleware> logger)
         {
             _next = next;
             _options = options;
+            _logger = logger;
             _headerValue = FormatHeader(options);
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public Task Invoke(HttpContext httpContext)
         {
-            await _next(httpContext);
-
-            // It's only valid to set the HSTS header over HTTPS itself
-            if (httpContext.Request.Host.Host != "localhost"
-                && httpContext.Request.IsHttps)
-                //&& !httpContext.Request.Headers.ContainsKey("Strict-Transport-Security"))
+            if (httpContext.Response.HasStarted)
             {
-                httpContext.Response.Headers.Add("Strict-Transport-Security", _headerValue);
+                _logger.LogInformation("HSTS response header cannot be set as response writing has already started.");
+                return Task.CompletedTask;
             }
+
+            if (!_options.EnableLocalhost && string.Equals(httpContext.Request.Host.Host, "localhost", StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogDebug("HSTS response header will not be set for localhost.");
+                return Task.CompletedTask;
+            }
+
+            if (!httpContext.Request.IsHttps)
+            {
+                _logger.LogDebug("HSTS response header will not be set as the scheme is not HTTPS.");
+                return Task.CompletedTask;
+            }
+
+            if (httpContext.Request.Headers.ContainsKey(_hstsHeaderName))
+            {
+                _logger.LogDebug("HSTS response header is already set: {headerValue}", httpContext.Request.Headers[_hstsHeaderName]);
+                return Task.CompletedTask;
+            }
+
+            _logger.LogDebug("Adding HSTS response header: {headerValue}", _headerValue);
+            httpContext.Response.Headers.Add(_hstsHeaderName, _headerValue);
+
+            return _next(httpContext);
         }
 
         private string FormatHeader(HstsOptions options)
@@ -76,6 +99,12 @@ namespace live.asp.net.Middlesware
         /// Defaults to <c>false</c>.
         /// </summary>
         public bool Preload { get; set; } = false;
+
+        /// <summary>
+        /// Whether HSTS headers will be sent when serving to localhost.
+        /// Defaults to <c>false</c>;
+        /// </summary>
+        public bool EnableLocalhost { get; set; } = false;
     }
 }
 
@@ -89,7 +118,7 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="builder">The <see cref="IApplicationBuilder"/>.</param>
         /// <returns>The <see cref="IApplicationBuilder"/>.</returns>
-        public static IApplicationBuilder UseHstsMiddleware(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseHsts(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<HstsMiddleware>(new HstsOptions());
         }
@@ -101,7 +130,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="builder">The <see cref="IApplicationBuilder"/>.</param>
         /// <param name="options">The <see cref="HstsOptions"/> to use.</param>
         /// <returns>The <see cref="IApplicationBuilder"/>.</returns>
-        public static IApplicationBuilder UseHstsMiddleware(this IApplicationBuilder builder, HstsOptions options)
+        public static IApplicationBuilder UseHsts(this IApplicationBuilder builder, HstsOptions options)
         {
             return builder.UseMiddleware<HstsMiddleware>(options);
         }
