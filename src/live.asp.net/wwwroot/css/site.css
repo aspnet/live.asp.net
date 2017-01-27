@@ -85,14 +85,6 @@ a, a:hover {
         background: #212121;
     }
 
-.icon-outlook {
-    background: transparent url(outlook.png) no-repeat top center;
-    background-size: contain;
-    display: inline-block;
-    height: 16px;
-    width: 16px;
-}
-
 .thumbnail .caption h3 {
     margin-top: 0;
     margin-bottom: 0;
