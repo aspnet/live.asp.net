@@ -74,11 +74,7 @@ namespace live.asp.net
             }
         }
 
-        public void Configure(
-            IApplicationBuilder app,
-            IApplicationLifetime appLifetime,
-            IHostingEnvironment env,
-            ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -93,6 +89,7 @@ namespace live.asp.net
             }
             else
             {
+                loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Error);
                 app.UseExceptionHandler("/error");
             }
 

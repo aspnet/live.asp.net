@@ -42,3 +42,4 @@ src/*/wwwroot/lib/
 *.min.css
 
 ShowDetails.json
+PublishOutput/
