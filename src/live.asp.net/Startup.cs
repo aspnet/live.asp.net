@@ -94,11 +94,11 @@ namespace live.asp.net
             }
 
             app.UseHstsMiddleware();
-            app.UseStatusCodePages();
-            app.UseStaticFiles();
 
             app.UseRewriter(new RewriteOptions()
                 .AddIISUrlRewrite(env.ContentRootFileProvider, "urlRewrite.config"));
+
+            app.UseStatusCodePages();
 
             app.UseStaticFiles();
 
