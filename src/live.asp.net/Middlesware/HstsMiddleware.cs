@@ -34,25 +34,25 @@ namespace live.asp.net.Middlesware
             if (httpContext.Response.HasStarted)
             {
                 _logger.LogInformation("HSTS response header cannot be set as response writing has already started.");
-                return Task.CompletedTask;
+                return _next(httpContext);
             }
 
             if (!_options.EnableLocalhost && string.Equals(httpContext.Request.Host.Host, "localhost", StringComparison.OrdinalIgnoreCase))
             {
                 _logger.LogDebug("HSTS response header will not be set for localhost.");
-                return Task.CompletedTask;
+                return _next(httpContext);
             }
 
             if (!httpContext.Request.IsHttps)
             {
                 _logger.LogDebug("HSTS response header will not be set as the scheme is not HTTPS.");
-                return Task.CompletedTask;
+                return _next(httpContext);
             }
 
             if (httpContext.Request.Headers.ContainsKey(_hstsHeaderName))
             {
                 _logger.LogDebug("HSTS response header is already set: {headerValue}", httpContext.Request.Headers[_hstsHeaderName]);
-                return Task.CompletedTask;
+                return _next(httpContext);
             }
 
             _logger.LogDebug("Adding HSTS response header: {headerValue}", _headerValue);
