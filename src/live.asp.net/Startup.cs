@@ -31,7 +31,7 @@ namespace live.asp.net
 
             if (env.IsDevelopment())
             {
-                builder.AddUserSecrets();
+                builder.AddUserSecrets<Startup>();
             }
 
             builder.AddEnvironmentVariables();
