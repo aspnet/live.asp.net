@@ -29,8 +29,7 @@
   <ItemGroup>
     <Content Update="**/*.json" CopyToPublishDirectory="Never" />
     <Content Include="urlRewrite.config" CopyToPublishDirectory="Always" />
-    <Content Update="appsettings.json" CopyToPublishDirectory="Always" />
-    <Content Update="appsettings.Production.json" CopyToPublishDirectory="Always" />
+    <Content Update="appsettings*.json" CopyToPublishDirectory="Always" />
   </ItemGroup>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <Exec Command="npm install" />
