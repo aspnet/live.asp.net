@@ -35,4 +35,9 @@
     <Exec Command="npm install" />
     <Exec Command="gulp prepublish" />
   </Target>
+  <Target Name="DisableRefsPublishing" AfterTargets="_MvcRazorPrecompileOnPublish">
+    <PropertyGroup>
+      <PreserveCompilationContext>false</PreserveCompilationContext>
+    </PropertyGroup>
+  </Target>
 </Project>
