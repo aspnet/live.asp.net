@@ -70,7 +70,7 @@ namespace live.asp.net.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(AdminInputModel input)
         {
-            var liveShowDetails = await _liveShowDetails.LoadAsync();
+            var liveShowDetails = await _liveShowDetails.LoadAsync() ?? new LiveShowDetails();
 
             if (!ModelState.IsValid)
             {

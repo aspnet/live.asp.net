@@ -26,8 +26,8 @@ namespace live.asp.net
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile("appsettings.cs.json")
+                .AddJsonFile($"appsettings.cs.{env.EnvironmentName}.json", optional: true);
 
             if (env.IsDevelopment())
             {
@@ -43,7 +43,7 @@ namespace live.asp.net
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AppSettings>(options => Configuration.GetSection("AppSettings").Bind(options));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddAuthentication(options => options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
             services.AddAuthorization(options =>
