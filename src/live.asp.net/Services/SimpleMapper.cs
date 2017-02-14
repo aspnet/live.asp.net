@@ -17,6 +17,11 @@ namespace live.asp.net.Services
 
         public TDest Map<TSource, TDest>(TSource source, TDest dest)
         {
+            if (source == null || dest == null)
+            {
+                return dest;
+            }
+
             var map = (Func<TSource, TDest, TDest>)_mapCache.GetOrAdd(Tuple.Create(typeof(TSource), typeof(TDest)), _ => MakeMapMethod<TSource, TDest>());
             return map(source, dest);
         }

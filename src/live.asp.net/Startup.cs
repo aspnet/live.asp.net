@@ -77,14 +77,15 @@ namespace live.asp.net
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            // If we're behind IIS don't bother logging to the console as the same data is easily
+            // available in the Visual Studio Application Insights search window
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_TOKEN")))
+            {
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            }
+
             if (env.IsDevelopment())
             {
-                // If we're behind IIS in development don't bother logging to the console as the same data is easily
-                // available in the Visual Studio Application Insights search window
-                if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_TOKEN")))
-                {
-                    loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-                }
                 loggerFactory.AddDebug();
                 app.UseDeveloperExceptionPage();
             }
