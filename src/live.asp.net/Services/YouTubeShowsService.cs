@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -46,7 +45,7 @@ namespace live.asp.net.Services
         {
             if (string.IsNullOrEmpty(_appSettings.YouTubeApiKey))
             {
-                return new ShowList { Shows = DesignData.Shows };
+                return new ShowList { PreviousShows = DesignData.Shows };
             }
 
             if (user.Identity.IsAuthenticated && disableCache)
@@ -94,7 +93,7 @@ namespace live.asp.net.Services
 
                 var result = new ShowList();
 
-                result.Shows = playlistItems.Items.Select(item => new Show
+                result.PreviousShows = playlistItems.Items.Select(item => new Show
                 {
                     Provider = "YouTube",
                     ProviderId = item.Snippet.ResourceId.VideoId,
@@ -118,8 +117,7 @@ namespace live.asp.net.Services
         {
             if (_telemetry.IsEnabled())
             {
-                Uri uri = null;
-                Uri.TryCreate(url, UriKind.Absolute, out uri);
+                Uri.TryCreate(url, UriKind.Absolute, out Uri uri);
                 var duration = Timing.GetDuration(started);
                 var dependency = new DependencyTelemetry
                 {

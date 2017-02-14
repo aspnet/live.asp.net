@@ -13,11 +13,13 @@ namespace live.asp.net.Controllers
     {
         private readonly ILiveShowDetailsService _liveShowDetails;
         private readonly IShowsService _showsService;
+        private readonly IObjectMapper _mapper;
 
-        public HomeController(IShowsService showsService, ILiveShowDetailsService liveShowDetails)
+        public HomeController(IShowsService showsService, ILiveShowDetailsService liveShowDetails, IObjectMapper mapper)
         {
             _showsService = showsService;
             _liveShowDetails = liveShowDetails;
+            _mapper = mapper;
         }
 
         [Route("/")]
@@ -26,15 +28,11 @@ namespace live.asp.net.Controllers
             var liveShowDetails = await _liveShowDetails.LoadAsync();
             var showList = await _showsService.GetRecordedShowsAsync(User, disableCache ?? false);
 
-            return View(new HomeViewModel
-            {
-                AdminMessage = liveShowDetails?.AdminMessage,
-                NextShowDateUtc = liveShowDetails?.NextShowDateUtc,
-                LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl,
-                LiveShowHtml = liveShowDetails?.LiveShowHtml,
-                PreviousShows = showList.Shows,
-                MoreShowsUrl = showList.MoreShowsUrl
-            });
+            var homeViewModel = new HomeViewModel();
+            _mapper.Map(liveShowDetails, homeViewModel);
+            _mapper.Map(showList, homeViewModel);
+
+            return View(homeViewModel);
         }
 
         [HttpGet("/ical")]

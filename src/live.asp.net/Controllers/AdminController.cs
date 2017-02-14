@@ -25,18 +25,21 @@ namespace live.asp.net.Controllers
         private readonly AppSettings _appSettings;
         private readonly IHostingEnvironment _env;
         private readonly TelemetryClient _telemetry;
+        private readonly IObjectMapper _mapper;
 
         public AdminController(
             IHostingEnvironment env,
             ILiveShowDetailsService liveShowDetails,
             IMemoryCache memoryCache,
             IOptions<AppSettings> appSettings,
+            IObjectMapper mapper,
             TelemetryClient telemetry)
         {
             _liveShowDetails = liveShowDetails;
             _memoryCache = memoryCache;
             _appSettings = appSettings.Value;
             _env = env;
+            _mapper = mapper;
             _telemetry = telemetry;
         }
 
@@ -88,10 +91,8 @@ namespace live.asp.net.Controllers
 
             TrackShowEvent(input, liveShowDetails);
 
-            liveShowDetails.LiveShowEmbedUrl = input.LiveShowEmbedUrl;
-            liveShowDetails.LiveShowHtml = input.LiveShowHtml;
+            _mapper.Map(input, liveShowDetails);
             liveShowDetails.NextShowDateUtc = input.NextShowDatePst?.ConvertFromPtcToUtc();
-            liveShowDetails.AdminMessage = input.AdminMessage;
 
             await _liveShowDetails.SaveAsync(liveShowDetails);
 
@@ -128,10 +129,8 @@ namespace live.asp.net.Controllers
 
         private void UpdateAdminViewModel(AdminViewModel model, LiveShowDetails liveShowDetails)
         {
-            model.LiveShowEmbedUrl = liveShowDetails?.LiveShowEmbedUrl;
-            model.LiveShowHtml = liveShowDetails?.LiveShowHtml;
+            _mapper.Map(liveShowDetails, model);
             model.NextShowDatePst = liveShowDetails?.NextShowDateUtc?.ConvertFromUtcToPst();
-            model.AdminMessage = liveShowDetails?.AdminMessage;
 
             var nextTuesday = GetNextTuesday();
             model.NextShowDateSuggestionPstAM = nextTuesday.AddHours(10).ToString("MM/dd/yyyy HH:mm");

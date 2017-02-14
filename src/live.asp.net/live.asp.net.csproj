@@ -7,6 +7,8 @@
     <UserSecretsId>aspnet5-live.asp.net-20150723035013</UserSecretsId>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8+wpa81</PackageTargetFallback>
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
+    <ApplicationInsightsResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />
@@ -30,6 +32,9 @@
     <Content Update="**/*.json" CopyToPublishDirectory="Never" />
     <Content Include="urlRewrite.config" CopyToPublishDirectory="Always" />
     <Content Update="appsettings*.json" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <Exec Command="npm install" />
