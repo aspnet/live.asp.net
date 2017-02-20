@@ -70,8 +70,7 @@ namespace live.asp.net.TagHelpers
                 resolvedPath = resolvedPath.Substring(0, queryStringStartIndex);
             }
 
-            Uri uri;
-            if (Uri.TryCreate(resolvedPath, UriKind.Absolute, out uri))
+            if (Uri.TryCreate(resolvedPath, UriKind.Absolute, out Uri uri))
             {
                 // Don't inline if the path is absolute
                 return;
