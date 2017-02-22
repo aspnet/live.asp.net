@@ -74,7 +74,7 @@ namespace live.asp.net.Formatters
                SUMMARY:ASP.NET Community Standup
                LOCATION:https://live.asp.net/
                BEGIN:VALARM
-               TRIGGER:PT15M
+               TRIGGER:-PT15M
                ACTION:DISPLAY
                END:VALARM
                END:VEVENT
@@ -91,7 +91,7 @@ namespace live.asp.net.Formatters
                 .AppendLine("SUMMARY:ASP.NET Community Standup")
                 .AppendLine("LOCATION:https://live.asp.net/")
                 .AppendLine("BEGIN:VALARM")
-                .AppendLine("TRIGGER:PT15M")
+                .AppendLine("TRIGGER:-PT15M")
                 .AppendLine("ACTION:DISPLAY")
                 .AppendLine("END:VALARM")
                 .AppendLine("END:VEVENT")
