@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using live.asp.net.Models;
 using Microsoft.AspNetCore.Http;
@@ -70,8 +71,8 @@ namespace live.asp.net.Formatters
                DESCRIPTION:ASP.NET Community Standup
                DTSTART:20150804T170000Z
                DTEND:20150804T035959Z
-               LOCATION:https://live.asp.net/
                SUMMARY:ASP.NET Community Standup
+               LOCATION:https://live.asp.net/
                BEGIN:VALARM
                TRIGGER:-P10M
                ACTION:DISPLAY
@@ -79,22 +80,25 @@ namespace live.asp.net.Formatters
                END:VEVENT
                END:VCALENDAR */
 
-            return response.WriteAsync(
-                "BEGIN:VCALENDAR\r\n" +
-                "VERSION:2.0\r\n" +
-                "BEGIN:VEVENT\r\n" +
-                "UID:aspnet@microsoft.com\r\n" +
-                "DTSTART:" + nextShowDateUtc?.ToString(_dateTimeFormat) + "\r\n" +
-                "DTEND:" + nextShowDateUtc?.AddMinutes(30).ToString(_dateTimeFormat) + "\r\n" +
-                "SUMMARY:ASP.NET Community Standup\r\n" +
-                "DESCRIPTION:\r\n" +
-                "LOCATION:https://live.asp.net/\r\n" +
-                "BEGIN:VALARM\r\n" +
-                "TRIGGER:-P10M\r\n" +
-                "ACTION:DISPLAY\r\n" +
-                "END:VALARM\r\n" +
-                "END:VEVENT\r\n" +
-                "END:VCALENDAR\r\n");
+            var calendarString = new StringBuilder()
+                .AppendLine("BEGIN:VCALENDAR")
+                .AppendLine("VERSION:2.0")
+                .AppendLine("BEGIN:VEVENT")
+                .AppendLine("UID:aspnet@microsoft.com")
+                .AppendLine("DESCRIPTION:ASP.NET Community Standup")
+                .AppendLine("DTSTART:" + nextShowDateUtc?.ToString(_dateTimeFormat))
+                .AppendLine("DTEND:" + nextShowDateUtc?.AddMinutes(30).ToString(_dateTimeFormat))
+                .AppendLine("SUMMARY:ASP.NET Community Standup")
+                .AppendLine("LOCATION:https://live.asp.net/")
+                .AppendLine("BEGIN:VALARM")
+                .AppendLine("TRIGGER:-P10M")
+                .AppendLine("ACTION:DISPLAY")
+                .AppendLine("END:VALARM")
+                .AppendLine("END:VEVENT")
+                .AppendLine("END:VCALENDAR")
+                .ToString();
+
+            return response.WriteAsync(calendarString);
         }
     }
 }
