@@ -72,6 +72,10 @@ namespace live.asp.net.Formatters
                DTEND:20150804T035959Z
                LOCATION:https://live.asp.net/
                SUMMARY:ASP.NET Community Standup
+               BEGIN:VALARM
+               TRIGGER:-P10M
+               ACTION:DISPLAY
+               END:VALARM
                END:VEVENT
                END:VCALENDAR */
 
@@ -85,6 +89,10 @@ namespace live.asp.net.Formatters
                 "SUMMARY:ASP.NET Community Standup\r\n" +
                 "DESCRIPTION:\r\n" +
                 "LOCATION:https://live.asp.net/\r\n" +
+                "BEGIN:VALARM\r\n" +
+                "TRIGGER:-P10M\r\n" +
+                "ACTION:DISPLAY\r\n" +
+                "END:VALARM\r\n" +
                 "END:VEVENT\r\n" +
                 "END:VCALENDAR\r\n");
         }
