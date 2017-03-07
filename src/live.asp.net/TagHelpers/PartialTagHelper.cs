@@ -2,12 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 namespace live.asp.net.TagHelpers
 {
@@ -33,8 +30,8 @@ namespace live.asp.net.TagHelpers
             ((IViewContextAware)_htmlHelper).Contextualize(ViewContext);
 
             output.TagName = null;
-            
-            var content = await _htmlHelper.PartialAsync(Name, Model);
+
+            var content = await (Model == null ? _htmlHelper.PartialAsync(Name) : _htmlHelper.PartialAsync(Name, Model));
             output.Content.SetHtmlContent(content);
         }
     }
