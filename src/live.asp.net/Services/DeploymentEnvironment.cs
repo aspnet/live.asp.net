@@ -4,8 +4,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace live.asp.net.Services
 {
@@ -14,6 +16,7 @@ namespace live.asp.net.Services
         private readonly string _contentRoot;
         private readonly ILogger<DeploymentEnvironment> _logger;
         private string _commitSha;
+        private string _runtimeFramework;
 
         public DeploymentEnvironment(IHostingEnvironment hostingEnv, ILogger<DeploymentEnvironment> logger)
         {
@@ -31,6 +34,19 @@ namespace live.asp.net.Services
                 }
 
                 return _commitSha;
+            }
+        }
+
+        public string RuntimeFramework
+        {
+            get
+            {
+                if (_runtimeFramework == null)
+                {
+                    LoadRuntimeFramework();
+                }
+
+                return _runtimeFramework;
             }
         }
 
@@ -79,6 +95,62 @@ namespace live.asp.net.Services
                 _logger.LogError(0, ex, "Error determining deployment ID");
                 _commitSha = "(Error determining deployment ID)";
             }
+        }
+
+        private void LoadRuntimeFramework()
+        {
+            var framework = GetFrameworkName();
+            var arch = RuntimeInformation.OSArchitecture;
+            var version = GetFrameworkVersion();
+
+            _runtimeFramework = $"{framework} {version}, {arch}";
+        }
+
+        private static string GetFrameworkName()
+        {
+            var description = RuntimeInformation.FrameworkDescription;
+
+            var indexOfFirstDigit = -1;
+            for (int i = 0; i < description.Length; i++)
+            {
+                if (Char.IsDigit(description[i]))
+                {
+                    indexOfFirstDigit = i;
+                    break;
+                }
+            }
+
+            if (indexOfFirstDigit > 0)
+            {
+                description = description.Substring(0, indexOfFirstDigit).Trim();
+            }
+
+            return description;
+        }
+
+        private string GetFrameworkVersion()
+        {
+            var fxDepsFile = AppContext.GetData("FX_DEPS_FILE") as string;
+
+            if (!string.IsNullOrEmpty(fxDepsFile))
+            {
+                try
+                {
+                    var frameworkDir = new FileInfo(fxDepsFile) // Microsoft.NETCore.App.deps.json
+                        .Directory; // (version)
+
+                    if (Version.TryParse(frameworkDir.Name, out Version frameworkVersion))
+                    {
+                        return frameworkVersion.ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(0, ex, "Error determining framework version");
+                }
+            }
+
+            return PlatformServices.Default.Application.RuntimeFramework.Version.ToString();
         }
     }
 }

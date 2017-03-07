@@ -6,5 +6,7 @@ namespace live.asp.net.Services
     public interface IDeploymentEnvironment
     {
         string DeploymentId { get; }
+
+        string RuntimeFramework { get; }
     }
 }
