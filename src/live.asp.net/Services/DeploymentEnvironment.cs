@@ -100,7 +100,7 @@ namespace live.asp.net.Services
         private void LoadRuntimeFramework()
         {
             var framework = GetFrameworkName();
-            var arch = RuntimeInformation.OSArchitecture;
+            var arch = RuntimeInformation.ProcessArchitecture;
             var version = GetFrameworkVersion();
 
             _runtimeFramework = $"{framework} {version}, {arch}";
