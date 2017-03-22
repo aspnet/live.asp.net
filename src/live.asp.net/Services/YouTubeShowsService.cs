@@ -17,6 +17,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace live.asp.net.Services
 {
@@ -41,34 +42,39 @@ namespace live.asp.net.Services
             _telemetry = telemetry;
         }
 
-        public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache)
+        public async Task PopulateRecordedShowsAsync(IShowList showList, ClaimsPrincipal user, bool disableCache)
         {
             if (string.IsNullOrEmpty(_appSettings.YouTubeApiKey))
             {
-                return new ShowList { PreviousShows = DesignData.Shows };
+                showList.PreviousShows = DesignData.Shows;
+                return;
             }
 
             if (user.Identity.IsAuthenticated && disableCache)
             {
-                return await GetShowsList();
+                await PopulateRecordedShowsAsync(showList);
+                return;
             }
 
-            var result = _cache.Get<ShowList>(CacheKey);
+            var result = _cache.Get<string>(CacheKey);
 
             if (result == null)
             {
-                result = await GetShowsList();
+                await PopulateRecordedShowsAsync(showList);
+                result = JsonConvert.SerializeObject(showList);
 
                 _cache.Set(CacheKey, result, new MemoryCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
                 });
             }
-
-            return result;
+            else
+            {
+                JsonConvert.PopulateObject(result, showList);
+            }
         }
 
-        private async Task<ShowList> GetShowsList()
+        private async Task PopulateRecordedShowsAsync(IShowList showList)
         {
             using (var client = new YouTubeService(new BaseClientService.Initializer
             {
@@ -91,9 +97,7 @@ namespace live.asp.net.Services
                     TrackDependency(client.BaseUri, listRequest, playlistItems, started);
                 }
 
-                var result = new ShowList();
-
-                result.PreviousShows = playlistItems.Items.Select(item => new Show
+                showList.PreviousShows = playlistItems.Items.Select(item => new Show
                 {
                     Provider = "YouTube",
                     ProviderId = item.Snippet.ResourceId.VideoId,
@@ -106,10 +110,8 @@ namespace live.asp.net.Services
 
                 if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
                 {
-                    result.MoreShowsUrl = GetPlaylistUrl(_appSettings.YouTubePlaylistId);
+                    showList.MoreShowsUrl = GetPlaylistUrl(_appSettings.YouTubePlaylistId);
                 }
-
-                return result;
             }
         }
 

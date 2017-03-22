@@ -25,24 +25,27 @@ namespace live.asp.net.Services
             _filePath = Path.Combine(hostingEnv.ContentRootPath, FileName);
         }
 
-        public async Task<LiveShowDetails> LoadAsync()
+        public async Task LoadAsync(ILiveShowDetails liveShowDetails)
         {
-            var result = _cache.Get<LiveShowDetails>(CacheKey);
+            var result = _cache.Get<string>(CacheKey);
 
             if (result == null)
             {
-                result = await LoadFromFile();
+                await LoadFromFile(liveShowDetails);
+                result = JsonConvert.SerializeObject(liveShowDetails);
 
                 _cache.Set(CacheKey, result, new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.MaxValue
                 });
             }
-
-            return result;
+            else
+            {
+                JsonConvert.PopulateObject(result, liveShowDetails);
+            }
         }
 
-        public async Task SaveAsync(LiveShowDetails liveShowDetails)
+        public async Task SaveAsync(ILiveShowDetails liveShowDetails)
         {
             if (liveShowDetails == null)
             {
@@ -58,11 +61,11 @@ namespace live.asp.net.Services
             _cache.Remove(CacheKey);
         }
 
-        private async Task<LiveShowDetails> LoadFromFile()
+        private async Task LoadFromFile(ILiveShowDetails liveShowDetails)
         {
             if (!File.Exists(_filePath))
             {
-                return null;
+                return;
             }
 
             string fileContents;
@@ -71,7 +74,7 @@ namespace live.asp.net.Services
                 fileContents = await fileReader.ReadToEndAsync();
             }
 
-            return JsonConvert.DeserializeObject<LiveShowDetails>(fileContents);
+            JsonConvert.PopulateObject(fileContents, liveShowDetails);
         }
     }
 }

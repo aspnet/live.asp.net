@@ -13,33 +13,30 @@ namespace live.asp.net.Controllers
     {
         private readonly ILiveShowDetailsService _liveShowDetails;
         private readonly IShowsService _showsService;
-        private readonly IObjectMapper _mapper;
 
-        public HomeController(IShowsService showsService, ILiveShowDetailsService liveShowDetails, IObjectMapper mapper)
+        public HomeController(IShowsService showsService, ILiveShowDetailsService liveShowDetails)
         {
             _showsService = showsService;
             _liveShowDetails = liveShowDetails;
-            _mapper = mapper;
         }
 
         [Route("/")]
         public async Task<IActionResult> Index(bool? disableCache)
         {
-            var liveShowDetails = await _liveShowDetails.LoadAsync();
-            var showList = await _showsService.GetRecordedShowsAsync(User, disableCache ?? false);
-
             var homeViewModel = new HomeViewModel();
-            _mapper.Map(liveShowDetails, homeViewModel);
-            _mapper.Map(showList, homeViewModel);
+            await _liveShowDetails.LoadAsync(homeViewModel);
+            await _showsService.PopulateRecordedShowsAsync(homeViewModel, User, disableCache ?? false);
 
             return View(homeViewModel);
         }
 
         [HttpGet("/ical")]
         [Produces("text/calendar")]
-        public async Task<LiveShowDetails> GetiCal()
+        public async Task<ILiveShowDetails> GetiCal()
         {
-            var liveShowDetails = await _liveShowDetails.LoadAsync();
+            ILiveShowDetails liveShowDetails = new HomeViewModel();
+
+            await _liveShowDetails.LoadAsync(liveShowDetails);
 
             return liveShowDetails;
         }

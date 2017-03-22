@@ -60,7 +60,6 @@ namespace live.asp.net
             services.AddCachedWebRoot();
             services.AddSingleton<IStartupFilter, AppStart>();
             services.AddScoped<IShowsService, YouTubeShowsService>();
-            services.AddSingleton<IObjectMapper, SimpleMapper>();
             services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
             services.AddSingleton<IConfigureOptions<ApplicationInsightsServiceOptions>, ApplicationInsightsServiceOptionsSetup>();
 

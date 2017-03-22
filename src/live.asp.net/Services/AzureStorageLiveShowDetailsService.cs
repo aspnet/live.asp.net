@@ -32,24 +32,27 @@ namespace live.asp.net.Services
             _telemetry = telemetry;
         }
 
-        public async Task<LiveShowDetails> LoadAsync()
+        public async Task LoadAsync(ILiveShowDetails liveShowDetails)
         {
-            var liveShowDetails = _cache.Get<LiveShowDetails>(CacheKey);
+            var result = _cache.Get<string>(CacheKey);
 
-            if (liveShowDetails == null)
+            if (result == null)
             {
-                liveShowDetails = await LoadFromAzureStorage();
+                await LoadFromAzureStorage(liveShowDetails);
+                result = JsonConvert.SerializeObject(liveShowDetails);
 
-                _cache.Set(CacheKey, liveShowDetails, new MemoryCacheEntryOptions
+                _cache.Set(CacheKey, result, new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.MaxValue
                 });
             }
-
-            return liveShowDetails;
+            else
+            {
+                JsonConvert.PopulateObject(result, liveShowDetails);
+            }
         }
 
-        public async Task SaveAsync(LiveShowDetails liveShowDetails)
+        public async Task SaveAsync(ILiveShowDetails liveShowDetails)
         {
             if (liveShowDetails == null)
             {
@@ -57,27 +60,28 @@ namespace live.asp.net.Services
             }
 
             await SaveToAzureStorage(liveShowDetails);
+            var result = JsonConvert.SerializeObject(liveShowDetails);
 
             // Update the cache
-            _cache.Set(CacheKey, liveShowDetails, new MemoryCacheEntryOptions
+            _cache.Set(CacheKey, result, new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTimeOffset.MaxValue
             });
         }
 
-        private async Task<LiveShowDetails> LoadFromAzureStorage()
+        private async Task LoadFromAzureStorage(ILiveShowDetails liveShowDetails)
         {
             var container = GetStorageContainer();
 
             if (!await container.ExistsAsync())
             {
-                return null;
+                return;
             }
 
             var blockBlob = container.GetBlockBlobReference(_appSettings.AzureStorageBlobName);
             if (!await blockBlob.ExistsAsync())
             {
-                return null;
+                return;
             }
 
             string fileContents = null;
@@ -91,10 +95,10 @@ namespace live.asp.net.Services
                 TrackDependency(blockBlob, "Download", fileContents.Length, started, succeeded: fileContents != null);
             }
 
-            return JsonConvert.DeserializeObject<LiveShowDetails>(fileContents);
+            JsonConvert.PopulateObject(fileContents, liveShowDetails);
         }
 
-        private async Task SaveToAzureStorage(LiveShowDetails liveShowDetails)
+        private async Task SaveToAzureStorage(ILiveShowDetails liveShowDetails)
         {
             var container = GetStorageContainer();
 
