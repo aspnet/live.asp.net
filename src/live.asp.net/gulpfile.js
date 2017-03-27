@@ -6,7 +6,9 @@ var gulp = require("gulp"),
     cssmin = require("gulp-cssmin"),
     uglify = require("gulp-uglify"),
     jshint = require('gulp-jshint'),
-    csslint = require('gulp-csslint'),
+	csslint = require('gulp-csslint'),
+	postcss = require('gulp-postcss'),
+	cachebuster = require('postcss-cachebuster')
     path = require("path");
 
 var paths = {
@@ -69,8 +71,10 @@ gulp.task("min:js", function () {
 });
 
 gulp.task("min:css", function () {
-    return gulp.src([paths.css, "!" + paths.minCss])
-        .pipe(concat(paths.concatCssDest))
+	var plugins = [cachebuster];
+	return gulp.src([paths.css, "!" + paths.minCss])
+		.pipe(postcss(plugins))
+		.pipe(concat(paths.concatCssDest))
         .pipe(cssmin())
         .pipe(gulp.dest("."));
 });

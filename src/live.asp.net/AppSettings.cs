@@ -16,5 +16,7 @@ namespace live.asp.net
         public string AzureStorageBlobName { get; set; }
 
         public string AzureStorageContainerName { get; set; }
+
+		public string CDNUrl { get; set; }
     }
 }

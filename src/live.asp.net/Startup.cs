@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
+using Microsoft.Net.Http.Headers;
 
 namespace live.asp.net
 {
@@ -101,7 +102,19 @@ namespace live.asp.net
 
             app.UseStatusCodePages();
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(
+				new StaticFileOptions()
+				{
+					OnPrepareResponse = (context) =>
+					{
+						var headers = context.Context.Response.GetTypedHeaders();
+						headers.CacheControl = new CacheControlHeaderValue()
+						{
+							MaxAge = TimeSpan.FromDays(365)
+						};
+					}
+				}
+				);
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
