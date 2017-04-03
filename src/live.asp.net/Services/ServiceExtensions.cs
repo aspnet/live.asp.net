@@ -11,9 +11,6 @@ namespace live.asp.net.Services
     {
         public static IServiceCollection AddCachedWebRoot(this IServiceCollection services)
         {
-            // Turn off compaction on memory pressure as it results in things being evicted during the priming of the
-            // cache on application start.
-            services.AddMemoryCache(options => options.CompactOnMemoryPressure = false);
             services.AddSingleton<CachedWebRootFileProvider>();
             services.AddSingleton<IConfigureOptions<StaticFileOptions>, StaticFileOptionsSetup>();
             return services;
