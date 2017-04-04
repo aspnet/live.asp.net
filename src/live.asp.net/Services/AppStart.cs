@@ -35,8 +35,8 @@ namespace live.asp.net.Services
                 });
                 _appLifetime.ApplicationStopping.Register(() =>
                 {
-                    var startedEvent = new EventTelemetry("Application Stopping");
-                    _telemetry.TrackEvent(startedEvent);
+                    var stoppingEvent = new EventTelemetry("Application Stopping");
+                    _telemetry.TrackEvent(stoppingEvent);
                     _telemetry.Flush();
                 });
                 _appLifetime.ApplicationStopped.Register(() =>
