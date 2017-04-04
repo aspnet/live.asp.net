@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
+using live.asp.net.TagHelpers;
 
 namespace live.asp.net
 {
@@ -63,6 +65,9 @@ namespace live.asp.net
             services.AddSingleton<IObjectMapper, SimpleMapper>();
             services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
             services.AddSingleton<IConfigureOptions<ApplicationInsightsServiceOptions>, ApplicationInsightsServiceOptionsSetup>();
+            services.AddSingleton<ITagHelperComponent, AppInsightsTagHelperComponent>();
+            services.AddSingleton<ITagHelperComponent, GoogleAnalyticsHeadTagHelperComponent>();
+            services.AddSingleton<ITagHelperComponent, GoogleAnalyticsBodyTagHelperComponent>();
 
             if (string.IsNullOrEmpty(Configuration["AppSettings:AzureStorageConnectionString"]))
             {
