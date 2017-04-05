@@ -16,79 +16,79 @@ using Microsoft.Extensions.Options;
 
 namespace live.asp.net.TagHelpers
 {
-	[HtmlTargetElement("link", Attributes = "[rel='stylesheet'], useCDN")]
-	[HtmlTargetElement("image", Attributes = "useCDN")]
-	public class CDNSourcingTagHelper : TagHelper
-	{
-		private readonly AppSettings _appSettings;
-		private const string USECDNAttributeName = "useCDN";
+    [HtmlTargetElement("link", Attributes = "[rel='stylesheet'], useCDN")]
+    [HtmlTargetElement("image", Attributes = "useCDN")]
+    public class CDNSourcingTagHelper : TagHelper
+    {
+        private readonly AppSettings _appSettings;
+        private const string USECDNAttributeName = "useCDN";
 
-		public CDNSourcingTagHelper(IOptions<AppSettings> appSettings)
-		{
-			_appSettings = appSettings.Value;
-		}
+        public CDNSourcingTagHelper(IOptions<AppSettings> appSettings)
+        {
+            _appSettings = appSettings.Value;
+        }
 
-		[ViewContext]
-		public ViewContext ViewContext { get; set; }
+        [ViewContext]
+        public ViewContext ViewContext { get; set; }
 
-		[HtmlAttributeName(USECDNAttributeName)]
-		public bool FromCDN { get; set; }
+        [HtmlAttributeName(USECDNAttributeName)]
+        public bool FromCDN { get; set; }
 
-		public override void Process(TagHelperContext context, TagHelperOutput output)
-		{
-			base.Process(context, output);
-			if (!FromCDN)
-			{
-				return;
-			}
+        public override void Process(TagHelperContext context, TagHelperOutput output)
+        {
+            base.Process(context, output);
+            if (!FromCDN)
+            {
+                return;
+            }
 
-			var src = output.Attributes["src"];
-			var href = output.Attributes["xlink:href"] ?? output.Attributes["href"];
+            var src = output.Attributes["src"];
+            var href = output.Attributes["xlink:href"] ?? output.Attributes["href"];
 
-			AddCDNPrefix(src, output);
-			AddCDNPrefix(href, output);
-		}
+            AddCDNPrefix(src, output);
+            AddCDNPrefix(href, output);
+        }
 
-		private void AddCDNPrefix(TagHelperAttribute attribute, TagHelperOutput output)
-		{
-			if (attribute == null)
-			{
-				return;
-			}
+        private void AddCDNPrefix(TagHelperAttribute attribute, TagHelperOutput output)
+        {
+            if (attribute == null)
+            {
+                return;
+            }
 
-			var path = default(string);
-			switch (attribute.Value)
-			{
-				case string p:
-					path = p;
-					break;
-				case HtmlString s when s.Value != null:
-					path = s.Value;
-					break;
-				case IHtmlContent pathHtmlContent:
-					using (var tw = new StringWriter())
-					{
-						pathHtmlContent.WriteTo(tw, NullHtmlEncoder.Default);
-						path = tw.ToString();
-					}
-					break;
-				default:
-					path = attribute?.Value?.ToString();
-					break;
-			}
-			var resolvedPath = path ?? attribute.Value.ToString();
+            var path = default(string);
+            switch (attribute.Value)
+            {
+                case string p:
+                    path = p;
+                    break;
+                case HtmlString s when s.Value != null:
+                    path = s.Value;
+                    break;
+                case IHtmlContent pathHtmlContent:
+                    using (var tw = new StringWriter())
+                    {
+                        pathHtmlContent.WriteTo(tw, NullHtmlEncoder.Default);
+                        path = tw.ToString();
+                    }
+                    break;
+                default:
+                    path = attribute?.Value?.ToString();
+                    break;
+            }
+            var resolvedPath = path ?? attribute.Value.ToString();
 
-			var queryStringStartIndex = resolvedPath.IndexOf('?');
-			if (queryStringStartIndex != -1)
-			{
-				if (Uri.TryCreate(resolvedPath.Substring(0, queryStringStartIndex), UriKind.Absolute, out Uri uri))
-				{
-					// Don't update if the path is absolute
-					return;
-				}
-			}
+            var queryStringStartIndex = resolvedPath.IndexOf('?');
+            if (queryStringStartIndex != -1)
+            {
+                if (Uri.TryCreate(resolvedPath.Substring(0, queryStringStartIndex), UriKind.Absolute, out Uri uri))
+                {
+                    // Don't update if the path is absolute
+                    return;
+                }
+            }
 
-			output.Attributes.SetAttribute(attribute.Name, string.Format("{0}{1}", _appSettings.CDNUrl, resolvedPath));
-		}
-	}
+            output.Attributes.SetAttribute(attribute.Name, string.Format("{0}{1}", _appSettings.CDNUrl, resolvedPath));
+        }
+    }
 }
