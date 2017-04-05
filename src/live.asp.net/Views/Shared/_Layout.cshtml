@@ -19,7 +19,7 @@
               asp-fallback-test-class="invisible"
               asp-fallback-test-property="visibility"
               asp-fallback-test-value="hidden" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" useCDN="true"/>
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" useCDN="true" />
     </environment>
     <partial name="_AnalyticsHead" />
 </head>
@@ -29,7 +29,7 @@
     @RenderSection("PreContent", required: false)
     <div class="container body-content">
         @RenderBody()
-        
+
         <footer>
             <div class="row">
                 <div class="col-md-6">
@@ -64,11 +64,11 @@
 <!-- IsHttps: @Context.Request.IsHttps -->
 <!-- Host: @Context.Request.Host.Host -->
 <cache>
-<!-- ViewType: @GetType().AssemblyQualifiedName -->
-<!-- Environment: @HostingEnvironment.EnvironmentName -->
-<!-- Application: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationName, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion -->
-<!-- Deployment: @DeploymentEnvironment.DeploymentId -->
-<!-- Framework: @DeploymentEnvironment.RuntimeFramework -->
-<!-- OS: @System.Runtime.InteropServices.RuntimeInformation.OSDescription @System.Runtime.InteropServices.RuntimeInformation.OSArchitecture -->
-<!-- Machine: @Environment.MachineName -->
+    <!-- ViewType: @GetType().AssemblyQualifiedName -->
+    <!-- Environment: @HostingEnvironment.EnvironmentName -->
+    <!-- Application: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationName, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion -->
+    <!-- Deployment: @DeploymentEnvironment.DeploymentId -->
+    <!-- Framework: @DeploymentEnvironment.RuntimeFramework -->
+    <!-- OS: @System.Runtime.InteropServices.RuntimeInformation.OSDescription @System.Runtime.InteropServices.RuntimeInformation.OSArchitecture -->
+    <!-- Machine: @Environment.MachineName -->
 </cache>
