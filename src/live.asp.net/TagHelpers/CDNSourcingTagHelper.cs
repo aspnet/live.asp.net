@@ -4,46 +4,46 @@
 using System;
 using System.IO;
 using System.Text;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.TagHelpers.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.AspNetCore.Html;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc.TagHelpers.Internal;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 
 namespace live.asp.net.TagHelpers
 {
-	[HtmlTargetElement("link", Attributes = "[rel='stylesheet'],fromCDN")]
-	[HtmlTargetElement("image", Attributes = "fromCDN")]
-    public class CDNSourcingTagHelper : TagHelper
-    {
+	[HtmlTargetElement("link", Attributes = "[rel='stylesheet'], useCDN")]
+	[HtmlTargetElement("image", Attributes = "useCDN")]
+	public class CDNSourcingTagHelper : TagHelper
+	{
 		private readonly AppSettings _appSettings;
-		private const string FROMCDNAttributeName = "fromCDN";
+		private const string USECDNAttributeName = "useCDN";
 
 		public CDNSourcingTagHelper(IOptions<AppSettings> appSettings)
-        {
+		{
 			_appSettings = appSettings.Value;
 		}
 
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
+		[ViewContext]
+		public ViewContext ViewContext { get; set; }
 
-		[HtmlAttributeName(FROMCDNAttributeName)]
-        public bool FromCDN { get; set; }
+		[HtmlAttributeName(USECDNAttributeName)]
+		public bool FromCDN { get; set; }
 
 		public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
+		{
 			base.Process(context, output);
 			if (!FromCDN)
-            {
-                return;
-            }
+			{
+				return;
+			}
 
 			var src = output.Attributes["src"];
-			var href = output.Attributes["xlink:href"] ?? output.Attributes["href"] ;
+			var href = output.Attributes["xlink:href"] ?? output.Attributes["href"];
 
 			AddCDNPrefix(src, output);
 			AddCDNPrefix(href, output);
@@ -55,7 +55,7 @@ namespace live.asp.net.TagHelpers
 			{
 				return;
 			}
-			
+
 			var path = default(string);
 			switch (attribute.Value)
 			{
@@ -86,12 +86,9 @@ namespace live.asp.net.TagHelpers
 					// Don't update if the path is absolute
 					return;
 				}
-			}			
-			
+			}
+
 			output.Attributes.SetAttribute(attribute.Name, string.Format("{0}{1}", _appSettings.CDNUrl, resolvedPath));
-
 		}
-
-		
-	}	
+	}
 }

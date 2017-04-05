@@ -17,35 +17,35 @@ using Microsoft.Extensions.Caching.Memory;
 namespace live.asp.net.TagHelpers
 {
 	[HtmlTargetElement("*", Attributes = "append-version")]
-    public class CacheBustingTagHelper : TagHelper
-    {
+	public class CacheBustingTagHelper : TagHelper
+	{
 		private const string AppendVersionAttributeName = "append-version";
 		private FileVersionProvider _fileVersionProvider;
 		protected IHostingEnvironment HostingEnvironment { get; }
 		protected IMemoryCache Cache { get; }
 
 		public CacheBustingTagHelper(IMemoryCache cache, IHostingEnvironment env, IOptions<AppSettings> appSettings)
-        {
+		{
 			HostingEnvironment = env;
 			Cache = cache;
 		}
 
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
+		[ViewContext]
+		public ViewContext ViewContext { get; set; }
 
 		[HtmlAttributeName(AppendVersionAttributeName)]
 		public bool AppendVersion { get; set; }
 
 		public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
+		{
 			base.Process(context, output);
 			if (!AppendVersion)
-            {
-                return;
-            }
+			{
+				return;
+			}
 
 			var src = output.Attributes["src"];
-			var href = output.Attributes["xlink:href"] ?? output.Attributes["href"] ;
+			var href = output.Attributes["xlink:href"] ?? output.Attributes["href"];
 
 			DoBusting(src, output);
 			DoBusting(href, output);
@@ -57,7 +57,7 @@ namespace live.asp.net.TagHelpers
 			{
 				return;
 			}
-			
+
 			var path = default(string);
 			switch (attribute.Value)
 			{
@@ -105,5 +105,5 @@ namespace live.asp.net.TagHelpers
 					ViewContext.HttpContext.Request.PathBase);
 			}
 		}
-	}	
+	}
 }
