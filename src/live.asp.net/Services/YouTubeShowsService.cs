@@ -14,6 +14,7 @@ using Google.Apis.YouTube.v3.Data;
 using live.asp.net.Models;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -28,27 +29,30 @@ namespace live.asp.net.Services
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
         private readonly TelemetryClient _telemetry;
+        private readonly ClaimsPrincipal _user;
 
         public YouTubeShowsService(
             IHostingEnvironment env,
             IOptions<AppSettings> appSettings,
             IMemoryCache memoryCache,
-            TelemetryClient telemetry)
+            TelemetryClient telemetry,
+            IHttpContextAccessor httpContextAccesser)
         {
             _env = env;
             _appSettings = appSettings.Value;
             _cache = memoryCache;
             _telemetry = telemetry;
+            _user = httpContextAccesser.HttpContext.User;
         }
 
-        public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache)
+        public async Task<ShowList> GetRecordedShowsAsync(bool disableCache)
         {
             if (string.IsNullOrEmpty(_appSettings.YouTubeApiKey))
             {
                 return new ShowList { PreviousShows = DesignData.Shows };
             }
 
-            if (user.Identity.IsAuthenticated && disableCache)
+            if (_user.Identity.IsAuthenticated && disableCache)
             {
                 return await GetShowsList();
             }
