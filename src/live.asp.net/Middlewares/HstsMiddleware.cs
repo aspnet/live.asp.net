@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using live.asp.net.Middlesware;
 
-namespace live.asp.net.Middlesware
+namespace live.asp.net.Middlewares
 {
     /// <summary>
     /// Middleware that sets HSTS response header for ensuring subsequent requests are made over HTTPS only.
