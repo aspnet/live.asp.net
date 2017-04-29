@@ -8,6 +8,6 @@ namespace live.asp.net.Services
 {
     public interface IShowsService
     {
-        Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache);
+        Task PopulateRecordedShowsAsync(IShowList showList, ClaimsPrincipal user, bool disableCache);
     }
 }

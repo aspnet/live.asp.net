@@ -25,21 +25,18 @@ namespace live.asp.net.Controllers
         private readonly AppSettings _appSettings;
         private readonly IHostingEnvironment _env;
         private readonly TelemetryClient _telemetry;
-        private readonly IObjectMapper _mapper;
 
         public AdminController(
             IHostingEnvironment env,
             ILiveShowDetailsService liveShowDetails,
             IMemoryCache memoryCache,
             IOptions<AppSettings> appSettings,
-            IObjectMapper mapper,
             TelemetryClient telemetry)
         {
             _liveShowDetails = liveShowDetails;
             _memoryCache = memoryCache;
             _appSettings = appSettings.Value;
             _env = env;
-            _mapper = mapper;
             _telemetry = telemetry;
         }
 
@@ -51,15 +48,15 @@ namespace live.asp.net.Controllers
                 SuccessMessage = (string)TempData[nameof(AdminViewModel.SuccessMessage)]
             };
 
-            var liveShowDetails = await _liveShowDetails.LoadAsync();
+            await _liveShowDetails.LoadAsync(model);
 
-            UpdateAdminViewModel(model, liveShowDetails);
+            UpdateAdminViewModel(model);
 
             return View(model);
         }
 
         [ModelMetadataType(typeof(AdminViewModel))]
-        public class AdminInputModel
+        public class AdminInputModel : ILiveShowDetails
         {
             public string LiveShowEmbedUrl { get; set; }
 
@@ -68,18 +65,25 @@ namespace live.asp.net.Controllers
             public DateTime? NextShowDatePst { get; set; }
 
             public string AdminMessage { get; set; }
+
+            DateTime? ILiveShowDetails.NextShowDateUtc
+            {
+                get => NextShowDatePst?.ConvertFromPtcToUtc();
+                set => NextShowDatePst = value?.ConvertFromUtcToPst();
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Save(AdminInputModel input)
         {
-            var liveShowDetails = await _liveShowDetails.LoadAsync() ?? new LiveShowDetails();
+            await _liveShowDetails.LoadAsync(input);
 
             if (!ModelState.IsValid)
             {
                 // Model validation error, just return and let the error render
                 var viewModel = new AdminViewModel();
-                UpdateAdminViewModel(viewModel, liveShowDetails);
+                viewModel.NextShowDatePst = input.NextShowDatePst;
+                UpdateAdminViewModel(viewModel);
 
                 return View(nameof(Index), viewModel);
             }
@@ -89,12 +93,9 @@ namespace live.asp.net.Controllers
                 input.LiveShowEmbedUrl = "https://" + input.LiveShowEmbedUrl.Substring("http://".Length);
             }
 
-            TrackShowEvent(input, liveShowDetails);
+            TrackShowEvent(input, input);
 
-            _mapper.Map(input, liveShowDetails);
-            liveShowDetails.NextShowDateUtc = input.NextShowDatePst?.ConvertFromPtcToUtc();
-
-            await _liveShowDetails.SaveAsync(liveShowDetails);
+            await _liveShowDetails.SaveAsync(input);
 
             TempData[nameof(AdminViewModel.SuccessMessage)] = "Live show details saved successfully!";
 
@@ -111,7 +112,7 @@ namespace live.asp.net.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private void TrackShowEvent(AdminInputModel input, LiveShowDetails liveShowDetails)
+        private void TrackShowEvent(AdminInputModel input, ILiveShowDetails liveShowDetails)
         {
             if (_telemetry.IsEnabled())
             {
@@ -127,11 +128,8 @@ namespace live.asp.net.Controllers
             }
         }
 
-        private void UpdateAdminViewModel(AdminViewModel model, LiveShowDetails liveShowDetails)
+        private void UpdateAdminViewModel(AdminViewModel model)
         {
-            _mapper.Map(liveShowDetails, model);
-            model.NextShowDatePst = liveShowDetails?.NextShowDateUtc?.ConvertFromUtcToPst();
-
             var nextTuesday = GetNextTuesday();
             model.NextShowDateSuggestionPstAM = nextTuesday.AddHours(10).ToString("MM/dd/yyyy HH:mm");
             model.NextShowDateSuggestionPstPM = nextTuesday.AddHours(15).AddMinutes(45).ToString("MM/dd/yyyy HH:mm");

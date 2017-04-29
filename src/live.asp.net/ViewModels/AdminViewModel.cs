@@ -7,7 +7,7 @@ using live.asp.net.Models;
 
 namespace live.asp.net.ViewModels
 {
-    public class AdminViewModel
+    public class AdminViewModel : ILiveShowDetails
     {
         [Display(Name = "Live Show Embed URL", Description = "URL for embedding the live show")]
         [DataType(DataType.Url)]
@@ -35,5 +35,11 @@ namespace live.asp.net.ViewModels
         public AppSettings AppSettings { get; set; }
 
         public string EnvironmentName { get; set; }
+
+        DateTime? ILiveShowDetails.NextShowDateUtc
+        {
+            get => NextShowDatePst?.ConvertFromPtcToUtc();
+            set => NextShowDatePst = value?.ConvertFromUtcToPst();
+        }
     }
 }

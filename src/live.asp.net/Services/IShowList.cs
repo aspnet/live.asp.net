@@ -6,10 +6,10 @@ using live.asp.net.Models;
 
 namespace live.asp.net.Services
 {
-    public class ShowList
+    public interface IShowList
     {
-        public IList<Show> PreviousShows { get; set; }
+        IList<Show> PreviousShows { get; set; }
 
-        public string MoreShowsUrl { get; set; }
+        string MoreShowsUrl { get; set; }
     }
 }

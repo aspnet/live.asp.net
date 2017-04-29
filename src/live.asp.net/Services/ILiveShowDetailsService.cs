@@ -8,8 +8,8 @@ namespace live.asp.net.Services
 {
     public interface ILiveShowDetailsService
     {
-        Task<LiveShowDetails> LoadAsync();
+        Task LoadAsync(ILiveShowDetails liveShowDetails);
 
-        Task SaveAsync(LiveShowDetails liveShowDetails);
+        Task SaveAsync(ILiveShowDetails liveShowDetails);
     }
 }

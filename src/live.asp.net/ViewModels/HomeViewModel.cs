@@ -4,11 +4,12 @@
 using System;
 using System.Collections.Generic;
 using live.asp.net.Models;
+using live.asp.net.Services;
 using System.Text.Encodings.Web;
 
 namespace live.asp.net.ViewModels
 {
-    public class HomeViewModel
+    public class HomeViewModel : ILiveShowDetails, IShowList
     {
         private static readonly string _dateTimeFormat = "yyyyMMddTHHmmssZ";
         private static readonly string _googleCalendarText = UrlEncoder.Default.Encode("ASP.NET Community Standup");
