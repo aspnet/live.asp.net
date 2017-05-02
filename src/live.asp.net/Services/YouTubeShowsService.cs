@@ -10,10 +10,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
 using live.asp.net.Models;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -27,18 +24,15 @@ namespace live.asp.net.Services
         private readonly IHostingEnvironment _env;
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
-        private readonly TelemetryClient _telemetry;
 
         public YouTubeShowsService(
             IHostingEnvironment env,
             IOptions<AppSettings> appSettings,
-            IMemoryCache memoryCache,
-            TelemetryClient telemetry)
+            IMemoryCache memoryCache)
         {
             _env = env;
             _appSettings = appSettings.Value;
             _cache = memoryCache;
-            _telemetry = telemetry;
         }
 
         public async Task<ShowList> GetRecordedShowsAsync(ClaimsPrincipal user, bool disableCache)
@@ -80,29 +74,21 @@ namespace live.asp.net.Services
                 listRequest.PlaylistId = _appSettings.YouTubePlaylistId;
                 listRequest.MaxResults = 5 * 3; // 5 rows of 3 episodes
 
-                PlaylistItemListResponse playlistItems = null;
-                var started = Timing.GetTimestamp();
-                try
-                {
-                    playlistItems = await listRequest.ExecuteAsync();
-                }
-                finally
-                {
-                    TrackDependency(client.BaseUri, listRequest, playlistItems, started);
-                }
+                var playlistItems = await listRequest.ExecuteAsync();
 
-                var result = new ShowList();
-
-                result.PreviousShows = playlistItems.Items.Select(item => new Show
+                var result = new ShowList
                 {
-                    Provider = "YouTube",
-                    ProviderId = item.Snippet.ResourceId.VideoId,
-                    Title = GetUsefulBitsFromTitle(item.Snippet.Title),
-                    Description = item.Snippet.Description,
-                    ShowDate = DateTimeOffset.Parse(item.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
-                    ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
-                    Url = GetVideoUrl(item.Snippet.ResourceId.VideoId, item.Snippet.PlaylistId, item.Snippet.Position ?? 0)
-                }).ToList();
+                    PreviousShows = playlistItems.Items.Select(item => new Show
+                    {
+                        Provider = "YouTube",
+                        ProviderId = item.Snippet.ResourceId.VideoId,
+                        Title = GetUsefulBitsFromTitle(item.Snippet.Title),
+                        Description = item.Snippet.Description,
+                        ShowDate = DateTimeOffset.Parse(item.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
+                        ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
+                        Url = GetVideoUrl(item.Snippet.ResourceId.VideoId, item.Snippet.PlaylistId, item.Snippet.Position ?? 0)
+                    }).ToList()
+                };
 
                 if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
                 {
@@ -110,29 +96,6 @@ namespace live.asp.net.Services
                 }
 
                 return result;
-            }
-        }
-
-        private void TrackDependency(string url, PlaylistItemsResource.ListRequest listRequest, PlaylistItemListResponse playlistItems, long started)
-        {
-            if (_telemetry.IsEnabled())
-            {
-                Uri.TryCreate(url, UriKind.Absolute, out Uri uri);
-                var duration = Timing.GetDuration(started);
-                var dependency = new DependencyTelemetry
-                {
-                    Type = "HTTP",
-                    Target = uri?.Host ?? url,
-                    Name = listRequest.RestPath,
-                    Data = listRequest.CreateRequest().RequestUri.ToString(),
-                    Timestamp = DateTimeOffset.UtcNow,
-                    Duration = duration,
-                    Success = playlistItems != null
-                };
-                dependency.Properties.Add("HTTP Method", listRequest.HttpMethod);
-                dependency.Properties.Add("Event Id", playlistItems.EventId);
-                dependency.Properties.Add("Total Results", (playlistItems.PageInfo.TotalResults ?? 0).ToString());
-                _telemetry.TrackDependency(dependency);
             }
         }
 

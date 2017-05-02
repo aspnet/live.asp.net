@@ -32,7 +32,6 @@ namespace live.asp.net.Services
             // Work around Application Insights issue breaking Azure Storage: https://github.com/Microsoft/ApplicationInsights-aspnetcore/issues/416
             var modules = app.ApplicationServices.GetServices<ITelemetryModule>();
             var dependencyModule = modules.OfType<DependencyTrackingTelemetryModule>().FirstOrDefault();
-
             if (dependencyModule != null)
             {
                 var domains = dependencyModule.ExcludeComponentCorrelationHttpHeadersOnDomains;

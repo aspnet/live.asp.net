@@ -4,7 +4,6 @@
 using System;
 using System.Security.Claims;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -90,7 +89,7 @@ namespace live.asp.net
             }
             else
             {
-                loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Error);
+                loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Warning);
                 app.UseExceptionHandler("/error");
             }
 
