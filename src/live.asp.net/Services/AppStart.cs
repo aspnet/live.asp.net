@@ -2,11 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Linq;
 using System.Threading;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.ApplicationInsights.DependencyCollector;
 
 namespace live.asp.net.Services
 {
@@ -25,6 +29,19 @@ namespace live.asp.net.Services
 
         public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next) => app =>
         {
+            // Work around Application Insights issue breaking Azure Storage: https://github.com/Microsoft/ApplicationInsights-aspnetcore/issues/416
+            var modules = app.ApplicationServices.GetServices<ITelemetryModule>();
+            var dependencyModule = modules.OfType<DependencyTrackingTelemetryModule>().FirstOrDefault();
+
+            if (dependencyModule != null)
+            {
+                var domains = dependencyModule.ExcludeComponentCorrelationHttpHeadersOnDomains;
+                domains.Add("core.windows.net");
+                domains.Add("core.chinacloudapi.cn");
+                domains.Add("core.cloudapi.de");
+                domains.Add("core.usgovcloudapi.net");
+            }
+
             // Enable tracking of application start/stop to Application Insights
             if (_telemetry.IsEnabled())
             {
