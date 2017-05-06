@@ -29,12 +29,12 @@
     @RenderSection("PreContent", required: false)
     <div class="container body-content">
         @RenderBody()
-        
+
         <footer>
             <div class="row">
                 <div class="col-md-6">
                     <p>
-                        &copy; 2015 Microsoft. All rights reserved.
+                        &copy; @DateTime.Today.Year Microsoft. All rights reserved.
                     </p>
                 </div>
             </div>
