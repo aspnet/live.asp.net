@@ -10,7 +10,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .jumbotron {
-    background: #000 url(home-bg.jpg) top center repeat-x;
+    background: #000 url(../images/home-bg.jpg) top center repeat-x;
     background-size: 920px;
     color: #fff;
     min-height: 350px;
