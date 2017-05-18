@@ -3,12 +3,12 @@
 
 using System;
 using System.Threading.Tasks;
-using live.asp.net.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
+using live.asp.net.Models;
 
 namespace live.asp.net.Services
 {
@@ -19,7 +19,9 @@ namespace live.asp.net.Services
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;
 
-        public AzureStorageLiveShowDetailsService(IOptions<AppSettings> appSettings, IMemoryCache cache)
+        public AzureStorageLiveShowDetailsService(
+            IOptions<AppSettings> appSettings,
+            IMemoryCache cache)
         {
             _appSettings = appSettings.Value;
             _cache = cache;
@@ -88,7 +90,6 @@ namespace live.asp.net.Services
 
             var fileContents = JsonConvert.SerializeObject(liveShowDetails);
 
-            var started = Timing.GetTimestamp();
             await blockBlob.UploadTextAsync(fileContents);
         }
 

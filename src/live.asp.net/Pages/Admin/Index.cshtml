@@ -1,19 +1,19 @@
-﻿@using live.asp.net.ViewModels
-@model AdminViewModel
+﻿@page
+@model IndexModel
 
 @{
     ViewData["Title"] = "ASP.NET Community Standup Admin";
 }
 
 <ol class="breadcrumb">
-    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li><a asp-page="/Index">Home</a></li>
     <li class="active">Admin</li>
 </ol>
 
 <div class="admin-screen">
     <h2>ASP.NET Community Standup Admin - @Model.EnvironmentName</h2>
 
-    <form asp-controller="Admin" asp-action="Save" method="post" class="form-horizontal" role="form">
+    <form method="post" class="form-horizontal" role="form">
         <h4>Live Show Details</h4>
         <hr />
         @if (Model.ShowSuccessMessage)
@@ -49,7 +49,7 @@
             <label asp-for="NextShowDatePst" class="col-md-3 control-label"></label>
             <div class="col-md-5">
                 <div class="input-group">
-                    <input asp-for="NextShowDatePst" asp-format="{0:MM/dd/yyyy HH:mm}"
+                    <input asp-for="NextShowDatePst" asp-format="{0:MM/dd/yyyy HH:mm}" type="text"
                         class="form-control" placeholder="MM/dd/yyyy HH:mm" maxlength="16" />
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Next Tuesday <span class="caret"></span></button>
@@ -72,7 +72,7 @@
         </div>
     </form>
 
-    <form asp-controller="Admin" asp-action="ClearCache" method="post" class="form-horizontal" role="form">
+    <form asp-page-handler="ClearCache" method="post" class="form-horizontal" role="form">
         <h4>YouTube Settings</h4>
         <hr />
         <div class="form-group">
@@ -125,11 +125,11 @@
 </div>
 
 @section Scripts {
-    <environment names="Development">
+    <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     </environment>
-    <environment names="Staging,Production">
+    <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.4.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">

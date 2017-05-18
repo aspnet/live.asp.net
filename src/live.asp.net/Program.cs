@@ -1,8 +1,8 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore;
 
 namespace live.asp.net
 {
@@ -10,15 +10,13 @@ namespace live.asp.net
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
+            BuildWebHost(args).Run();
+        }
+
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
                 .UseApplicationInsights()
-                .UseAzureAppServices()
                 .UseStartup<Startup>()
                 .Build();
-
-            host.Run();
-        }
     }
 }

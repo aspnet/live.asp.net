@@ -1,41 +1,27 @@
 ﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <OutputType>Exe</OutputType>
+    <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
     <UserSecretsId>aspnet5-live.asp.net-20150723035013</UserSecretsId>
-    <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
     <ApplicationInsightsResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="1.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="1.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.2" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.0-beta3" />
-    <PackageReference Include="WindowsAzure.Storage" Version="8.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.25.0.760" />
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="**/*.json" CopyToPublishDirectory="Never" />
     <Content Remove="**/*.config" />
     <Content Include="urlRewrite.config" CopyToPublishDirectory="Always" />
     <Content Update="appsettings*.json" CopyToPublishDirectory="Always" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <Exec Command="npm install" />

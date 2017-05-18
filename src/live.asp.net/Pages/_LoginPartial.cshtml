@@ -1,17 +1,15 @@
-﻿@using System.Security.Principal
-
-@if (User.Identity.IsAuthenticated)
+﻿@if (User.Identity.IsAuthenticated)
 {
     <nav class="clearfix pull-right">
         <ul role="navigation">
             <li>@User.Identity.Name</li>
-            <li><a asp-controller="Admin" asp-action="Index">Admin</a></li>
+            <li><a asp-page="/Admin/Index">Admin</a></li>
             <li><a asp-controller="Account" asp-action="SignOut">Sign Out</a></li>
         </ul>
     </nav>
 }
 
-<environment names="Development,Staging">
+<environment exclude="Production">
     @if (!User.Identity.IsAuthenticated)
     {
         <a asp-controller="Account" asp-action="SignIn">Sign In</a>

@@ -2,15 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Linq;
-using System.Threading;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.ApplicationInsights.DependencyCollector;
+using Microsoft.Extensions.Logging;
 
 namespace live.asp.net.Services
 {
@@ -18,56 +12,36 @@ namespace live.asp.net.Services
     {
         private readonly IApplicationLifetime _appLifetime;
         private readonly CachedWebRootFileProvider _cachedWebRoot;
-        private readonly TelemetryClient _telemetry;
+        private readonly ILogger _logger;
 
-        public AppStart(IApplicationLifetime appLifetime, TelemetryClient telemetry, CachedWebRootFileProvider cachedWebRoot)
+        public AppStart(IApplicationLifetime appLifetime, CachedWebRootFileProvider cachedWebRoot, ILogger<AppStart> logger)
         {
             _appLifetime = appLifetime;
-            _telemetry = telemetry;
+            _logger = logger;
             _cachedWebRoot = cachedWebRoot;
         }
 
         public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next) => app =>
         {
-            // Work around Application Insights issue breaking Azure Storage: https://github.com/Microsoft/ApplicationInsights-aspnetcore/issues/416
-            var modules = app.ApplicationServices.GetServices<ITelemetryModule>();
-            var dependencyModule = modules.OfType<DependencyTrackingTelemetryModule>().FirstOrDefault();
-            if (dependencyModule != null)
-            {
-                var domains = dependencyModule.ExcludeComponentCorrelationHttpHeadersOnDomains;
-                domains.Add("core.windows.net");
-                domains.Add("core.chinacloudapi.cn");
-                domains.Add("core.cloudapi.de");
-                domains.Add("core.usgovcloudapi.net");
-            }
+            // Call next now to ensure that logger providers added by other StartupFilters like Application Insights are configured
+            next(app);
 
-            // Enable tracking of application start/stop to Application Insights
-            if (_telemetry.IsEnabled())
+            // Log application start/stop events
+            if (_logger.IsEnabled(LogLevel.Information))
             {
                 _appLifetime.ApplicationStarted.Register(() =>
                 {
-                    var startedEvent = new EventTelemetry("Application Started");
-                    _telemetry.TrackEvent(startedEvent);
+                    _logger.LogInformation("Application started");
                 });
                 _appLifetime.ApplicationStopping.Register(() =>
                 {
-                    var stoppingEvent = new EventTelemetry("Application Stopping");
-                    _telemetry.TrackEvent(stoppingEvent);
-                    _telemetry.Flush();
+                    _logger.LogInformation("Application stopping");
                 });
                 _appLifetime.ApplicationStopped.Register(() =>
                 {
-                    var stoppedEvent = new EventTelemetry("Application Stopped");
-                    _telemetry.TrackEvent(stoppedEvent);
-                    _telemetry.Flush();
-
-                    // Allow some time for flushing before shutdown.
-                    Thread.Sleep(1000);
+                    _logger.LogInformation("Application stopped");
                 });
             }
-
-            // Call next now so that the ILoggerFactory by Startup.Configure is configured before we go any further
-            next(app);
 
             // Prime the cached web root file provider for static file serving
             _cachedWebRoot.PrimeCache();

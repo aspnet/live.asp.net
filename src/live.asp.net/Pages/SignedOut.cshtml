@@ -1,0 +1,17 @@
+﻿@page
+@functions {
+    public IActionResult OnGet()
+    {
+        if (HttpContext.User.Identity.IsAuthenticated)
+        {
+            // Redirect to home page if the user is authenticated.
+            return RedirectToPage("/Index");
+        }
+        return Page();
+    }
+}
+@{
+    ViewData["Title"] = "Sign Out";
+}
+<h2>@ViewData["Title"].</h2>
+<p class="text-success">You have successfully signed out.</p>

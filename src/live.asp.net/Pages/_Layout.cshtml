@@ -9,11 +9,11 @@
     <title>@ViewData["Title"]</title>
     <meta name="description" content="The weekly ASP.NET Community Standup covers live community Q&amp;A, product team discussion, and the most recent updates. Hosted by Scott Hanselman, Damian Edwards, and Jon Galloway. Recordings of previous meetings are available." />
     <link rel="shortcut icon" href="~/favicon.ico" />
-    <environment names="Development">
+    <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
-    <environment names="Staging,Production">
+    <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="invisible"
@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <p>
-                        &copy; 2015 Microsoft. All rights reserved.
+                        &copy; 2017 Microsoft. All rights reserved.
                     </p>
                 </div>
             </div>
@@ -61,8 +61,9 @@
 </html>
 <!-- IsHttps: @Context.Request.IsHttps -->
 <!-- Host: @Context.Request.Host.Host -->
+<!-- ViewPath: @ViewContext.View.Path -->
+<!-- ViewAssembly: @GetType().Assembly.FullName -->
 <cache>
-<!-- ViewType: @GetType().AssemblyQualifiedName -->
 <!-- Environment: @HostingEnvironment.EnvironmentName -->
 <!-- Application: @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationName, @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion -->
 <!-- Deployment: @DeploymentEnvironment.DeploymentId -->

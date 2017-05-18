@@ -1,10 +1,9 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace live.asp.net.Controllers
@@ -14,31 +13,16 @@ namespace live.asp.net.Controllers
         [HttpGet("signin")]
         public IActionResult SignIn()
         {
-            return new ChallengeResult(
-                OpenIdConnectDefaults.AuthenticationScheme,
-                new AuthenticationProperties { RedirectUri = "/" }
-            );
+            return Challenge(
+                new AuthenticationProperties { RedirectUri = Url.Page("/Index") }, OpenIdConnectDefaults.AuthenticationScheme);
         }
 
         [HttpGet("signout")]
-        public async Task<IActionResult> SignOut()
+        public IActionResult SignOut()
         {
-            var callbackUrl = Url.Action("SignOutCallback", "Account", values: null, protocol: Request.Scheme);
-            await HttpContext.Authentication.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.Authentication.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
-            return new EmptyResult();
-        }
-
-        [HttpGet("signoutcallback")]
-        public IActionResult SignOutCallback()
-        {
-            if (HttpContext.User.Identity.IsAuthenticated)
-            {
-                // Redirect to home page if the user is authenticated.
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
-
-            return View();
+            var callbackUrl = Url.Page("/SignedOut", pageHandler: null, values: null, protocol: Request.Scheme);
+            return SignOut(new AuthenticationProperties { RedirectUri = callbackUrl },
+                CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
         }
     }
 }

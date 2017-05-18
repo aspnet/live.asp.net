@@ -1,8 +1,8 @@
-﻿@using live.asp.net.ViewModels
-@using live.asp.net.Models
-@model HomeViewModel
+﻿@page
+@model IndexModel
 
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "ASP.NET Community Standup";
 }
 
@@ -33,7 +33,13 @@
             }
             else if (Model.IsOnAir)
             {
-                <partial name="_LiveShowPartial" model="Model"></partial>
+                @if (Model.IsLiveShowEmbedded)
+                {
+                    <div class="embed-responsive embed-responsive-16by9 hangout-embed">
+                        <iframe class="embed-responsive-item" src="@Model.LiveShowEmbedUrl" allowfullscreen></iframe>
+                    </div>
+                }
+                @Html.Raw(Model.LiveShowHtml)
             }
             else
             {
@@ -101,7 +107,7 @@
 }
 
 @section Scripts {
-    <environment names="Development">
+    <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         @if (Model.NextShowScheduled)
@@ -109,7 +115,7 @@
         <script src="~/js/home.js" inline="true"></script>
         }
     </environment>
-    <environment names="Staging,Production">
+    <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.4.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">
