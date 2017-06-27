@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Update="**/*.json" CopyToPublishDirectory="Never" />
+    <Content Remove="**/*.config" />
     <Content Include="urlRewrite.config" CopyToPublishDirectory="Always" />
     <Content Update="appsettings*.json" CopyToPublishDirectory="Always" />
   </ItemGroup>

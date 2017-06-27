@@ -21,11 +21,9 @@
               asp-fallback-test-value="hidden" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
-    <partial name="_AnalyticsHead" />
+    <partial name="_Analytics" />
 </head>
 <body>
-    <partial name="_AnalyticsBody" />
-
     @RenderSection("PreContent", required: false)
     <div class="container body-content">
         @RenderBody()
