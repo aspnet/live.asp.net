@@ -53,7 +53,7 @@
                                 </strong>
                             </h2>
                             <h2>
-                                <span data-part="countdown"></span>
+                                <span data-part="countdown">&nbsp;</span>
                             </h2>
                         </div>
                         <div class="btn-group">
@@ -104,6 +104,7 @@
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/common.js" inline="true"></script>
         @if (Model.NextShowScheduled)
         {
         <script src="~/js/home.js" inline="true"></script>
@@ -118,6 +119,9 @@
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
         </script>
+        <cache>
+            <script src="~/js/common.min.js" inline="true"></script>
+        </cache>
         @if (Model.NextShowScheduled)
         {
         <cache>

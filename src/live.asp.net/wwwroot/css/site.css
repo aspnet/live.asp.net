@@ -85,6 +85,14 @@ a, a:hover {
         background: #212121;
     }
 
+    .hangout-embed img {
+        cursor:pointer;
+    }
+
+    .hangout-embed img:hover {
+        opacity:.6;
+    }
+
 .thumbnail .caption h3 {
     margin-top: 0;
     margin-bottom: 0;

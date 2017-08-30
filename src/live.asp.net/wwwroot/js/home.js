@@ -134,3 +134,15 @@
     };
 
 })(window);
+
+$(function () {
+    $("img[data-iframe]").click(function () {
+        if (typeof mscc !== 'undefined')
+        {
+            mscc.setConsent();
+        }
+
+        var url = $(this).data("iframe") + "?autoplay=1";
+        $(this).replaceWith('<iframe class="embed-responsive-item" src="' + url + '" allowfullscreen></iframe>');
+    });
+});
