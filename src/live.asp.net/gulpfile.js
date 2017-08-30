@@ -36,10 +36,15 @@ var library = {
 
 paths.library = paths.webroot + library.destination;
 paths.js = paths.webroot + "js/**/*.js";
-paths.minJs = paths.webroot + "js/**/*.min.js";
+paths.jsHome = paths.webroot + "js/**/home.js";
+paths.jsCommon = paths.webroot + "js/**/common.js";
+paths.minJsHome = paths.webroot + "js/**/home.min.js";
+paths.minJsCommon = paths.webroot + "js/**/common.min.js";
 paths.css = paths.webroot + "css/**/*.css";
 paths.minCss = paths.webroot + "css/**/*.min.css";
-paths.concatJsDest = paths.webroot + "js/home.min.js";
+paths.concatJsDest = paths.webroot + "js/*.min.js";
+paths.concatJsDestHome = paths.webroot + "js/home.min.js";
+paths.concatJsDestCommon = paths.webroot + "js/common.min.js";
 paths.concatCssDest = paths.webroot + "css/site.min.css";
 
 gulp.task("lib", ["clean"], function () {
@@ -61,9 +66,18 @@ gulp.task("clean:css", function () {
 
 gulp.task("clean", ["clean:js", "clean:css", "clean:lib"]);
 
-gulp.task("min:js", function () {
-    return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
-        .pipe(concat(paths.concatJsDest))
+gulp.task("min:js", ["min:js-home", "min:js-common"]);
+
+gulp.task("min:js-home", function () {
+    return gulp.src([paths.jsHome, "!" + paths.minJsHome], { base: "." })
+        .pipe(concat(paths.concatJsDestHome))
+        .pipe(uglify())
+        .pipe(gulp.dest("."));
+});
+
+gulp.task("min:js-common", function () {
+    return gulp.src([paths.jsCommon, "!" + paths.minJsCommon], { base: "." })
+        .pipe(concat(paths.concatJsDestCommon))
         .pipe(uglify())
         .pipe(gulp.dest("."));
 });

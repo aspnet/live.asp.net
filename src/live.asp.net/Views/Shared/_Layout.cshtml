@@ -1,5 +1,6 @@
 ﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment HostingEnvironment
 @inject live.asp.net.Services.IDeploymentEnvironment DeploymentEnvironment
+@inject live.asp.net.Services.CookieConsentService CookieConsentService
 
 <!DOCTYPE html>
 <html>
@@ -22,8 +23,10 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
     <partial name="_Analytics" />
+    <partial name="_CookieComplianceHead" />
 </head>
 <body>
+    <partial name="_CookieComplianceBanner" />
     @RenderSection("PreContent", required: false)
     <div class="container body-content">
         @RenderBody()
