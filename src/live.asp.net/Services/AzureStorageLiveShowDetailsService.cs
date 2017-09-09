@@ -14,7 +14,7 @@ namespace live.asp.net.Services
 {
     public class AzureStorageLiveShowDetailsService : ILiveShowDetailsService
     {
-        private static readonly string CacheKey = nameof(AzureStorageLiveShowDetailsService);
+        private const string CacheKey = nameof(AzureStorageLiveShowDetailsService);
 
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _cache;

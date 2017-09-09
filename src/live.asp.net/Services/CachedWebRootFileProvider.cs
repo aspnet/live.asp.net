@@ -14,7 +14,7 @@ namespace live.asp.net.Services
 {
     public class CachedWebRootFileProvider : IFileProvider
     {
-        private static readonly int _fileSizeLimit = 256 * 1024; // bytes
+        private const int _fileSizeLimit = 256 * 1024; // bytes
 
         private readonly ILogger<CachedWebRootFileProvider> _logger;
         private readonly IFileProvider _fileProvider;

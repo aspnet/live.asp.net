@@ -13,8 +13,8 @@ namespace live.asp.net.Services
 {
     public class FileSystemLiveShowDetailsService : ILiveShowDetailsService
     {
-        private static readonly string CacheKey = nameof(FileSystemLiveShowDetailsService);
-        private static readonly string FileName = "ShowDetails.json";
+        private const string CacheKey = nameof(FileSystemLiveShowDetailsService);
+        private const string FileName = "ShowDetails.json";
 
         private readonly IMemoryCache _cache;
         private readonly string _filePath;

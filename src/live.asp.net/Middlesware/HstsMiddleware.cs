@@ -15,7 +15,7 @@ namespace live.asp.net.Middlesware
     /// </summary>
     public class HstsMiddleware
     {
-        private static readonly string _hstsHeaderName = "Strict-Transport-Security";
+        private const string _hstsHeaderName = "Strict-Transport-Security";
         private readonly RequestDelegate _next;
         private readonly HstsOptions _options;
         private readonly string _headerValue;
