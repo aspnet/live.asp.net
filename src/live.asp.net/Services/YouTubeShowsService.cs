@@ -84,11 +84,15 @@ namespace live.asp.net.Services
                         ProviderId = item.Snippet.ResourceId.VideoId,
                         Title = GetUsefulBitsFromTitle(item.Snippet.Title),
                         Description = item.Snippet.Description,
-                        ShowDate = DateTimeOffset.Parse(item.Snippet.PublishedAtRaw, null, DateTimeStyles.RoundtripKind),
                         ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
                         Url = GetVideoUrl(item.Snippet.ResourceId.VideoId, item.Snippet.PlaylistId, item.Snippet.Position ?? 0)
                     }).ToList()
                 };
+
+                foreach (var show in result.PreviousShows)
+                {
+                    show.ShowDate = await GetVideoPublishDate(client, show.ProviderId);
+                }
 
                 if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
                 {
@@ -97,6 +101,18 @@ namespace live.asp.net.Services
 
                 return result;
             }
+        }
+
+        private async Task<DateTimeOffset> GetVideoPublishDate(YouTubeService client, string videoId)
+        {
+            var videoRequest = client.Videos.List("snippet");
+            videoRequest.Id = videoId;
+            videoRequest.MaxResults = 1;
+
+            var video = await videoRequest.ExecuteAsync();
+            var rawDate = video.Items[0].Snippet.PublishedAtRaw;
+            
+            return DateTimeOffset.Parse(rawDate, null, DateTimeStyles.RoundtripKind);
         }
 
         private static string GetUsefulBitsFromTitle(string title)
