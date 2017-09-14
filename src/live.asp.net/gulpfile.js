@@ -38,6 +38,7 @@ paths.library = paths.webroot + library.destination;
 paths.js = paths.webroot + "js/**/*.js";
 paths.jsHome = paths.webroot + "js/**/home.js";
 paths.jsCommon = paths.webroot + "js/**/common.js";
+paths.minJs = paths.webroot + "js/**/*.min.js";
 paths.minJsHome = paths.webroot + "js/**/home.min.js";
 paths.minJsCommon = paths.webroot + "js/**/common.min.js";
 paths.css = paths.webroot + "css/**/*.css";
