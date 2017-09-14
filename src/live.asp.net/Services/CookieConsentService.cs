@@ -41,6 +41,18 @@ namespace live.asp.net.Services
         }
 #endif
 
+        public bool IsEnabled
+        {
+            get
+            {
+#if MSCC
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
         public bool IsConsentRequired(HttpContext context)
         {
 #if !MSCC
