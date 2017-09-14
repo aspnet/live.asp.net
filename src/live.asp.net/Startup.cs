@@ -62,7 +62,9 @@ namespace live.asp.net
             services.AddSingleton<IObjectMapper, SimpleMapper>();
             services.AddSingleton<IDeploymentEnvironment, DeploymentEnvironment>();
             services.AddSingleton<IConfigureOptions<ApplicationInsightsServiceOptions>, ApplicationInsightsServiceOptionsSetup>();
+#if MSCC
             services.AddSingleton<CookieConsentService>();
+#endif
 
             if (string.IsNullOrEmpty(Configuration["AppSettings:AzureStorageConnectionString"]))
             {

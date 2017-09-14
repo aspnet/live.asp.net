@@ -1,17 +1,14 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet AppInsightsJs
-@inject live.asp.net.Services.CookieConsentService CookieConsentService
+﻿@inject live.asp.net.Services.CookieConsentService CookieConsentService
 
 @if (CookieConsentService.IsConsentRequired(Context))
 {
-    var cookieComplianceMarkup = CookieConsentService.GetConsentMarkup(Context);
-
-    foreach (var consentMessageJavascript in cookieComplianceMarkup.Javascripts)
+    foreach (var consentMessageJavascript in CookieConsentService.GetConsentJavaScript(Context))
     {
         <script src="@consentMessageJavascript"></script>
     }
 
-    foreach (var consentMessageStylesheet in cookieComplianceMarkup.Stylesheets)
+    foreach (var consentMessageStylesheet in CookieConsentService.GetConsentStylesheets(Context))
     {
-        <link rel="stylesheet" type="text/css" href="@consentMessageStylesheet">
+        <link rel="stylesheet" href="@consentMessageStylesheet" />
     }
 }

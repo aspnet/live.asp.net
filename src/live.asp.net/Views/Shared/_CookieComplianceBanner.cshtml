@@ -1,9 +1,6 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet AppInsightsJs
-@inject live.asp.net.Services.CookieConsentService CookieConsentService
+﻿@inject live.asp.net.Services.CookieConsentService CookieConsentService
 
 @if (CookieConsentService.IsConsentRequired(Context))
 {
-    var cookieComplianceMarkup = CookieConsentService.GetConsentMarkup(Context);
-
-    <div>@Html.Raw(cookieComplianceMarkup.Markup)</div>
+    <div>@CookieConsentService.GetConsentHtml(Context)</div>
 }
