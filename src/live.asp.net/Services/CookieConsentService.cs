@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Linq;
-#if !MSCC
-using System.Threading.Tasks;
-#endif
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 #if MSCC
@@ -22,10 +19,10 @@ namespace live.asp.net.Services
         private const string _markup = "cookieComplianceMarkup";
         private readonly ICookieConsentClient _cookieConsentClient;
         private readonly IPAddressResolver _ipAddressResolver;
+        private bool _isDisposed = false;
 #else
         private static readonly HtmlString _emptyHtmlString = new HtmlString("");
 #endif
-        private bool _isDisposed = false;
 
         public CookieConsentService(ILogger<CookieConsentService> logger)
         {

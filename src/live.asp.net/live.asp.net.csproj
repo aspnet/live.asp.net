@@ -9,9 +9,13 @@
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
     <ApplicationInsightsResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsAnnotationResourceId>
+    <Configurations>Debug;Release;Debug-MSCC;Release-MSCC</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-MSCC|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETCOREAPP1_1;MSCC;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-MSCC|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;NETCOREAPP1_1;MSCC;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
