@@ -35,7 +35,7 @@
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.25.0.760" />
   </ItemGroup>
   <ItemGroup Condition="'$(CookieConsentEnabled)'=='true'">
-    <PackageReference Include="Microsoft.CookieCompliance.NetCore" Version="1.0.6" Condition="" />
+    <PackageReference Include="Microsoft.CookieCompliance.NetCore" Version="2.0.6" Condition="" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
