@@ -38,6 +38,10 @@ namespace live.asp.net.ViewModels
 
         public bool ShowMoreShowsUrl => !string.IsNullOrEmpty(MoreShowsUrl);
 
+        public string YouTubeChannelId { get; set; }
+
+        public string YouTubeSubscriptionLink => $"https://www.youtube.com/channel/{YouTubeChannelId}?sub_confirmation=1";
+
         public string AddToGoogleUrl
         {
             get

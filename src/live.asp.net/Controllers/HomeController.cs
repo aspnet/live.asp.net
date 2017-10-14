@@ -6,6 +6,7 @@ using live.asp.net.Models;
 using live.asp.net.Services;
 using live.asp.net.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace live.asp.net.Controllers
 {
@@ -14,12 +15,18 @@ namespace live.asp.net.Controllers
         private readonly ILiveShowDetailsService _liveShowDetails;
         private readonly IShowsService _showsService;
         private readonly IObjectMapper _mapper;
+        private readonly AppSettings _appSettings;
 
-        public HomeController(IShowsService showsService, ILiveShowDetailsService liveShowDetails, IObjectMapper mapper)
+        public HomeController(
+            IShowsService showsService,
+            ILiveShowDetailsService liveShowDetails,
+            IObjectMapper mapper,
+            IOptions<AppSettings> appSettings)
         {
             _showsService = showsService;
             _liveShowDetails = liveShowDetails;
             _mapper = mapper;
+            _appSettings = appSettings.Value;
         }
 
         [Route("/")]
@@ -31,6 +38,7 @@ namespace live.asp.net.Controllers
             var homeViewModel = new HomeViewModel();
             _mapper.Map(liveShowDetails, homeViewModel);
             _mapper.Map(showList, homeViewModel);
+            homeViewModel.YouTubeChannelId = _appSettings.YouTubeChannelId;
 
             return View(homeViewModel);
         }
