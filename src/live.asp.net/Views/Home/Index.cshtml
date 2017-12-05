@@ -129,7 +129,7 @@
         </cache>
         }
     </environment>
-    @if (Model.NextShowScheduled)
+    @if (Model.NextShowScheduled && !Model.IsOnAir)
     {
     <script>
         (function () {
