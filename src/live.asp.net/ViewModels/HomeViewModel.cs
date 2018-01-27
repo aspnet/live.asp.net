@@ -10,7 +10,7 @@ namespace live.asp.net.ViewModels
 {
     public class HomeViewModel
     {
-        private static readonly string _dateTimeFormat = "yyyyMMddTHHmmssZ";
+        private const string _dateTimeFormat = "yyyyMMddTHHmmssZ";
         private static readonly string _googleCalendarText = UrlEncoder.Default.Encode("ASP.NET Community Standup");
         private static readonly string _googleCalendarLocation = UrlEncoder.Default.Encode("https://live.asp.net/");
 
