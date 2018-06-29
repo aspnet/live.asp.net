@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.CookieCompliance;
 using Microsoft.CookieCompliance.NetCore;
 using Microsoft.CookieCompliance.NetCore.IPAddressResolver;
+using Microsoft.CookieCompliance.NetStd.IP2Geo;
 #endif
 using Microsoft.Extensions.Logging;
 
