@@ -17,7 +17,10 @@
     <CookieConsentEnabled>true</CookieConsentEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(CookieConsentEnabled)'=='true'">
-    <RestoreAdditionalSources>https://microsoft.pkgs.visualstudio.com/DefaultCollection/_packaging/Universal.Store/nuget/v3/index.json</RestoreAdditionalSources>
+    <RestoreSources>
+      $(RestoreSources);
+      https://microsoft.pkgs.visualstudio.com/DefaultCollection/_packaging/Universal.Store/nuget/v3/index.json
+    </RestoreSources>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -27,7 +30,7 @@
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.38.0.1488" />
   </ItemGroup>
   <ItemGroup Condition="'$(CookieConsentEnabled)'=='true'">
-    <PackageReference Include="Microsoft.CookieCompliance.NetCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.CookieCompliance.NetCore" Version="3.1.4" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="**/*.json" CopyToPublishDirectory="Never" />
