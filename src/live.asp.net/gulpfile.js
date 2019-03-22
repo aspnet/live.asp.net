@@ -14,25 +14,25 @@ var paths = {
 };
 
 var library = {
-  base: "node_modules",
-  destination: "lib",
-  source: [
-    // glob pattern to get the dirname and match only js and min.js file wanted
-    path.dirname(require.resolve('jquery-validation-unobtrusive/jquery.validate.unobtrusive.js')) + '/*unobtrusive**.js',
-    // alternative of declaring each file
-    require.resolve('bootstrap/dist/js/bootstrap.js'),
-    require.resolve('bootstrap/dist/js/bootstrap.min.js'),
-    require.resolve('bootstrap/dist/css/bootstrap.css'),
-    require.resolve('bootstrap/dist/css/bootstrap.min.css'),
-    // glob pattern to get all files within the directory
-    path.dirname(require.resolve('bootstrap/dist/fonts/glyphicons-halflings-regular.woff')) + '/**',
-    // declare each file
-    require.resolve('jquery/dist/jquery.js'),
-    require.resolve('jquery/dist/jquery.min.js'),
-    // only one file is distributed
-    require.resolve('jquery-validation/dist/jquery.validate.js')
-  ]
-}
+    base: "node_modules",
+    destination: "lib",
+    source: [
+        // glob pattern to get the dirname and match only js and min.js file wanted
+        path.dirname(require.resolve('jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js')) + '/*unobtrusive**.js',
+        // alternative of declaring each file
+        require.resolve('bootstrap/dist/js/bootstrap.js'),
+        require.resolve('bootstrap/dist/js/bootstrap.min.js'),
+        require.resolve('bootstrap/dist/css/bootstrap.css'),
+        require.resolve('bootstrap/dist/css/bootstrap.min.css'),
+        // glob pattern to get all files within the directory
+        path.dirname(require.resolve('bootstrap/dist/fonts/glyphicons-halflings-regular.woff')) + '/**',
+        // declare each file
+        require.resolve('jquery/dist/jquery.js'),
+        require.resolve('jquery/dist/jquery.min.js'),
+        // only one file is distributed
+        require.resolve('jquery-validation/dist/jquery.validate.js')
+    ]
+};
 
 paths.library = paths.webroot + library.destination;
 paths.js = paths.webroot + "js/**/*.js";
@@ -58,11 +58,11 @@ gulp.task("clean:lib", function () {
 });
 
 gulp.task("clean:js", function () {
-    return(del(paths.concatJsDest));
+    return del(paths.concatJsDest);
 });
 
 gulp.task("clean:css", function () {
-    return(del(paths.concatCssDest));
+    return del(paths.concatCssDest);
 });
 
 gulp.task("clean", ["clean:js", "clean:css", "clean:lib"]);
@@ -95,7 +95,7 @@ gulp.task("min", ["lib", "csslint", "jshint", "min:js", "min:css"]);
 gulp.task("jshint", ["lib"], function() {
     return gulp.src([paths.js, "!" + paths.minJs])
         .pipe(jshint())
-        .pipe(jshint.reporter())
+        .pipe(jshint.reporter());
 });
 
 gulp.task("csslint", ["lib"], function() {

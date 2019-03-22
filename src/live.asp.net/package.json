@@ -13,9 +13,9 @@
     "del": "2.2.1"
   },
   "dependencies": {
-    "bootstrap": "3.3.7",
-    "jquery": "3.3.1",
-    "jquery-validation": "1.15.0",
-    "jquery-validation-unobtrusive": "3.2.6"
+    "bootstrap": "~3.4.0",
+    "jquery": "~3.3.0",
+    "jquery-validation": "~1.15.0",
+    "jquery-validation-unobtrusive": "~3.2.0"
   }
 }

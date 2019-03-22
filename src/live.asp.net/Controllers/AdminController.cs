@@ -133,8 +133,8 @@ namespace live.asp.net.Controllers
             model.NextShowDatePst = liveShowDetails?.NextShowDateUtc?.ConvertFromUtcToPst();
 
             var nextTuesday = GetNextTuesday();
-            model.NextShowDateSuggestionPstAM = nextTuesday.AddHours(10).ToString("MM/dd/yyyy HH:mm");
-            model.NextShowDateSuggestionPstPM = nextTuesday.AddHours(15).AddMinutes(45).ToString("MM/dd/yyyy HH:mm");
+            model.NextShowDateSuggestionPstAM = nextTuesday.AddHours(10).ToString("yyyy-MM-ddTHH:mm");
+            model.NextShowDateSuggestionPstPM = nextTuesday.AddHours(15).AddMinutes(45).ToString("yyyy-MM-ddTHH:mm");
 
             model.AppSettings = _appSettings;
             model.EnvironmentName = _env.EnvironmentName;

@@ -6,7 +6,7 @@
         <ul role="navigation">
             <li>@User.Identity.Name</li>
             <li><a asp-controller="Admin" asp-action="Index">Admin</a></li>
-            <li><a asp-controller="Account" asp-action="SignOut">Sign Out</a></li>
+            <li><a asp-area="AzureAD" asp-controller="Account" asp-action="SignOut">Sign Out</a></li>
         </ul>
     </nav>
 }
@@ -14,6 +14,6 @@
 <environment names="Development,Staging">
     @if (!User.Identity.IsAuthenticated)
     {
-        <a asp-controller="Account" asp-action="SignIn">Sign In</a>
+        <a asp-area="AzureAD" asp-controller="Account" asp-action="SignIn">Sign In</a>
     }
 </environment>
