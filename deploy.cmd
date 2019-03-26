@@ -67,7 +67,7 @@ SET MSBUILD_PATH=%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe
 echo Handling ASP.NET Core Web Application deployment.
 
 :: 0. Install Azure Artifacts Credential Provider for NuGet
-call :ExecuteCmd @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://github.com/Microsoft/artifacts-credprovider/blob/master/helpers/installcredprovider.ps1'))"
+call :ExecuteCmd @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Microsoft/artifacts-credprovider/master/helpers/installcredprovider.ps1'))"
 IF !ERRORLEVEL! NEQ 0 goto error
 
 :: 1. Restore nuget packages
