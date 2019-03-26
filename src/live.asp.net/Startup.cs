@@ -2,14 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Security.Claims;
 using live.asp.net.Formatters;
 using live.asp.net.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Microsoft.AspNetCore.Authentication.OAuth.Claims;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +36,7 @@ namespace live.asp.net
 
             if (string.IsNullOrEmpty(azureAdClientId) || string.IsNullOrEmpty(adminRole))
             {
-                throw new InvalidOperationException("Missing configuration values for Azure AD authnz.");
+                throw new InvalidOperationException("Missing configuration values for Azure AD AuthN/Z.");
             }
 
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
@@ -85,10 +82,9 @@ namespace live.asp.net
             }
             else
             {
+                //app.UseHsts();
                 app.UseExceptionHandler("/error");
             }
-
-            //app.UseHsts();
 
             app.UseRewriter(new RewriteOptions()
                 .AddIISUrlRewrite(env.ContentRootFileProvider, "urlRewrite.config"));
@@ -98,8 +94,6 @@ namespace live.asp.net
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
-            
 
             app.UseMvc();
         }

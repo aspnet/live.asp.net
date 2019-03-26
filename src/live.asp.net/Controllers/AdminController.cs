@@ -84,9 +84,22 @@ namespace live.asp.net.Controllers
                 return View(nameof(Index), viewModel);
             }
 
-            if (!string.IsNullOrEmpty(input.LiveShowEmbedUrl) && input.LiveShowEmbedUrl.StartsWith("http://"))
+            if (!string.IsNullOrEmpty(input.LiveShowEmbedUrl))
             {
-                input.LiveShowEmbedUrl = "https://" + input.LiveShowEmbedUrl.Substring("http://".Length);
+                // Convert live show url to HTTPS if need be
+                if (input.LiveShowEmbedUrl.StartsWith("http://"))
+                {
+                    input.LiveShowEmbedUrl = "https://" + input.LiveShowEmbedUrl.Substring("http://".Length);
+                }
+
+                // Convert watch URL to embed URL
+                if (input.LiveShowEmbedUrl.StartsWith("https://www.youtube.com/watch?v=", StringComparison.OrdinalIgnoreCase))
+                {
+                    var queryIndex = input.LiveShowEmbedUrl.LastIndexOf("?v=", StringComparison.OrdinalIgnoreCase);
+                    var showIdLength = input.LiveShowEmbedUrl.IndexOf('&', queryIndex) - 3 - queryIndex;
+                    var showId = showIdLength > 0 ? input.LiveShowEmbedUrl.Substring(queryIndex + 3, showIdLength) : input.LiveShowEmbedUrl.Substring(queryIndex + 3);
+                    input.LiveShowEmbedUrl = $"https://www.youtube.com/embed/{showId}";
+                }
             }
 
             TrackShowEvent(input, liveShowDetails);

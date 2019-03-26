@@ -17,6 +17,10 @@
                     }
                 </a>
                 <span class="show-date">@Model.ShowDate.DateTime.ToString("MMM dd, yyyy")</span>
+                @if (Model.IsInFuture)
+                {
+                    <span class="label label-danger label-upcoming-show">Upcoming</span>
+                }
                 @if (Model.IsNew)
                 {
                     <span class="label label-success label-new-show">New</span>

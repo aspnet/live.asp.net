@@ -79,25 +79,27 @@
     </div>
 }
 
-@if (Model.ShowPreviousShows)
+@if (Model.ShowUpcomingShows || Model.ShowPreviousShows)
 {
-    <h2>Previous Episodes</h2>
-
-        <div class="row">
-            @foreach (var show in Model.PreviousShows)
-            {
-                <partial name="_YouTubeShow" model="show" />
-            }
-        </div>
-
-        @if (Model.ShowMoreShowsUrl)
+    <div class="row">
+        @foreach (var show in Model.UpcomingShows)
         {
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <a href="@Model.MoreShowsUrl" class="btn btn-primary">See More Episodes</a>
-                </div>
-            </div>
+            <partial name="_YouTubeShow" model="show" />
         }
+        @foreach (var show in Model.PreviousShows)
+        {
+            <partial name="_YouTubeShow" model="show" />
+        }
+    </div>
+
+    @if (Model.ShowMoreShowsUrl)
+    {
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a href="@Model.MoreShowsUrl" class="btn btn-primary">See More Episodes</a>
+            </div>
+        </div>
+    }
 }
 
 @section Scripts {
@@ -115,7 +117,7 @@
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">
         </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.4.1/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
         </script>

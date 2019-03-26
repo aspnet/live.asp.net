@@ -9,7 +9,7 @@ namespace live.asp.net.ViewModels
 {
     public class AdminViewModel
     {
-        [Display(Name = "Live Show Embed URL", Description = "URL for embedding the live show")]
+        [Display(Name = "Live Show URL", Description = "URL for the live show")]
         [DataType(DataType.Url)]
         public string LiveShowEmbedUrl { get; set; }
         

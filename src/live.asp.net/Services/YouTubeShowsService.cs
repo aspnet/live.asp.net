@@ -10,6 +10,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 using live.asp.net.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
@@ -76,9 +77,10 @@ namespace live.asp.net.Services
 
                 var playlistItems = await listRequest.ExecuteAsync();
 
-                var result = new ShowList
-                {
-                    PreviousShows = playlistItems.Items.Select(item => new Show
+                var showList = new ShowList();
+
+                var allShows = playlistItems.Items
+                    .Select(item => new Show
                     {
                         Provider = "YouTube",
                         ProviderId = item.Snippet.ResourceId.VideoId,
@@ -86,33 +88,59 @@ namespace live.asp.net.Services
                         Description = item.Snippet.Description,
                         ThumbnailUrl = item.Snippet.Thumbnails.High.Url,
                         Url = GetVideoUrl(item.Snippet.ResourceId.VideoId, item.Snippet.PlaylistId, item.Snippet.Position ?? 0)
-                    }).ToList()
-                };
+                    })
+                    .ToList();
 
-                foreach (var show in result.PreviousShows)
+                foreach (var show in allShows)
                 {
-                    show.ShowDate = await GetVideoPublishDate(client, show.ProviderId);
+                    var videoSnippet = await GetVideoSnippet(client, show.ProviderId);
+
+                    if (string.Equals(videoSnippet.LiveBroadcastContent, "upcoming", StringComparison.OrdinalIgnoreCase))
+                    {
+                        show.ShowDate = await GetDateOfUpcomingVideo(client, show.ProviderId);
+                        showList.UpcomingShows.Add(show);
+                    }
+                    else
+                    {
+                        show.ShowDate = GetVideoPublishDate(videoSnippet);
+                        showList.PreviousShows.Add(show);
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(playlistItems.NextPageToken))
                 {
-                    result.MoreShowsUrl = GetPlaylistUrl(_appSettings.YouTubePlaylistId);
+                    showList.MoreShowsUrl = GetPlaylistUrl(_appSettings.YouTubePlaylistId);
                 }
 
-                return result;
+                return showList;
             }
         }
 
-        private async Task<DateTimeOffset> GetVideoPublishDate(YouTubeService client, string videoId)
+        private static async Task<VideoSnippet> GetVideoSnippet(YouTubeService client, string videoId)
         {
             var videoRequest = client.Videos.List("snippet");
             videoRequest.Id = videoId;
             videoRequest.MaxResults = 1;
+            var videoResponse = await videoRequest.ExecuteAsync();
+            return videoResponse.Items[0].Snippet;
+        }
 
-            var video = await videoRequest.ExecuteAsync();
-            var rawDate = video.Items[0].Snippet.PublishedAtRaw;
-            
+        private static DateTimeOffset GetVideoPublishDate(VideoSnippet videoSnippet)
+        {
+            var rawDate = videoSnippet.PublishedAtRaw;
+
             return DateTimeOffset.Parse(rawDate, null, DateTimeStyles.RoundtripKind);
+        }
+
+        private static async Task<DateTimeOffset> GetDateOfUpcomingVideo(YouTubeService client, string videoId)
+        {
+            var videoRequest = client.Videos.List("liveStreamingDetails");
+            videoRequest.Id = videoId;
+            videoRequest.MaxResults = 1;
+
+            var videoResponse = await videoRequest.ExecuteAsync();
+
+            return DateTimeOffset.Parse(videoResponse.Items[0].LiveStreamingDetails.ScheduledStartTimeRaw, null, DateTimeStyles.RoundtripKind);
         }
 
         private static string GetUsefulBitsFromTitle(string title)

@@ -30,7 +30,11 @@ namespace live.asp.net.ViewModels
 
         public bool HasAdminMessage => !string.IsNullOrEmpty(AdminMessage);
 
+        public IList<Show> UpcomingShows { get; set; }
+
         public IList<Show> PreviousShows { get; set; }
+
+        public bool ShowUpcomingShows => UpcomingShows.Count > 0;
 
         public bool ShowPreviousShows => PreviousShows.Count > 0;
 

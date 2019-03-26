@@ -8,7 +8,9 @@ namespace live.asp.net.Services
 {
     public class ShowList
     {
-        public IList<Show> PreviousShows { get; set; }
+        public IList<Show> PreviousShows { get; set; } = new List<Show>();
+
+        public IList<Show> UpcomingShows { get; set; } = new List<Show>();
 
         public string MoreShowsUrl { get; set; }
     }

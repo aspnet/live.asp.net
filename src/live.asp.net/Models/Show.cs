@@ -21,7 +21,7 @@ namespace live.asp.net.Models
 
         public DateTimeOffset ShowDate { get; set; }
 
-        public bool IsNew => !IsInFuture && (DateTimeOffset.Now - ShowDate).TotalDays <= 7;
+        public bool IsNew => !IsInFuture && (DateTimeOffset.Now - ShowDate).TotalDays <= 14;
 
         public bool IsInFuture => ShowDate > DateTimeOffset.Now;
 
