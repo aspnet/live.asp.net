@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved. 
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Threading.Tasks;
 using live.asp.net.Models;
 using live.asp.net.Services;
@@ -28,6 +29,11 @@ namespace live.asp.net.Controllers
             var liveShowDetails = await _liveShowDetails.LoadAsync();
             var showList = await _showsService.GetRecordedShowsAsync(User, disableCache ?? false);
 
+            if (liveShowDetails == null)
+            {
+                throw new InvalidOperationException("Cannot find show details.");
+            }
+
             var homeViewModel = new HomeViewModel();
             _mapper.Map(liveShowDetails, homeViewModel);
             _mapper.Map(showList, homeViewModel);
@@ -40,6 +46,10 @@ namespace live.asp.net.Controllers
         public async Task<LiveShowDetails> GetiCal()
         {
             var liveShowDetails = await _liveShowDetails.LoadAsync();
+            if (liveShowDetails == null)
+            {
+                throw new InvalidOperationException("Cannot load live show details.");
+            }
 
             return liveShowDetails;
         }

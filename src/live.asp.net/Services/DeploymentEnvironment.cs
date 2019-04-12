@@ -15,8 +15,8 @@ namespace live.asp.net.Services
     {
         private readonly string _contentRoot;
         private readonly ILogger<DeploymentEnvironment> _logger;
-        private string _commitSha;
-        private string _runtimeFramework;
+        private string? _commitSha;
+        private string? _runtimeFramework;
 
         public DeploymentEnvironment(IHostingEnvironment hostingEnv, ILogger<DeploymentEnvironment> logger)
         {
@@ -33,7 +33,7 @@ namespace live.asp.net.Services
                     LoadCommitSha();
                 }
 
-                return _commitSha;
+                return _commitSha!;
             }
         }
 
@@ -46,7 +46,7 @@ namespace live.asp.net.Services
                     LoadRuntimeFramework();
                 }
 
-                return _runtimeFramework;
+                return _runtimeFramework!;
             }
         }
 

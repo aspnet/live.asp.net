@@ -16,9 +16,9 @@ namespace live.asp.net.ViewModels
 
         public bool IsOnAir => !HasAdminMessage && (IsLiveShowEmbedded || !string.IsNullOrEmpty(LiveShowHtml));
 
-        public string LiveShowEmbedUrl { get; set; }
+        public string? LiveShowEmbedUrl { get; set; }
 
-        public string LiveShowHtml { get; set; }
+        public string? LiveShowHtml { get; set; }
 
         public bool IsLiveShowEmbedded => !string.IsNullOrEmpty(LiveShowEmbedUrl);
 
@@ -26,19 +26,19 @@ namespace live.asp.net.ViewModels
 
         public bool NextShowScheduled => NextShowDateUtc.HasValue;
 
-        public string AdminMessage { get; set; }
+        public string? AdminMessage { get; set; }
 
         public bool HasAdminMessage => !string.IsNullOrEmpty(AdminMessage);
 
-        public IList<Show> UpcomingShows { get; set; }
+        public IList<Show>? UpcomingShows { get; set; }
 
-        public IList<Show> PreviousShows { get; set; }
+        public IList<Show>? PreviousShows { get; set; }
 
-        public bool ShowUpcomingShows => UpcomingShows.Count > 0;
+        public bool ShowUpcomingShows => UpcomingShows?.Count > 0;
 
-        public bool ShowPreviousShows => PreviousShows.Count > 0;
+        public bool ShowPreviousShows => PreviousShows?.Count > 0;
 
-        public string MoreShowsUrl { get; set; }
+        public string? MoreShowsUrl { get; set; }
 
         public bool ShowMoreShowsUrl => !string.IsNullOrEmpty(MoreShowsUrl);
 

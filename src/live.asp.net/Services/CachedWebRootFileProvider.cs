@@ -144,7 +144,7 @@ namespace live.asp.net.Services
             private readonly ILogger _logger;
             private readonly IFileInfo _fileInfo;
             private readonly string _subpath;
-            private byte[] _contents;
+            private byte[]? _contents;
 
             public CachedFileInfo(ILogger logger, IFileInfo fileInfo, string subpath)
             {

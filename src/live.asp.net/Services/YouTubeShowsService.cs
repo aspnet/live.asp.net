@@ -93,11 +93,11 @@ namespace live.asp.net.Services
 
                 foreach (var show in allShows)
                 {
-                    var videoSnippet = await GetVideoSnippet(client, show.ProviderId);
+                    var videoSnippet = await GetVideoSnippet(client, show.ProviderId!);
 
                     if (string.Equals(videoSnippet.LiveBroadcastContent, "upcoming", StringComparison.OrdinalIgnoreCase))
                     {
-                        show.ShowDate = await GetDateOfUpcomingVideo(client, show.ProviderId);
+                        show.ShowDate = await GetDateOfUpcomingVideo(client, show.ProviderId!);
                         showList.UpcomingShows.Add(show);
                     }
                     else
@@ -180,7 +180,7 @@ namespace live.asp.net.Services
         {
             private static readonly TimeSpan _pstOffset = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time").BaseUtcOffset;
 
-            public static readonly string LiveShow = null;
+            public static readonly string? LiveShow = null;
 
             public static readonly IList<Show> Shows = new List<Show>
             {

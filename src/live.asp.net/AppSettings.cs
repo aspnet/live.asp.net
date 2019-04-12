@@ -3,6 +3,7 @@
 
 namespace live.asp.net
 {
+#nullable disable
     public class AppSettings
     {
         public string YouTubeApplicationName { get; set; }
@@ -17,4 +18,5 @@ namespace live.asp.net
 
         public string AzureStorageContainerName { get; set; }
     }
+#nullable restore
 }

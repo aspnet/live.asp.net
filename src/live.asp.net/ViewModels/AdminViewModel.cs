@@ -11,29 +11,29 @@ namespace live.asp.net.ViewModels
     {
         [Display(Name = "Live Show URL", Description = "URL for the live show")]
         [DataType(DataType.Url)]
-        public string LiveShowEmbedUrl { get; set; }
+        public string? LiveShowEmbedUrl { get; set; }
         
         [Display(Name = "Live Show HTML", Description = "HTML content for the live show")]
         [DataType(DataType.MultilineText)]
-        public string LiveShowHtml { get; set; }
+        public string? LiveShowHtml { get; set; }
 
         [Display(Name = "Next Show Date/time", Description = "Exact date and time of the next live show in Pacific Time")]
         [DateAfterNow(TimeZoneId = "Pacific Standard Time")]
         public DateTime? NextShowDatePst { get; set; }
 
         [Display(Name = "Standby Message", Description = "Message to show on home page during show standby")]
-        public string AdminMessage { get; set; }
+        public string? AdminMessage { get; set; }
 
-        public string NextShowDateSuggestionPstAM { get; set; }
+        public string? NextShowDateSuggestionPstAM { get; set; }
 
-        public string NextShowDateSuggestionPstPM { get; set; }
+        public string? NextShowDateSuggestionPstPM { get; set; }
 
-        public string SuccessMessage { get; set; }
+        public string? SuccessMessage { get; set; }
 
         public bool ShowSuccessMessage => !string.IsNullOrEmpty(SuccessMessage);
 
-        public AppSettings AppSettings { get; set; }
+        public AppSettings? AppSettings { get; set; }
 
-        public string EnvironmentName { get; set; }
+        public string? EnvironmentName { get; set; }
     }
 }

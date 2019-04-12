@@ -12,6 +12,6 @@ namespace live.asp.net.Services
 
         public IList<Show> UpcomingShows { get; set; } = new List<Show>();
 
-        public string MoreShowsUrl { get; set; }
+        public string? MoreShowsUrl { get; set; }
     }
 }

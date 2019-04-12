@@ -7,12 +7,12 @@ namespace live.asp.net.Models
 {
     public class LiveShowDetails
     {
-        public string LiveShowEmbedUrl { get; set; }
+        public string? LiveShowEmbedUrl { get; set; }
 
-        public string LiveShowHtml { get; set; }
+        public string? LiveShowHtml { get; set; }
 
         public DateTime? NextShowDateUtc { get; set; }
 
-        public string AdminMessage { get; set; }
+        public string? AdminMessage { get; set; }
     }
 }

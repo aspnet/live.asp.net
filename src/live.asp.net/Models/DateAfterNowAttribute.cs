@@ -15,7 +15,7 @@ namespace live.asp.net.Models
 
         }
 
-        public string TimeZoneId { get; set; }
+        public string? TimeZoneId { get; set; }
 
         public override bool IsValid(object value)
         {

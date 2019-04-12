@@ -52,6 +52,10 @@ namespace live.asp.net.Controllers
             };
 
             var liveShowDetails = await _liveShowDetails.LoadAsync();
+            if (liveShowDetails == null)
+            {
+                throw new InvalidOperationException("Cannot find live show details.");
+            }
 
             UpdateAdminViewModel(model, liveShowDetails);
 
@@ -61,13 +65,13 @@ namespace live.asp.net.Controllers
         [ModelMetadataType(typeof(AdminViewModel))]
         public class AdminInputModel
         {
-            public string LiveShowEmbedUrl { get; set; }
+            public string? LiveShowEmbedUrl { get; set; }
 
-            public string LiveShowHtml { get; set; }
+            public string? LiveShowHtml { get; set; }
 
             public DateTime? NextShowDatePst { get; set; }
 
-            public string AdminMessage { get; set; }
+            public string? AdminMessage { get; set; }
         }
 
         [HttpPost]

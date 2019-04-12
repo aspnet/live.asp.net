@@ -1,12 +1,13 @@
 ﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
     <UserSecretsId>aspnet5-live.asp.net-20150723035013</UserSecretsId>
     <ApplicationInsightsResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsAnnotationResourceId>
     <Configurations>Debug;Release;Debug_MSCC;Release_MSCC</Configurations>
+    <LangVersion>preview</LangVersion>
+    <NullableContextOptions>enable</NullableContextOptions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_MSCC|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETCOREAPP2_1;MSCC;</DefineConstants>

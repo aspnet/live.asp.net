@@ -24,7 +24,7 @@ namespace live.asp.net.TagHelpers
         }
 
         [ViewContext]
-        public ViewContext ViewContext { get; set; }
+        public ViewContext ViewContext { get; set; } = default!;
 
         public bool Inline { get; set; }
 
@@ -62,7 +62,7 @@ namespace live.asp.net.TagHelpers
                     path = src?.Value?.ToString();
                     break;
             }
-            var resolvedPath = path ?? src.Value.ToString();
+            var resolvedPath = path ?? string.Empty;
 
             var queryStringStartIndex = resolvedPath.IndexOf('?');
             if (queryStringStartIndex != -1)

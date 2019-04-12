@@ -10,7 +10,7 @@ namespace live.asp.net.TagHelpers
     public class LabelTitleTagHelper : TagHelper
     {
         [HtmlAttributeName("asp-for")]
-        public ModelExpression For { get; set; }
+        public ModelExpression For { get; set; } = default!;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

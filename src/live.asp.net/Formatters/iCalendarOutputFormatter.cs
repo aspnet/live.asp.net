@@ -47,7 +47,7 @@ namespace live.asp.net.Formatters
 
         public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context)
         {
-            var liveShowDetails = context.Object as LiveShowDetails;
+            var liveShowDetails = (LiveShowDetails)context.Object;
 
             Debug.Assert(context.Object == null || liveShowDetails != null, $"Object to be formatted should be of type {nameof(LiveShowDetails)}");
 

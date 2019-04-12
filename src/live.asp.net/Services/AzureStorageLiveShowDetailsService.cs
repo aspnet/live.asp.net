@@ -25,9 +25,9 @@ namespace live.asp.net.Services
             _cache = cache;
         }
 
-        public async Task<LiveShowDetails> LoadAsync()
+        public async Task<LiveShowDetails?> LoadAsync()
         {
-            var liveShowDetails = _cache.Get<LiveShowDetails>(CacheKey);
+            var liveShowDetails = _cache.Get<LiveShowDetails?>(CacheKey);
 
             if (liveShowDetails == null)
             {
@@ -58,7 +58,7 @@ namespace live.asp.net.Services
             });
         }
 
-        private async Task<LiveShowDetails> LoadFromAzureStorage()
+        private async Task<LiveShowDetails?> LoadFromAzureStorage()
         {
             var container = GetStorageContainer();
 

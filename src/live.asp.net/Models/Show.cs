@@ -9,15 +9,15 @@ namespace live.asp.net.Models
     {
         public int Id { get; set; }
 
-        public string Provider { get; set; }
+        public string? Provider { get; set; }
 
-        public string ProviderId { get; set; }
+        public string? ProviderId { get; set; }
 
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         public bool HasTitle => !string.IsNullOrEmpty(Title);
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public DateTimeOffset ShowDate { get; set; }
 
@@ -25,8 +25,8 @@ namespace live.asp.net.Models
 
         public bool IsInFuture => ShowDate > DateTimeOffset.Now;
 
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
-        public string ThumbnailUrl { get; set; }
+        public string? ThumbnailUrl { get; set; }
     }
 }

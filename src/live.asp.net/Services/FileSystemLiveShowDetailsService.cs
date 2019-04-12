@@ -25,9 +25,9 @@ namespace live.asp.net.Services
             _filePath = Path.Combine(hostingEnv.ContentRootPath, FileName);
         }
 
-        public async Task<LiveShowDetails> LoadAsync()
+        public async Task<LiveShowDetails?> LoadAsync()
         {
-            var result = _cache.Get<LiveShowDetails>(CacheKey);
+            var result = _cache.Get<LiveShowDetails?>(CacheKey);
 
             if (result == null)
             {
@@ -58,7 +58,7 @@ namespace live.asp.net.Services
             _cache.Remove(CacheKey);
         }
 
-        private async Task<LiveShowDetails> LoadFromFile()
+        private async Task<LiveShowDetails?> LoadFromFile()
         {
             if (!File.Exists(_filePath))
             {
@@ -71,7 +71,7 @@ namespace live.asp.net.Services
                 fileContents = await fileReader.ReadToEndAsync();
             }
 
-            return JsonConvert.DeserializeObject<LiveShowDetails>(fileContents);
+            return JsonConvert.DeserializeObject<LiveShowDetails?>(fileContents);
         }
     }
 }

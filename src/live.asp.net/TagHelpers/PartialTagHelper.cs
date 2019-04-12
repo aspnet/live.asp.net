@@ -19,11 +19,11 @@ namespace live.asp.net.TagHelpers
         }
 
         [ViewContext]
-        public ViewContext ViewContext { get; set; }
+        public ViewContext ViewContext { get; set; } = default!;
 
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
-        public object Model { get; set; }
+        public object? Model { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
