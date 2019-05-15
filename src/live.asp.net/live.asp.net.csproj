@@ -7,6 +7,13 @@
     <ApplicationInsightsResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsResourceId>
     <ApplicationInsightsAnnotationResourceId>/subscriptions/3dfaed7d-0efe-4a9f-b7e9-87b7c8775168/resourcegroups/MS-ASP-STANDUP/providers/microsoft.insights/components/ms-asp-standup</ApplicationInsightsAnnotationResourceId>
     <Configurations>Debug;Release;Debug_MSCC;Release_MSCC</Configurations>
+    <RestoreSources Condition="'$(CookieConsentEnabled)'=='true'">
+      https://microsoft.pkgs.visualstudio.com/DefaultCollection/_packaging/Universal.Store/nuget/v3/index.json;
+    </RestoreSources>
+    <RestoreSources>
+      $(RestoreSources);
+      https://api.nuget.org/v3/index.json;
+    </RestoreSources>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_MSCC|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETCOREAPP2_1;MSCC;</DefineConstants>
@@ -15,12 +22,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_MSCC|AnyCPU'">
     <DefineConstants>TRACE;RELEASE;NETCOREAPP2_1;MSCC;</DefineConstants>
     <CookieConsentEnabled>true</CookieConsentEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(CookieConsentEnabled)'=='true'">
-    <RestoreSources>
-      $(RestoreSources);
-      https://microsoft.pkgs.visualstudio.com/DefaultCollection/_packaging/Universal.Store/nuget/v3/index.json
-    </RestoreSources>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
